@@ -1,6 +1,6 @@
 # RRFLOW — three-minute live presentation
 
-Open RRFLOW at http://127.0.0.1:3100 and keep the Raindrop project in a second tab. Use Shippin and engineering lessons for screen sharing; keep personal email contents off the presentation. No server restart is needed.
+Open RRFLOW at http://127.0.0.1:3100. **Overview now contains live HydraDB context, generated A2UI guidance, Raindrop delivery counts, and alignment feedback together.** The external Raindrop tab is optional supporting evidence. Use Shippin and engineering lessons for screen sharing; keep personal email contents off the presentation. No server restart is needed.
 
 **Ready-to-show Raindrop evidence:** [generated workspace and context-alignment feedback](https://app.raindrop.ai/events?org=ea2ca283&project=rrflow-hydradb&event=6576c8be-0b0f-510b-a137-aec6aec33451&tab=overview) — Details shows Brain UI helpful, nine avenues, Engineering core / Next.js / TypeScript, source revisions, and six native request IDs. This event came from the live Playwright verification. [Lesson retrieval with helpful feedback](https://app.raindrop.ai/events?org=ea2ca283&project=rrflow-hydradb&event=2a0539cd-b479-423a-bf64-ec0d5752b364&tab=overview) is the matching retrieval example.
 
@@ -18,19 +18,19 @@ Open RRFLOW at http://127.0.0.1:3100 and keep the Raindrop project in a second t
 
 ## 1:00–1:40 · Make the interface from knowledge
 
-**Click:** Brain workspace → Build my workspace. Open an avenue’s information button, then close it.
+**Click:** Overview → Build my workspace. Open an avenue’s information button, then close it. The Raindrop alignment panel appears above the avenue cards.
 
 “Instead of hunting through a document library, I describe the work. RRFLOW retrieves the relevant research and streams an A2UI workspace: guidance, explanations, and drill-down questions generated from the stored knowledge. Watch the read status and first-evidence time. The current routing is deterministic and traceable. It shows what needs checking, without pretending those checks have already run. I can also attach an existing folder or GitHub project.”
 
 ## 1:40–2:30 · Raindrop, visibly in action
 
-**Click:** Specialist brains → Senior dev practices. Ask: `Why does infisical secrets get fail in Git Bash?` → Ask → inspect the retrieved evidence → Yes. Scroll to **Quality monitoring · Raindrop**, then open Raindrop and select the newest matching event.
+**Stay on Overview:** **Make the next result better** shows the selected brains, nine avenues, and three source revisions. Expand **Inspect the context behind this feedback**, then click **This helps**. **Quality monitoring · Raindrop** updates its accepted event/verdict counts from real delivery receipts. The **Ask a brain** panel below also lets you retrieve the Git Bash lesson and submit a retrieval verdict without changing pages.
 
-“Now the specialist retrieves the lesson we learned earlier. This is reuse of experience, with the actual source and HydraDB request ID. My helpfulness feedback goes to Raindrop. Here in our UI you can see the event and verdict delivery; here in Raindrop you can inspect the same interaction and its signal. Quality becomes visible evidence we can use when reviewing future improvements.”
+“This panel shows exactly which context was selected. Here are the brains, the source revisions, and the native requests behind the result. When I say this helps, Raindrop accepts the verdict and our dashboard shows the delivery. Context and quality stay together, right where I work. That feedback becomes evidence for reviewing future context-selection improvements.”
 
 ## 2:30–3:00 · Recursive learning, with human oversight
 
-**Screen:** Raindrop event with its helpfulness signal, then return to the connectome.
+**Screen:** The dashboard's accepted feedback and selected-context panel. The native Raindrop event is optional if time permits.
 
 “That is our recursive-learning direction: experience becomes memory, memory guides the next task, and feedback tells us what to improve. Today, recorded lessons are retrieved and reused, and quality feedback is captured. Automatic lesson promotion and measured prompt improvement are the next step, with human review. RRFLOW’s goal is simple: make the next task benefit from what the last one taught us.”
 

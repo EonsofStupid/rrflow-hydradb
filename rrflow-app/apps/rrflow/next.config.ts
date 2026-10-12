@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
+  distDir: process.env.RRFLOW_DIST_DIR || '.next',
   poweredByHeader: false,
   devIndicators: false,
   webpack(config, { dev }) {

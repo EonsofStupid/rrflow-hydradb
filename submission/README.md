@@ -19,3 +19,5 @@ The latest captures are [connectome in light mode](screenshots/07-connectome-lig
 Images 01–06 show the earlier build. Prefer 07–09 for the current submission. Upload the PNG files directly to the Devpost image gallery; the public GitHub folder also provides access to the files. These images do not create a publicly hosted interactive app.
 
 [Raindrop context-alignment feedback](screenshots/10-raindrop-context-alignment.jpg) shows native read-back of the generated-workspace event and its helpfulness signal.
+
+**Latest integrated dashboard:** [HydraDB and Raindrop on Overview](screenshots/11-dashboard-hydradb-raindrop.png) and [context-alignment feedback inside the dashboard](screenshots/12-dashboard-context-alignment.png). The presentation flow now works entirely inside RRFLOW; opening the provider's website is optional.

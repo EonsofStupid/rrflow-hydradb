@@ -1,5 +1,11 @@
 # Codex implementation handoff — October 12
 
+## Current release: context and Raindrop together on Overview
+
+Following the release handback, Codex completed dashboard.tsx, brain-workspace.tsx/CSS, live-mesh.tsx, capture-submission.mjs, tests, launcher/config, and release documentation. Overview now shows native HydraDB readiness/counts, Raindrop delivery receipts, generated guidance, context selection and source revisions, helpful/missing-context feedback, lessons, and retrieval in one view. Existing specialist and brain-workspace navigation remains available.
+
+The production build passed in `.next-presentation`, followed by one successful port-3100 switch. Root `pnpm verify` passed TypeScript, ESLint, and all 26 Playwright scenarios in 46.0 seconds without retries. The credentialless CI alert selector now targets its source-service failure explicitly. Screenshots 11–12 and the timed demo show the integrated dashboard. App tab has a generated workspace with feedback controls ready for Jesse; leave the server running. Feedback is captured, while automatic prompt promotion remains future work.
+
 ## Current release: Personal, connectome, and demo evidence
 
 Codex owns the final combined release following Claude's acknowledged handback. Current production build is running on port 3100 and stays stable for Jesse's testing/presentation. Root `pnpm verify` now passes TypeScript, ESLint, and all 25 Playwright scenarios (56.5s, no retries). New source includes native database management, default-tenant Personal scope, the project picker, the connections console, and repository-sync fixes. Submission screenshots 07–10 and THREE_MINUTE_DEMO.md are ready. Actual Raindrop read-back confirms both Answer helpful and Brain UI helpful signals; exact event IDs are in implementation evidence. Root Git is the only repository; all non-ignored deliverables belong in this release. Earlier seven-test handoffs below are historical.

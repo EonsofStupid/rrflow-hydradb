@@ -1,5 +1,13 @@
 # RRFLOW implementation evidence — October 12, 2026
 
+## Integrated Overview presentation release
+
+The running production dashboard now places HydraDB live figures, Raindrop delivery status, generated A2UI guidance, selected context and source revisions, feedback controls, recorded lessons, and retrieval together on Overview. Context inspection exposes the actual event ID, source revisions, and HydraDB request count. The presentation no longer requires leaving the dashboard to give alignment feedback.
+
+Production build passed using `.next-presentation`; the launcher switched port 3100 to that build after compilation finished. Root `pnpm verify` passed TypeScript, ESLint, and all **26 Playwright scenarios in 46.0 seconds**, without retries. The new Overview test generated nine avenues from Engineering core, Next.js, and TypeScript, inspected six HydraDB requests and three source revisions, then verified accepted feedback and monitoring counts. Accessibility, both themes, and mobile checks remain covered. The credentialless CI test now selects the specific source-service alert when multiple provider alerts are present.
+
+Screenshots `11-dashboard-hydradb-raindrop.png` and `12-dashboard-context-alignment.png` capture the real integrated flow. The screenshot helper also re-ran native retrieval and feedback: event `9ec69549-b8af-4618-b460-5db313e16e67`, HydraDB request `289a350e-d171-4666-adb1-5b58f6861f30`, event HTTP 200 and feedback HTTP 204. These are demonstration interactions, not evidence of an automatic prompt-improvement experiment.
+
 ## Combined Personal / Shippin release
 
 The workspace root is now the single repository; `rrflow-app` is its application directory. The production build includes the connectome, database manager, project picker, connector/webhook console, and repository sync status. Port 3100 stays running while Jesse tests and presents.

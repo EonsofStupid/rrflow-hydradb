@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Activity, BookOpen, Brain, Clock, Database, RefreshCw, TriangleAlert, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { MeshSnapshot } from '@/lib/mesh-contracts';
@@ -45,7 +45,7 @@ const buildTickers = (snapshot: MeshSnapshot, now: number): Ticker[] => {
   ];
 };
 
-export const LiveMesh = ({ embedded = false }: { embedded?: boolean }) => {
+export const LiveMesh = ({ embedded = false, dashboard = false, children }: { embedded?: boolean; dashboard?: boolean; children?: ReactNode }) => {
   const [snapshot, setSnapshot] = useState<MeshSnapshot | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -145,7 +145,7 @@ export const LiveMesh = ({ embedded = false }: { embedded?: boolean }) => {
             ))}
           </section>
 
-          <section aria-labelledby="reasoning-heading" className="rounded-lg border border-border bg-card p-4">
+          {!dashboard && <section aria-labelledby="reasoning-heading" className="rounded-lg border border-border bg-card p-4">
             <h2 id="reasoning-heading" className="text-lg font-semibold">How RRFLOW works through a task</h2>
             <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
               {REASONING_STEPS.map((step, index) => (
@@ -156,15 +156,17 @@ export const LiveMesh = ({ embedded = false }: { embedded?: boolean }) => {
                 </li>
               ))}
             </ol>
-          </section>
+          </section>}
 
-          <BrainMesh brains={snapshot.brains} shippinContext={snapshot.shippinContext} otherDatabases={snapshot.otherDatabases}
-            raindropProject={snapshot.raindropProject} now={now} />
+          {!dashboard && <BrainMesh brains={snapshot.brains} shippinContext={snapshot.shippinContext} otherDatabases={snapshot.otherDatabases}
+            raindropProject={snapshot.raindropProject} now={now} />}
 
           <RaindropCard project={snapshot.raindropProject} isMonitored={snapshot.isMonitored} now={now} />
 
+          {children}
+
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <LearningFeed items={snapshot.learning} now={now} error={snapshot.learningError} requestId={snapshot.learningRequestId} />
+            <LearningFeed items={dashboard ? snapshot.learning.slice(0, 4) : snapshot.learning} now={now} error={snapshot.learningError} requestId={snapshot.learningRequestId} />
             <AskBrain />
           </div>
         </>

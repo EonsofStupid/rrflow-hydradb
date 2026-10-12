@@ -14,6 +14,30 @@ const fixtureMessages = (data: BrainUiModel): BrainUiMessage[] => [
   { version: 'v0.9.1', updateComponents: { surfaceId: eventId, components: [{ id: 'root', component: 'Column', children: ['status', 'observation'] }, { id: 'status', component: 'WorkflowStatus', path: '/status' }, { id: 'observation', component: 'Observation', path: '/observation' }] } },
 ];
 
+test('Overview generates HydraDB context and records alignment feedback without leaving the dashboard', async ({ page }) => {
+  await page.setExtraHTTPHeaders({ 'x-rrflow-verification': 'playwright' });
+  await page.goto('/');
+  const dashboard = page.getByRole('region', { name: 'Live context and quality' });
+  await expect(dashboard.getByRole('region', { name: 'Live figures' })).toBeVisible();
+  const reporting = dashboard.getByRole('region', { name: 'Quality monitoring · Raindrop' });
+  await expect(reporting).toContainText('Reporting to project rrflow-hydradb');
+  await dashboard.getByRole('button', { name: 'Build my workspace', exact: true }).click();
+  const alignment = dashboard.getByRole('region', { name: 'Raindrop quality' });
+  await expect(alignment).toContainText('Event accepted by Raindrop');
+  await expect(alignment).toContainText('Engineering core + Next.js + TypeScript');
+  await alignment.getByText('Inspect the context behind this feedback', { exact: true }).click();
+  await expect(alignment).toContainText('6 HydraDB requests');
+  await alignment.getByRole('button', { name: 'This helps', exact: true }).click();
+  await expect(alignment).toContainText('Marked helpful.');
+  await expect(reporting.locator('dl > div').filter({ hasText: 'Events accepted' }).locator('dd')).toHaveText('1');
+  await expect(reporting.locator('dl > div').filter({ hasText: 'Verdicts accepted' }).locator('dd')).toHaveText('1');
+  await expect(reporting.locator('dl > div').filter({ hasText: 'Failed deliveries' }).locator('dd')).toHaveText('0');
+  await alignment.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: 'test-results/dashboard-context-alignment.png', animations: 'disabled' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+});
+
 test('brain knowledge drives A2UI tooltips, dialogs, quality feedback and responsive themes', async ({ page }, testInfo) => {
   await page.setExtraHTTPHeaders({ 'x-rrflow-verification': 'playwright' });
   // Inspect the same streaming response the UI consumes. Chromium can discard

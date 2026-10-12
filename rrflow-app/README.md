@@ -27,8 +27,17 @@ wsl -d Ubuntu -- bash /mnt/d/localdev/rrflow-hydradb/rrflow-app/scripts/wsl-run.
 
 The WSL helper currently names this workstation's Node 22.23.3 installation. Adapt that one path when moving machines. Development uses Webpack polling because Windows edits on `/mnt/d` did not reliably invalidate WSL Turbopack routes.
 
+To compile without replacing the running server's build files, use a separate output directory. Switch servers only after the build succeeds:
+
+```powershell
+wsl -d Ubuntu -- env RRFLOW_DIST_DIR=.next-presentation bash /mnt/d/localdev/rrflow-hydradb/rrflow-app/scripts/wsl-run.sh build
+# Stop the previous port-3100 server before launching this build.
+./scripts/start-local.ps1 -Mode start -BuildDirectory .next-presentation
+```
+
 ## What works
 
+- Overview combines live HydraDB status, generated knowledge avenues, source revisions, Raindrop delivery receipts and feedback, lessons, and retrieval. Select **Build my workspace**, inspect its context, then choose **This helps** or **Missing context** on the same dashboard.
 - Light/dark dashboard, native graph exploration, discipline search, source/question drill-down, responsive layout.
 - Connectome with typed lessons/practices/sources, source evidence, native graph relationships, search, filters, and visible refresh times. Context avenues sit inside the connectome. Native HydraDB graph/context and Digo app-starter are directly linked.
 - Existing folder or GitHub project selection, with Personal/Shippin scope, bounded metadata snapshots saved in HydraDB, exact GitHub commit references, and project-aware knowledge selection. It never executes discovered scripts.

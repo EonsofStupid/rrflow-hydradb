@@ -27,7 +27,7 @@ Updated October 12, 2026. Codex and the existing Claude Code session work in the
 - Managed specialist databases: `rrflow_specialist`, `shippin_cloud`, `shippin_ai`, `shipping_buzz`, `seniordev`. Live readiness, counts, memory feed, and selected-brain hybrid retrieval come from HydraDB.
 - Graph identity: database + collection + label + ext_id. Managed content identity: database + type + native ID. Do not assume BYOG node IDs and managed retrieval IDs are interchangeable.
 - A single initial Workspace probe was written to default-tenant/rrflow before the team aligned on seniordev. No research was imported there; it is not an active second store.
-- Production build and root pnpm verify passed, including 25 Playwright scenarios. Light/dark and specialist-view automated axe checks passed. Mobile and desktop layout checks passed. See implementation evidence for the latest combined release.
+- Production build and root pnpm verify passed, including 26 Playwright scenarios in 46.0 seconds. Overview now includes native HydraDB status, generated context, Raindrop delivery and feedback, lessons, and recall. Light/dark accessibility and mobile/desktop layout checks passed. See implementation evidence for the latest combined release.
 - Native Raindrop cloud setup and real event/feedback read-back are verified for rrflow-hydradb. Both Infisical names match; the launcher uses canonical RAINDROP_WRITE_KEY. See implementation evidence for event and native request IDs.
 
 ## File ownership

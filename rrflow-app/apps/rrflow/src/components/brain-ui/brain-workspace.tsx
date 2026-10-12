@@ -15,7 +15,7 @@ type Avenue = BrainUiModel['avenues'][number];
 const sourceUrl = (url: string) => { try { return new URL(url).protocol === 'https:' ? url : undefined; } catch { return undefined; } };
 const time = (value: string) => new Date(value).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
 
-export const BrainWorkspace = () => {
+export const BrainWorkspace = ({ compact = false }: { compact?: boolean }) => {
   const [goal, setGoal] = useState('Prepare the shippin.cloud Next.js dashboard for launch: accessible interactions, loading states, and reliable data access.');
   const [stack, setStack] = useState<Exclude<BrainId, 'core'>>('nextjs');
   const [project, setProject] = useState<ProjectContext | null>(null);
@@ -88,7 +88,11 @@ export const BrainWorkspace = () => {
     if (!surface || !model || depth > 10) return null;
     const component = surface.components[id];
     if (!component) return <div key={id} className={styles.placeholder}>Waiting for interface content…</div>;
-    if (component.component === 'Column') return <div key={id} className={styles.surface}>{component.children.map(child => renderComponent(child, depth + 1))}</div>;
+    if (component.component === 'Column') {
+      const order: Record<string, number> = { WorkflowStatus: 0, BrainSummary: 1, Observation: 2, AvenueCard: 3 };
+      const children = compact ? [...component.children].sort((a, b) => (order[surface.components[a]?.component] ?? 4) - (order[surface.components[b]?.component] ?? 4)) : component.children;
+      return <div key={id} className={styles.surface}>{children.map(child => renderComponent(child, depth + 1))}</div>;
+    }
     if (component.component === 'WorkflowStatus') return <section key={id} className={styles.status} aria-label="Orchestration status">
       <div className={styles.sectionTitle}><Network size={18} /><h2>Work, with a visible trail</h2><span className={styles.badge}>Triggered workflow</span></div>
       <ol className={styles.stages}>
@@ -118,6 +122,8 @@ export const BrainWorkspace = () => {
     return <section key={id} className={styles.observation} aria-label="Raindrop quality">
       <div className={styles.sectionTitle}><Radio size={19} /><h2>Make the next result better</h2><span className={styles.badge}>Raindrop</span></div>
       <p>Report whether these avenues help with your work. Raindrop links that verdict to the source revisions and HydraDB requests behind this interface.</p>
+      <dl className={styles.alignmentFacts}><div><dt>Context selected from HydraDB</dt><dd>{model.brains.map(item => item.brain.name).join(' + ') || 'Waiting for knowledge'}</dd></div><div><dt>Knowledge avenues</dt><dd>{model.avenues.length}</dd></div><div><dt>Source revisions</dt><dd>{model.brains.length}</dd></div></dl>
+      <details className={styles.alignmentEvidence}><summary>Inspect the context behind this feedback</summary><p>Event {model.eventId}</p>{model.brains.map(item => <p key={item.brain.id}>{item.brain.name} · revision {item.brain.revision}</p>)}<p>{model.receipts.filter(receipt => receipt.service === 'HydraDB').length} HydraDB requests. Use “Inspect real requests” for timings and native request IDs.</p></details>
       <div className={styles.delivery} role="status">{model.observation.status === 'accepted' ? <Check size={16} /> : ['waiting', 'pending'].includes(model.observation.status) && isLoading ? <LoaderCircle className={styles.spin} size={16} /> : <CircleAlert size={16} />}
         {model.observation.status === 'accepted' ? 'Event accepted by Raindrop' : model.observation.status === 'pending' ? isLoading ? 'Reporting this interface… Knowledge is ready to use.' : 'Reporting completion is unknown. Retry to verify.' : model.observation.status === 'waiting' ? isLoading ? 'Waiting for the knowledge reads' : 'Reporting did not finish' : model.observation.status === 'not_configured' ? 'Raindrop reporting is not configured' : model.observation.error || 'Reporting failed. Knowledge remains available.'}
       </div>
@@ -131,8 +137,8 @@ export const BrainWorkspace = () => {
   };
 
   return <div className={styles.workspace}>
-    <section className={styles.intro}><span className={styles.kicker}><Sparkles size={15} /> KNOWLEDGE BECOMES YOUR WORKSPACE</span><h2>The right context.<br />Right where you work.</h2><p>Open a path through your engineering brains. Get sourced guidance, quick explanations, and the questions that deserve a closer look.</p></section>
-    <ProjectPicker project={project} onSelect={value => { setProject(value); setSurface(null); setError(''); const detected = (['nextjs', 'react', 'rust', 'go', 'typescript'] as const).find(id => value?.stack.includes(id)); if (detected) setStack(detected); }} disabled={isLoading || feedbackBusy || projectBusy} onBusy={setProjectBusy} />
+    <section className={styles.intro}><span className={styles.kicker}><Sparkles size={15} /> HYDRADB CONTEXT + RAINDROP FEEDBACK</span><h2>{compact ? 'Better context starts here.' : <>The right context.<br />Right where you work.</>}</h2><p>{compact ? 'Describe your work. Watch HydraDB populate the interface, inspect the sources, then tell Raindrop whether the selected context helps — all on this dashboard.' : 'Open a path through your engineering brains. Get sourced guidance, quick explanations, and the questions that deserve a closer look.'}</p></section>
+    <details open={compact ? undefined : true} className={styles.projectSection}><summary>Use an existing folder or GitHub project{project ? ` · ${project.name}` : ''}</summary><ProjectPicker project={project} onSelect={value => { setProject(value); setSurface(null); setError(''); const detected = (['nextjs', 'react', 'rust', 'go', 'typescript'] as const).find(id => value?.stack.includes(id)); if (detected) setStack(detected); }} disabled={isLoading || feedbackBusy || projectBusy} onBusy={setProjectBusy} /></details>
     <form className={styles.form} onSubmit={generate}>
       <label className={styles.goal}>What are you working on?<textarea value={goal} onChange={event => setGoal(event.target.value)} minLength={8} maxLength={1000} required rows={3} /></label>
       <div className={styles.formBottom}><label>Lead specialist<select value={stack} onChange={event => setStack(event.target.value as Exclude<BrainId, 'core'>)}>{brainIds.filter(id => id !== 'core').map(id => <option key={id} value={id}>{brainCatalog[id].name}</option>)}</select></label><Button className="primary-button" type="submit" disabled={isLoading || feedbackBusy || projectBusy}>{isLoading ? <LoaderCircle size={17} className={styles.spin} /> : <Sparkles size={17} />}{isLoading ? model && model.status.phase !== 'loading' ? 'Reporting quality…' : 'Opening knowledge…' : 'Build my workspace'}{!isLoading && <ArrowRight size={16} />}</Button>{isLoading && <Button variant="ghost" type="button" onClick={() => controller.current?.abort()}>Stop</Button>}</div>

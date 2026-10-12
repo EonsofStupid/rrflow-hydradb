@@ -10,6 +10,16 @@ try {
   const page = await browser.newPage({ viewport: { width: 1600, height: 1100 }, reducedMotion: 'reduce' });
   await page.goto('http://127.0.0.1:3100/');
   await expect(page.getByText('HydraDB connected', { exact: true })).toBeVisible();
+  const dashboard = page.getByRole('region', { name: 'Live context and quality' });
+  await dashboard.getByRole('button', { name: 'Build my workspace', exact: true }).click();
+  const alignment = dashboard.getByRole('region', { name: 'Raindrop quality' });
+  await expect(alignment).toContainText('Event accepted by Raindrop');
+  await alignment.getByRole('button', { name: 'This helps', exact: true }).click();
+  await expect(alignment).toContainText('Marked helpful.');
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.screenshot({ path: resolve(output, '11-dashboard-hydradb-raindrop.png'), animations: 'disabled' });
+  await alignment.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: resolve(output, '12-dashboard-context-alignment.png'), animations: 'disabled' });
   await page.getByRole('button', { name: 'Connectome', exact: true }).click();
   const map = page.getByRole('region', { name: 'Living connectome' });
   await map.getByRole('button', { name: 'Shippin context', exact: true }).click();
@@ -40,5 +50,5 @@ try {
   await expect(page.locator('section[aria-labelledby="raindrop-heading"]')).toContainText('HTTP 204');
   await page.locator('#raindrop-heading').scrollIntoViewIfNeeded();
   await page.screenshot({ path: resolve(output, '09-raindrop-live-delivery.png'), animations: 'disabled' });
-  console.log(JSON.stringify({ screenshots: 4, output, raindropEventId: result.eventId, hydraRequestId: result.requestId }));
+  console.log(JSON.stringify({ screenshots: 6, output, raindropEventId: result.eventId, hydraRequestId: result.requestId }));
 } finally { await browser.close(); }

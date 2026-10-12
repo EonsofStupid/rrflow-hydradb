@@ -26,6 +26,7 @@ dogfood/.state.json
 # Dependencies, builds and test output.
 node_modules/
 .next/
+.next-*/
 .turbo/
 dist/
 build/

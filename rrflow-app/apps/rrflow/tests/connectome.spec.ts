@@ -53,7 +53,7 @@ test('context refresh shows newly returned memories and reports failed source re
   revision++;
   await map.getByRole('button', { name: 'Refresh context', exact: true }).click();
   await expect(map.getByRole('button').filter({ hasText: 'Corrected memory' })).toBeVisible();
-  await expect(map.getByRole('alert')).toContainText('Source service unavailable');
+  await expect(map.getByRole('alert').filter({ hasText: 'Source service unavailable' })).toBeVisible();
   await expect(map.getByRole('button').filter({ hasText: 'First memory' })).toHaveCount(0);
 });
 

@@ -2,7 +2,7 @@
 
 ## Current implementation checkpoint — October 12
 
-Active app: `rrflow-app/apps/rrflow`; run and verification instructions are in `rrflow-app/README.md`. The clean Digo app is running on loopback port 3100. Production build and root pnpm verify passed with 25 Playwright scenarios. Mobile and desktop layout checks passed. The workspace root is the single Git repository; earlier clone notes below are historical.
+Active app: `rrflow-app/apps/rrflow`; run and verification instructions are in `rrflow-app/README.md`. The clean Digo app is running on loopback port 3100 from `.next-presentation`, launched with `-Mode start -BuildDirectory .next-presentation`. Production build and root pnpm verify passed with 26 Playwright scenarios in 46.0 seconds. Overview integrates live HydraDB context and Raindrop feedback. Mobile and desktop layout checks passed. The workspace root is the single Git repository; earlier clone notes below are historical.
 
 Both credentials are verified in Infisical Cloud, project `rrflow-hydradb`, environment `dev`, root path `/`:
 - `hydradb_apy_key` → server `HYDRA_DB_API_KEY`.

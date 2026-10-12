@@ -1,4 +1,6 @@
 .workspace { display: grid; gap: 22px; min-width: 0; padding-bottom: 45px; }
+.projectSection { min-width: 0; }.projectSection > summary { cursor: pointer; font-size: 12px; color: var(--accent); padding: 12px 0; }
+.alignmentFacts { display: grid; grid-template-columns: minmax(0,2fr) repeat(2,minmax(0,1fr)); gap: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--accent-soft); }.alignmentFacts dt { font-size: 11px; color: var(--muted); margin-bottom: 8px; }.alignmentFacts dd { font-size: 13px; font-weight: 500; line-height: 1.6; }.alignmentEvidence { font-size: 11px; color: var(--muted); margin: 16px 0; overflow-wrap: anywhere; }.alignmentEvidence summary { cursor: pointer; color: var(--accent); }.alignmentEvidence p { margin-top: 8px; }@media(max-width:600px) { .alignmentFacts { grid-template-columns: 1fr; } }
 .intro { padding: 24px 0 2px; max-width: 740px; }
 .kicker { display: flex; gap: 8px; align-items: center; color: var(--accent); font-size: 10px; letter-spacing: 1.4px; }
 .intro h2 { font-size: clamp(28px, 3.5vw, 43px); line-height: 1.14; letter-spacing: -1.4px; margin: 17px 0; }
