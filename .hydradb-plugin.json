@@ -1,0 +1,21 @@
+{
+  "apiBaseUrl": "https://api.hydradb.com",
+  "apiKey": "${HYDRADB_API_KEY}",
+  "tenantId": "seniordev",
+  "subTenantId": "",
+  "userName": "Jesse",
+  "autoRecall": true,
+  "autoIngest": false,
+  "captureMode": "session-upsert",
+  "searchMode": "memory",
+  "ingestionMode": "memory",
+  "recallMode": "fast",
+  "graphContext": true,
+  "maxContextChars": 6000,
+  "maxMemoryResults": 6,
+  "requestTimeoutMs": 8000,
+  "writeTimeoutMs": 15000,
+  "ignoreMarker": "hydra-ignore",
+  "memoryCustomInstructions": "Extract durable engineering lessons: tool quirks with their fix, verified best practices, project decisions, constraints, and follow-up commitments. Keep evidence such as request IDs, versions, and file paths. Never store credentials or key-like strings. Ignore transient tool noise and chit-chat.",
+  "debug": false
+}

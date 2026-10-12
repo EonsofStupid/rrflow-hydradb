@@ -1,0 +1,4 @@
+#!/bin/sh
+# The CLI prints the OAuth URL. Codex opens that URL in the desktop browser.
+# This process-local PATH shim lets the WSL CLI keep its callback listener alive.
+exit 0

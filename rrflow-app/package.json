@@ -1,0 +1,25 @@
+{
+  "name": "rrflow",
+  "private": true,
+  "version": "0.1.0",
+  "description": "RRFLOW engineering knowledge workspace, adapted from Digo SaaS",
+  "packageManager": "pnpm@10.26.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @rrflow/app dev",
+    "build": "pnpm --filter @rrflow/app build",
+    "start": "pnpm --filter @rrflow/app start",
+    "type-check": "pnpm --filter @rrflow/app type-check",
+    "lint": "pnpm --filter @rrflow/app lint",
+    "test": "pnpm --filter @rrflow/app test",
+    "verify": "pnpm type-check && pnpm lint && pnpm test"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^19.0.0",
+      "@types/react-dom": "^19.0.0"
+    }
+  }
+}

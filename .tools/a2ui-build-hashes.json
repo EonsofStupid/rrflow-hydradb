@@ -1,0 +1,202 @@
+[
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\utils.ts",
+    "Hash": "028F5D8A224A2CE85172650EB44534CF7EAAA099BDF0AEAD7D9DE7BA584A784F"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\raindrop.ts",
+    "Hash": "3C2D8857EBA2CF3A09A68F0D70026B7307C276F7D1A21D459BE6426D10DC01F6"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\mesh.ts",
+    "Hash": "DD4183A85EEB5D87D74FC6CF6BB786E7B0F2472DF7A4D666D192356309E1DB22"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\mesh-contracts.ts",
+    "Hash": "C69BCDF5B014ECA52F24CEFEFC148C570E661A4778BFAA3368C4F5E5020C8C40"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\knowledge.ts",
+    "Hash": "7499069460578F54BA300BD8CC1F504DBE9F18F93CE228718D58AC992AE9E2C9"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\http.ts",
+    "Hash": "9393D4185F1CD1624B83A76722E06188D475D95C32A2757DB54ECDDAF9DC7812"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\explore.ts",
+    "Hash": "583576D9B6D62AF458C6C5BB2623C5273D54F2DBDC8D9941E642D5BEBA4E57BE"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\explore-contracts.ts",
+    "Hash": "F42BB9E9C0889189E058F156A50EB296673F5FE5C329579EF81A5C9E7C967E75"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\contracts.ts",
+    "Hash": "B087503834DB82F754F4126780ED788E2AECEF1B82F8EB098218BA505DC5B20A"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\brain-ui.ts",
+    "Hash": "749D4398A807924911B730348BC29CD9F391FCD922AD7E75F576A9E7520D5FAD"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\lib\\brain-ui-contracts.ts",
+    "Hash": "B34DE195755CA5CCE36323FC32AC43FE064361B42CD39C75FBFEF5A12BC08CA5"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\ui\\sonner.tsx",
+    "Hash": "8C54A2C71A5EB4FEDF67B7A6C06E44DC9090C5D7DEDC88107A9EAEDBE1228AC0"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\ui\\dialog.tsx",
+    "Hash": "61C484E7EC034CF82F81EE541E980A5256D7178C14E087782922BC94B85B778F"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\ui\\button.tsx",
+    "Hash": "D7650CF66727DCA8E3ADBABC63DB00015A5EA8AF6513F5CD6D89D0D442191975"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\transparency\\verify-button.tsx",
+    "Hash": "BAAE8851169E5D2DF3966C4CBE0A414D045932050F9C5FF580C539EC86796F4A"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\transparency\\activity-provider.tsx",
+    "Hash": "6EA9C63F80F0289ADA60814426BDB29877BD5C9EBC524173E696DDFC50AC27AA"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\transparency\\activity-panel.tsx",
+    "Hash": "37F79940CCE2991D6ED4F26172DA2880F99DFE2C9213CA12E6304A297094C43C"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\providers.tsx",
+    "Hash": "CCF7D1E3CA9E2889C8AF986BB1385F20C18AB746119DF494B7614B3689673D0E"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\live\\raindrop-card.tsx",
+    "Hash": "6AA2B1D4AD1C6A5799C7B185F8B2F8DC40F3899A4E0EE7A5CDA51B7738843094"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\live\\live-mesh.tsx",
+    "Hash": "7DB9320F947B0DBC0AD124251D2E22549598BF43BF7DAB7163B10B4A8E1E46EC"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\live\\learning-feed.tsx",
+    "Hash": "CC944BB83BF8B41040BC6B51FE675C210139B898584FE52BCF8DFC839B7E34E4"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\live\\format.ts",
+    "Hash": "2CA7EBA69A3732AFD59CAFF77CDD2BAB2CBFFE482855AA9224BB7396B93728D2"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\live\\brain-mesh.tsx",
+    "Hash": "98EB187901F351BA94CCED22E9D754014E90B8C295BE9DC0E81EE2A1099A760C"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\live\\ask-brain.tsx",
+    "Hash": "63D56232B20D95B2A047DC0A55109C57DC1830F2F5BAAC1CFAF56BF2F51C7CDA"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\explore\\relation-graph.tsx",
+    "Hash": "D3D6C4DE726FF42039E874232EE29939FC3FBD6896E9E80E367BC05818B8E88E"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\explore\\brain-explorer.tsx",
+    "Hash": "2281D4EBE13A7F0D692B1CE850CA2E971392D2C999F3DFA1660C9844BCD953E1"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\dashboard.tsx",
+    "Hash": "B34BCE429021018D3B368D32406BF50801BAB43A3E3C8F72C9A87820A02CC298"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\brain-ui\\brain-workspace.tsx",
+    "Hash": "436E8DD94B47307187FFDC0E61B9978CBEC58E549FD7A5EDF8AAB5BA9ED2CA54"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\components\\brain-ui\\brain-workspace.module.css",
+    "Hash": "DA9E24C2BE3A52366FA03E1C88B2079F1948332F54E65343CFED8368B0701E7E"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\page.tsx",
+    "Hash": "EDAC9B6F1684B7B23321A2FB66AB754F40518A97A4CD91E36F0686331907C3A2"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\globals.css",
+    "Hash": "4793A55C761041144B460CC51370C09B8E3B213E0CFA02F52BA32F968C12E5A8"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\layout.tsx",
+    "Hash": "0763083C7C722D6D2472F5233334CE14D1132E6A1E8D5108B526B98036034D8A"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\live\\page.tsx",
+    "Hash": "68940070162B04DF4E4475C292B23E8A63BEAA63EB5DE2D007DA92CD62BB2FAB"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\explore\\page.tsx",
+    "Hash": "99403E8D8384E33E2CDF35A02431BB4F8671E92F04C18535196767A767997905"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\workspace\\route.ts",
+    "Hash": "18FAEAD57EA75274A85EF47BBD5942E34C84DACE0355C11BAA23B96ACC29A52B"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\reviews\\[id]\\route.ts",
+    "Hash": "1B7B74AC76BB5968D14661D766502143139BDF40647638838874AC1581A95189"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\reviews\\route.ts",
+    "Hash": "0E947D911A6E954A41C8FC8AAFE376BF5D9311CBA649CD5A56DA9B605A9D3913"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\research\\import\\route.ts",
+    "Hash": "BDC1764A2FF68B05CCD7399A3415D8375E0FC7DBF641355F13028477C01B49C2"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\mesh\\verify\\route.ts",
+    "Hash": "A4CE232A527B708400D8A837F59C84B8B92B4DFAE7DAB8A99E7191E0F254E757"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\mesh\\route.ts",
+    "Hash": "F127740505790BA35B39BE4AC3B416F05309E94C8534098EF564F14872F0DF50"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\brain-ui\\route.ts",
+    "Hash": "60EAF086815D545B8974EC11F12A8B684D7F286EE8B13A3F1587E277CE87D0F6"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\mesh\\recall\\route.ts",
+    "Hash": "74158F0790FDA8C80620D780313957F5AE5CDDE6AE2CDF2B8791D5496581A7AA"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\brains\\[id]\\route.ts",
+    "Hash": "4B3BB6201528ADB08167F190EB6890ACA4F3C9C3DF6067531C7B0D79258D6288"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\explore\\route.ts",
+    "Hash": "ADEDED719F46341567452ED1AA870322B6D7B2E521D68BB4C44E5D636D6105E0"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\brain-ui\\catalog\\route.ts",
+    "Hash": "9962CCDC916A7EDFE32C1D197CF266481223AA02A7E9328256E8895C4B31C632"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\brain-ui\\feedback\\route.ts",
+    "Hash": "3576CC0D4545ABF8ED872159BB0E8455E1F919A067787569FC739AB5F6197CD5"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\mesh\\feedback\\route.ts",
+    "Hash": "CE52545C3091D8CBA885B501A17EC00BC41730EA6F5F3123E62B12745A411042"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\explore\\[database]\\query\\route.ts",
+    "Hash": "A2E16EA5180F19B2EE6B7D517A5FF0DE214F5586F28FCFEFFA133DE9EBA04444"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\explore\\[database]\\items\\[id]\\route.ts",
+    "Hash": "5652F6E481AB0A76979E3E4A171510D228E76AD5DD9CFF17346097B4E2259E4E"
+  },
+  {
+    "Path": "D:\\localdev\\rrflow-hydradb\\rrflow-app\\apps\\rrflow\\src\\app\\api\\explore\\[database]\\items\\route.ts",
+    "Hash": "F229D74A1447B199D1E9112E705E4EABF9900B758FE0CB303A3E937945E2AA20"
+  }
+]

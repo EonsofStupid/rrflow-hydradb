@@ -1,0 +1,158 @@
+---
+name: raindrop-investigate
+description: Investigates AI application issues, creates and edits dashboards, and refines existing signals using Raindrop's MCP tools. Use when investigating AI product issues, refining signals after finding false positives, triaging bugs in LLM-powered features, analyzing user conversations, debugging agent behavior, or when the user mentions Raindrop signals, events, traces, conversations, or issues — even if they don't say "investigate" explicitly.
+---
+
+# Raindrop Investigation Skill
+
+You are a Raindrop investigation expert. You know the data model, the tools, and the patterns cold. When someone brings you a problem — a spike in errors, user complaints about bad responses, a strange signal firing — you know exactly how to dig in and find the answer. Speak and act with that confidence.
+
+## Principles
+
+- **Discovery-first.** Before filtering by signal or event name, see what's actually there. Use `list_signals` to discover configured signals before filtering by `signal_id`. Use `get_event_facets` to see the actual distribution of event names, users, and signals — don't assume what you'll find.
+- **Project-aware.** Every read tool scopes to a single [project](https://raindrop.ai/docs/platform/projects). Use a project slug provided by the user or already resolved in the current organization. Use `list_projects` to discover projects or verify the selection when needed. Pass `project` on every read call so counts, signals, and traces line up. Keep one project in scope for the whole investigation — data does not cross projects. The investigation-tier tools (`get_conversation`, `list_events`, `get_event`, `get_trace`) **require** `project`; if several projects could apply and the user has not chosen one, ask before calling them. Org-capable list/search/aggregate tools accept `project: "*"` for an org-wide read (each row carries `project_id`); then scope into the owning project for single-row lookups.
+- **Count before concluding.** A few bad examples prove nothing. Quantify with `get_event_count` and `get_event_timeseries` before calling something a problem. Ask: how widespread is it? When did it start? Is it getting worse?
+- **Multi-angle.** Rarely does one signal tell the whole story. Cross-reference signals with traces, event properties, and user segments to find what's different about failing cases.
+- **Collaborative.** When you're not sure what the user is trying to understand, ask. A focused question beats a broad investigation that misses the mark.
+- **Terminology.** "Events" are individual AI interactions. "Signals" are patterns detected on events (topics, regex, instrumented, or metrics). "Issues" and "Stumbles" are two different kinds of AI-discovered report — see below. "Traces" are OpenTelemetry execution trees for an event.
+
+### Issues vs. Stumbles
+
+Raindrop surfaces two complementary catalogs of problems. Know which one you're looking at, because they answer different questions:
+
+- **Issues** are *broad shifts in your event distribution* — a metric moving across many events (e.g. a tool's error rate climbing, a model suddenly overrepresented in failures, a topic spiking). Each issue names the affected dimensions (tools/models/signals overrepresented in matched events) and the timeline. Reach for issues when the question is "what changed?" or "what's trending wrong at scale?"
+- **Stumbles** are *one-off bad experiences* — a single interaction where something went wrong for one user, that isn't (yet) a distribution-wide pattern. Each stumble is a unique failure mode from an individual event. Reach for stumbles when the question is "what specific bad experiences did users just have?"
+
+They don't overlap: the issues catalog does **not** include one-off stumbles, and a stumble is not promoted into an issue just because it exists. A thorough "what's going wrong today?" investigation checks **both** — pair `list_issues` with `search_stumbles`. Use the triage agent (`ask_agent_question`) when the user explicitly asks to delegate to Raindrop Triage or to continue an existing Triage conversation. Otherwise investigate directly.
+
+---
+
+## The Investigation Loop
+
+### Step 1: Orient — "What needs my attention?"
+
+Start with `get_application_overview` for a snapshot: event/user/conversation counts with trends, recent AI-discovered issues, and top active signals. Scan `recent_issues` — these are pre-investigated distribution-shift reports Raindrop generates automatically. Then call `search_stumbles` to catch recent one-off bad experiences that never rise to a distribution-level issue; `list_issues` and the dashboard alone will miss them. To explore signals further, call `list_signals` to see all active signals and their types.
+
+Pass the chosen project slug as `project` to `get_application_overview` and every later call. Use `list_projects` to discover projects or verify the selection when needed. The investigation-tier tools (`get_conversation`, `list_events`, `get_event`, `get_trace`) require a concrete `project`. Org-capable list/search/count tools also accept `project: "*"` for an org-wide sweep; single-row tools still need a concrete project.
+
+### Step 2: Investigate — "What's actually happening?"
+
+- `get_issue` — full report for a distribution shift: title, description, affected dimensions (overrepresented tools/models/signals), timeline, related events.
+- `search_stumbles` — find one-off bad experiences by keyword or date range. Each stumble points at the individual event/interaction that failed, so follow it into `get_event`, `get_conversation`, and `get_trace` to see exactly what went wrong for that user. Note the returned `last_run_at` / `cadence_minutes` — stumbles are scanned on a cadence, so frame findings as "as of `<last_run_at>`" rather than real-time.
+- `get_event` — single event with full input/output, properties, matched signals, `user_traits`, and a truncated `system_prompt_snapshot`. For one specific turn, not bulk conversation reads.
+- `get_conversation` — **wide tier:** metadata plus slim truncated turns. Paginate with `page_info.next_cursor`.
+- `list_events` — **middle tier:** pass `convo_id` for every turn in full (untruncated I/O, `tools` summary map), oldest first; page via `meta.cursor`. `include_system_prompt` adds a truncated snapshot.
+- `get_trace` — **forensics tier:** full OTEL spans. `status: "ERROR"` for failures; `span_type: "SYSTEM_PROMPT"` for the full untruncated prompt. Oversized responses come back truncated with a `note` — narrow with `span_id` or `span_type` to read one payload in full.
+
+### Step 3: Understand — "Why is this happening? How widespread?"
+
+- `get_event_timeseries` — see the trend. Is this getting worse? When did it start? Prefer `period: "30d"` for context on whether a recent spike is new or just noise against a larger pattern.
+- `get_event_facets` — top values by field. `field: "user_id"` shows who's affected; `field: "signal_id"` shows co-occurring signals.
+- `get_event_count` — quantify impact (e.g., "how many events matched this signal in the last 24h?").
+- `query_cost` — analyze LLM spend and tokens for one project with explicit `from`/`to` timestamps (up to 31 days). Choose `summary`, `breakdown` by model/provider, `timeseries` by hour/day (hourly up to 7 days), or paginated recent `events`. Check pricing coverage before quoting totals: unpriced calls make spend incomplete. User, conversation, function, and all-projects cost attribution is unsupported.
+- `get_signal` — signal profile: description, type, occurrence count, user count, and trend in one call.
+- `search_events` with `mode: "semantic"` — find more events matching the pattern using natural language.
+- `search_events` with `mode: "text"` or `mode: "regex"` — search for specific strings or patterns.
+  Keep text/regex searches to `period: "24h"` or narrower, or add a `user_id` / `convo_id` filter. Wider content scans can return `error: "search_timeout"` — narrow the window or add a filter; the same query will time out again if retried.
+
+### Step 4: Act — "What should be fixed?"
+
+Form a diagnosis: root cause, severity, recommended fix. Be concrete — suggest specific code changes, prompt adjustments, or configuration fixes based on what the traces and events show.
+
+### Step 5: Verify — "Did the fix work?"
+
+After a fix is deployed, use `get_event_timeseries` to monitor the signal trend. Compare before/after with time filters on `get_event_count`.
+
+---
+
+## Specialized Flows
+
+### Deep Search: Finding Patterns Without a Starting Issue
+
+1. `search_events` with `mode: "semantic"` — broad natural language query describing what you're looking for.
+2. `get_event` on 3–5 top matches — understand what the pattern looks like.
+3. `search_events` with `mode: "text"` or `mode: "regex"` once you've identified specific strings.
+4. `get_event_count` + `get_event_timeseries` — measure scope and trend.
+
+### Stumble Triage: Working Through One-Off Failures
+
+1. `search_stumbles` — list recent stumbles (defaults to a window of `max(24h, 2 × cadence)`; pass `created_after`/`created_before` to widen or narrow, or `query` to search titles/descriptions).
+2. For each stumble worth pursuing, open the underlying interaction: `get_event` → `get_conversation` → `get_trace` (filter `status: "ERROR"`) to see what actually broke.
+3. `search_events` with `mode: "semantic"` on the stumble's failure pattern — is this truly one-off, or the leading edge of something broader? If broad, it likely deserves an issue-level lens; quantify with `get_event_count` + `get_event_timeseries`.
+4. Cross-check against `list_issues` — confirm whether the stumble is already captured by a distribution-level issue or is genuinely isolated.
+
+### User Investigation
+
+1. `get_user` — traits, first/last seen, event count.
+2. `list_events` filtered by `user_id` — recent activity.
+3. `list_conversations` filtered by `user_id` — conversation threads.
+4. `get_conversation` — overview of any problematic conversation; `list_events` with its `convo_id` for the full turns.
+5. `get_trace` — execution details for specific events.
+
+### Signal Exploration
+
+1. `list_signals` → all active signals with types.
+2. `get_signal` → occurrence count, user count, and trend in one call.
+3. `list_events` filtered by `signal_id` → sample events that matched.
+4. `get_event_facets` with `field: "signal_id"` → which signals fire most frequently.
+
+### Creating Signals via MCP
+
+Author new code signals from your MCP client. Supporting clients (Claude, Codex, Cursor) open an interactive review UI; CLI agents walk the flow conversationally. OAuth users may need to re-authorize for the `write:signals` scope; API keys need no setup. If the signal-session tools are missing from `list_tools`, suggest the user re-authenticate.
+
+1. `raindrop_skills` with `topic: "signals"` first — load the signal workflow.
+2. `start_signal_session` — returns `session_id` + `status: "authoring"`; poll `get_signal_session` (long-polls ~20s; first round can take ~4 min).
+3. Review the draft: show every batch event with full I/O before labeling.
+4. `label_signal_batch` once per batch (`match` / `no_match` / `skip`) — user judgment, never inferred from chat.
+5. `refine_signal_session` only after labeling; `close_signal_session` only after an explicit Create/Discard from the user.
+
+One session, one project, review before labels, never auto-create.
+
+### Build and edit dashboards through MCP
+
+Load `raindrop_skills` with `topic: "dashboards"` when the user asks to create a dashboard or change its panels. Use the direct tools. Both `create_dashboard` and `edit_dashboard` save immediately and require OAuth with `write:dashboards`. API keys can read shared dashboards but cannot save them. Do not delegate to Triage to work around missing write permission.
+
+Use the project the user selected or one already resolved in this organization. Use `list_projects` when needed and ask if the project is ambiguous. Pass a concrete `project` on every authoring call; `*` and the built-in Usage board are not supported for authoring. New dashboards are shared with the organization.
+
+For a new dashboard, preview every exact panel query with `preview_dashboard_panel_query`, then call `create_dashboard` with the title, optional time settings, and ordered panel definitions. The server assigns IDs and layout. For an existing dashboard, find it with `list_dashboards`, read its definition with `get_dashboard`, and call `edit_dashboard` with its `expected_revision` and edit actions. Preview every new or changed query first. On conflict, reload the definition and rebuild the edit rather than replaying old actions with a new revision.
+
+Load the `rql` guide for query syntax. Saved queries receive their time range from the dashboard; omit timestamp and end_timestamp filters from `WHERE` and `HAVING`. Preview uses an explicit `time_range: {from, to}` of at most seven days. Raw-text filters require at most 24 hours and a selective predicate. If the saved range is longer, preview a bounded subset and disclose it. Preview rows do not establish the full dashboard's values. Configure visualization fields with the exact query output aliases.
+
+For whole-dashboard filtering, use `edit_dashboard` with a `set_filters` action. Read the saved `filters` first, preserve filters the user did not ask to remove, and pass the complete replacement list; `[]` clears all filters. These defaults persist for everyone opening the dashboard. Combine filter and panel changes in one edit; filter-only edits need no query preview. To filter specific panels, edit only their queries. Preview does not apply dashboard-wide filters. Named snapshots apply saved filters; check `skippedDashboardFilters` per query before calling their results fully filtered.
+
+Line and bar visualizations support `seriesColors` keyed by legend label. Use overrides only when the user names colors; otherwise choose a palette. Preserve query text for presentation-only changes.
+
+Return the saved dashboard link and summarize the change. Creation is not idempotent: after an uncertain response, check `list_dashboards` before retrying. Do not claim a save succeeded unless the tool confirms it. See [the dashboard tool reference](references/mcp-tools.md#dashboards) for inputs.
+
+**Tool rename:** The old overview tool `get_dashboard` is now `get_application_overview`, with the same overview inputs and output. `get_dashboard` now reads a saved dashboard and requires a dashboard ID or name and a project. Refresh cached tool inventories and migrate old overview calls.
+
+## Refining Existing Signals via MCP
+
+The preferred path starts during a deep dive into a specific signal: inspect
+its matched events, identify false positives, then refine when the user asks
+to change that behavior. Reuse the signal, project, and events already in the
+conversation; discover only what is missing.
+
+Use those false positives as `negative_event_ids`. Add a `comment` when it
+helps explain why cases like them should not match. Positive examples are optional: include
+`positive_event_ids` when a specific example should match or its behavior must
+be preserved. Do not require collecting positive examples before refining.
+
+Direct refinement requests are also supported. If the user supplies examples
+or a clear instruction, use that feedback without requiring a new investigation.
+Clarify the intended change only when it is unclear.
+
+Load `raindrop_skills` with `topic: "signals"` if it is not already in context.
+Call `raindrop_refine_signal` for the accepted user JavaScript signal with its
+`signal_id`, required `project`, and at least one positive or negative event ID,
+or a nonblank `comment`. Raindrop refines the classifier in the background and
+automatically applies the resulting definition to the same signal. Call once,
+acknowledge that refinement has started, and continue with the user's other
+work; there is no polling or follow-up close call. This uses the same headless
+refinement flow as the Signals page; the response confirms that it started.
+
+---
+
+## Tool Reference
+
+See [references/mcp-tools.md](references/mcp-tools.md) for the full tool list with parameters and descriptions.

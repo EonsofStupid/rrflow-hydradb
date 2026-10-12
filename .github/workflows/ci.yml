@@ -1,0 +1,46 @@
+name: RRFLOW checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# The app lives in rrflow-app/ inside the single workspace repository.
+defaults:
+  run:
+    working-directory: rrflow-app
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm type-check
+      - run: pnpm lint
+      - run: pnpm build
+      - run: pnpm --filter @rrflow/app exec playwright install --with-deps chromium
+      - name: Playwright repository sync checks (no live credentials)
+        run: |
+          pnpm start > /tmp/rrflow-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:3100/ > /dev/null; then break; fi
+            sleep 1
+          done
+          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts

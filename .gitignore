@@ -1,0 +1,35 @@
+# One repository for the whole RRFLOW workspace (app, research, coordination, submission).
+
+# Rejected previous implementation and its patch: kept locally, never published.
+app-starter/
+brain.patch
+# Abandoned empty clone.
+rrflow/
+
+# Third-party source copies imported by the app; not ours to publish.
+research/inputs/
+
+# Secrets live in Infisical only.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local machine state.
+.claude/settings.local.json
+.hydradb-plugin-data/
+dogfood/.state.json
+
+# Dependencies, builds and test output.
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db

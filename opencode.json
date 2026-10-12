@@ -1,0 +1,9 @@
+{
+  "mcp": {
+    "raindrop": {
+      "type": "remote",
+      "url": "https://mcp.raindrop.ai/mcp",
+      "enabled": true
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "research_date": "2026-10-12",
+  "timezone": "America/Los_Angeles",
+  "scope": "Read-only source and package inspection plus analytical counterexamples. No runtime integration or benchmark execution.",
+  "current_product_direction": {
+    "name": "shippin.cloud",
+    "reasoning_engine": "RRFlow",
+    "authoritative_persistent_state": "HydraDB",
+    "requirements_source": "Direct user instructions in this conversation",
+    "parallel_authoritative_state_stores": false
+  },
+  "hosted_hydradb_findings": {
+    "documentation": "https://docs.hydradb.com/essentials/v2/bring-your-own-graph",
+    "hosted_cypher_documented": true,
+    "hosted_query_route": "/byog/query",
+    "hosted_procedure_calls_documented_supported": false,
+    "byog_routes_present_in_inspected_application_openapi": false,
+    "native_mcp_documentation": "https://docs.hydradb.com/plugins/mcp",
+    "shared_canonical_identity_with_managed_context": "Not established by inspected documentation",
+    "runtime_tested": false
+  },
+  "hydradb": {
+    "repository": "https://github.com/hydra-db/hydradb",
+    "commit": "671e07bfc7f8a5806727b29cf616f513f969a7a4",
+    "commit_date": "2026-10-12T15:14:42Z",
+    "inspected_files": [
+      "Cargo.toml",
+      "src/core/model.rs",
+      "src/core/snapshot.rs",
+      "src/client/http.rs",
+      "src/client/service.rs",
+      "crates/telemetry/src/otlp.rs",
+      "crates/telemetry/src/config.rs",
+      "crates/telemetry/src/propagate.rs"
+    ],
+    "otlp_exporter_observation": {
+      "transport": "HTTP",
+      "same_base_endpoint_paths": ["/v1/traces", "/v1/metrics", "/v1/logs"],
+      "logs_can_be_disabled": true,
+      "metrics_constructed_when_otlp_initializes": true,
+      "http_incoming_traceparent_propagation": "Not established by inspected handler; not runtime-tested"
+    },
+    "bitemporal_application_contract": "Not established by storage snapshot implementation"
+  },
+  "raindrop": {
+    "registry_metadata": "https://registry.npmjs.org/raindrop-ai/latest",
+    "observed_package_version": "1.0.1",
+    "tarball": "https://registry.npmjs.org/raindrop-ai/-/raindrop-ai-1.0.1.tgz",
+    "registry_reported_integrity": "sha512-U4Sc/iiTMKlGehg7mjNFMmMJmhz+i2xK86B9GHayaEFv7ugu/1ZIVZMz1aI9FwLH5PguUlk7RcEGFwpKnTTCYg==",
+    "integrity_independently_verified": false,
+    "inspected_public_distribution_files": [
+      "https://unpkg.com/raindrop-ai@1.0.1/dist/index.d.ts",
+      "https://unpkg.com/raindrop-ai@1.0.1/dist/index.mjs"
+    ],
+    "root_export_presence": {
+      "defineAgent_types": true,
+      "defineAgent_runtime_esm": true,
+      "createEvalHandler_types": true,
+      "createEvalHandler_runtime_esm": true
+    },
+    "exports_executed": false,
+    "replay_end_to_end_tested": false,
+    "documented_otlp_support": "HTTP traces; JSON or protobuf. Not gRPC, metrics, or logs.",
+    "otlp_documentation": "https://www.raindrop.ai/docs/sdk/opentelemetry.md"
+  },
+  "analytical_examples": {
+    "draft_scoring_weak_single_match": {
+      "option_scores": [0.1, 0],
+      "normalized_top": 1,
+      "margin": 0.1,
+      "draft_tie_tolerance": 0.05,
+      "example_threshold": 0.8,
+      "resolves_under_described_rules": true,
+      "status": "Arithmetic counterexample to draft, not an observed implementation bug"
+    },
+    "correlated_noisy_or": {
+      "weights": [0.6, 0.6, 0.6],
+      "combined_score": 0.936,
+      "status": "Illustration of inflation if repeated matches do not add independent evidence"
+    }
+  }
+}
