@@ -1,7 +1,7 @@
 # rrflow-hydradb workspace
 
-This workspace develops RRFLOW, a configurable engineering specialist for
-shippin.ai and shippin.cloud. Read `TEAM.md` for the user's product
+This workspace develops RRFLOW, a connected personal and work knowledge system
+with a configurable engineering specialist for the Shippin services. Read `TEAM.md` for the user's product
 decisions, coordination status, and research entry points.
 
 Read `TOOLING.md` for Raindrop setup. The user has now selected clean Digo SaaS;
@@ -11,7 +11,7 @@ do not continue it or merge its feature commits into a fresh checkout.
 Use `research/HACKATHON_ALIGNMENT.md` to review problem statements against the
 current event. Its proposed review standard is not an official judging rubric.
 
-- `rrflow-app/` is the application repository. Read its `AGENTS.md` before
+- This workspace root is the single Git repository; `rrflow-app/` is the application directory. Read its `AGENTS.md` before
   changing application files and run its required checks for code changes.
 - `research/` holds the HydraDB and RRFlow findings and source evidence.
 - Use the user's configured Infisical project for secrets. Verified connection

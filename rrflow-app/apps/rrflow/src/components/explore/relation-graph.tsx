@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface GraphEdgeInput {
@@ -123,6 +123,7 @@ export const RelationGraph = ({
   onSelect,
 }: RelationGraphProps) => {
   const [hovered, setHovered] = useState<string | null>(null);
+  const markerId = useId().replaceAll(':', '');
   const nodes = useMemo(() => layout(edges.slice(0, 80), WIDTH, height), [edges, height]);
 
   if (edges.length === 0) {
@@ -145,12 +146,12 @@ export const RelationGraph = ({
     <svg
       viewBox={`0 0 ${WIDTH} ${height}`}
       className={cn('w-full rounded-md border bg-muted/30', className)}
-      role="img"
+      role={onSelect ? 'group' : 'img'}
       aria-label={`Graph with ${nodes.size} entities and ${edges.length} relations`}
     >
       <defs>
         <marker
-          id="arrow"
+          id={markerId}
           viewBox="0 0 10 10"
           refX="22"
           refY="5"
@@ -175,7 +176,7 @@ export const RelationGraph = ({
               y1={a.y}
               x2={b.x}
               y2={b.y}
-              markerEnd="url(#arrow)"
+              markerEnd={`url(#${markerId})`}
               className={cn(
                 'stroke-muted-foreground/40',
                 highlighted && 'stroke-primary',
@@ -205,15 +206,15 @@ export const RelationGraph = ({
           <g
             key={node.id}
             transform={`translate(${node.x} ${node.y})`}
-            className="cursor-pointer"
+            className={onSelect ? 'cursor-pointer' : undefined}
             onMouseEnter={() => setHovered(node.id)}
             onMouseLeave={() => setHovered(null)}
             onClick={() => onSelect?.(node.id)}
-            tabIndex={0}
-            role="button"
+            tabIndex={onSelect ? 0 : undefined}
+            role={onSelect ? 'button' : undefined}
             aria-label={node.id}
             onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') onSelect?.(node.id);
+              if (onSelect && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); onSelect(node.id); }
             }}
           >
             <circle

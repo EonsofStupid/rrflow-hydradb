@@ -67,6 +67,7 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
   const key = env.HYDRA_DB_API_KEY;
   if (!key || !env.RAINDROP_WRITE_KEY) throw new Error('HydraDB and Raindrop server credentials are required.');
   const commit = git('rev-parse', 'HEAD');
+  const sourceRoot = git('rev-parse', '--show-prefix');
   const sourceAt = git('show', '-s', '--format=%cI', commit);
   // Read the committed tree, never an untracked file or a symlink target on disk.
   const paths = git('ls-tree', '-r', '--name-only', '-z', commit).split('\0').filter(isSyncPath).sort();
@@ -94,13 +95,14 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
   const previousRows = await graph('MATCH (s:RepositorySync {ext_id: $id}) RETURN s.state AS state LIMIT 1', { id: checkpointId });
   const previous = readCheckpoint(previousRows);
   const oldManifest = previous.manifest ?? {};
-  const changed = documents.filter(doc => oldManifest[doc.path] !== doc.hash);
+  // A repository-layout change also refreshes citations for unchanged content.
+  const changed = documents.filter(doc => previous.sourceRoot !== sourceRoot || oldManifest[doc.path] !== doc.hash);
   // Include interrupted attempts so a later deletion can retire their sources too.
   const priorPaths = Object.keys({ ...oldManifest, ...previous.pendingManifest });
   const removed = priorPaths.filter(path => !(path in manifest));
   removed.forEach(sourceId);
   const state = {
-    version: 1, repository, database, commit, sourceAt, startedAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+    version: 1, repository, database, sourceRoot, commit, sourceAt, startedAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
     finishedAt: null, phase: 'ingesting', total: documents.length, changed: changed.length, accepted: 0,
     searchable: 0, completed: 0, failed: 0, removed: removed.length, deleted: 0, error: null,
     manifest: oldManifest, pendingManifest: { ...previous.pendingManifest, ...manifest },
@@ -119,9 +121,9 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
       const form = new FormData();
       form.set('database', database); form.set('type', 'knowledge'); form.set('upsert', 'true');
       form.set('app_knowledge', JSON.stringify(batch.map(doc => ({
-        id: sourceId(doc.path), title: `${repository} / ${doc.path}`, type: 'github_source',
-        url: `https://github.com/${repository}/blob/${commit}/${doc.path}`, timestamp: sourceAt, content: { text: doc.text },
-        additional_metadata: { repository, path: doc.path, commit, sha256: doc.hash, source_system: 'github', workspace: 'shippin-cluster' },
+        id: sourceId(doc.path), title: `${repository} / ${sourceRoot}${doc.path}`, type: 'github_source',
+        url: `https://github.com/${repository}/blob/${commit}/${(sourceRoot + doc.path).split('/').map(encodeURIComponent).join('/')}`, timestamp: sourceAt, content: { text: doc.text },
+        additional_metadata: { repository, path: `${sourceRoot}${doc.path}`, app_path: doc.path, commit, sha256: doc.hash, source_system: 'github', workspace: 'shippin-cluster' },
       }))));
       const result = await hydra('/context/ingest', { method: 'POST', body: form });
       assertIngested(result, batch.map(doc => sourceId(doc.path)));
@@ -135,7 +137,7 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
       for (const batch of batches(ids)) {
         const params = new URLSearchParams({ database }); batch.forEach(id => params.append('ids', id));
         const result = await hydra(`/context/status?${params}`);
-        state.failed += Array.isArray(result?.statuses) ? result.statuses.filter(item => ['errored', 'failed'].includes(item.indexing_status)).length : 0;
+        state.failed += Array.isArray(result?.statuses) ? batch.filter(id => result.statuses.some(item => item.id === id && ['errored', 'failed'].includes(item.indexing_status))).length : 0;
         const progress = indexingProgress(result, batch);
         searchable += progress.searchable; completed += progress.completed;
       }

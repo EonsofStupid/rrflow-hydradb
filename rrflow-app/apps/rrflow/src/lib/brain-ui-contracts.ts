@@ -1,10 +1,13 @@
 import { z } from 'zod';
 import { avenueSchema, brainIdSchema, brainSchema } from './contracts';
+import { projectContextSchema, projectIdSchema } from './project-context-contracts';
 
 export const BRAIN_UI_CATALOG = 'https://shippin.cloud/a2ui/brain-workspace/v1';
 export const brainUiInput = z.object({
   goal: z.string().trim().min(8, 'Describe the work in at least 8 characters.').max(1000),
   stack: brainIdSchema.exclude(['core']),
+  projectId: projectIdSchema.optional(),
+  projectWorkspace: z.enum(['personal', 'shippin']).optional(),
 }).strict();
 export const brainUiFeedbackInput = z.object({
   eventId: z.string().uuid(), verdict: z.enum(['helpful', 'missing_context']),
@@ -19,6 +22,7 @@ const receiptSchema = z.object({
 export const brainUiModelSchema = z.object({
   eventId: z.string().uuid(), goal: z.string(), stack: brainIdSchema,
   database: z.string(), collection: z.string(), startedAt: z.string(),
+  project: projectContextSchema.optional(),
   status: z.object({ phase: z.enum(['loading', 'ready', 'partial', 'failed']), completed: z.number(), total: z.number(), message: z.string() }),
   brains: z.array(z.object({ brain: brainSchema, requestIds: z.array(z.string()), latencyMs: z.number() })),
   avenues: z.array(avenueSchema.extend({ brainId: brainIdSchema, sourceTitle: z.string(), sourceUrl: z.string(), revision: z.string(), selection: z.string() })),

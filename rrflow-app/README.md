@@ -1,6 +1,6 @@
 # RRFLOW
 
-A local engineering knowledge workspace for Jesse's Shippin services, adapted from [Digo SaaS](https://github.com/digohq/app-starter) at `7c528e1407aeea502423b393f793f5b17c6caf4e`.
+A local context workspace for Jesse's personal and Shippin projects, with a dedicated engineering specialist, adapted from [Digo app-starter](https://github.com/digohq/app-starter) at `7c528e1407aeea502423b393f793f5b17c6caf4e`.
 
 The active app is **`apps/rrflow`**. It reuses Digo's Next.js/TypeScript/Tailwind structure, shadcn/Radix button and dialog components, design-token conventions, and bundled Lexend font. The MIT license is preserved. Original `apps/web`, `apps/api`, and `packages` remain upstream references; they are excluded from the active pnpm workspace and do not run. The active app uses neither Prisma/Postgres/Redis nor Jest.
 
@@ -8,14 +8,14 @@ The active app is **`apps/rrflow`**. It reuses Digo's Next.js/TypeScript/Tailwin
 
 Use Ubuntu WSL for all Node dependencies. Do not share node_modules between Windows Node and Linux Node.
 
-From PowerShell in this repository:
+From PowerShell in this `rrflow-app` directory (Git is rooted one level above):
 
 ```powershell
 wsl -d Ubuntu -- bash /mnt/d/localdev/rrflow-hydradb/rrflow-app/scripts/wsl-run.sh install --frozen-lockfile
 ./scripts/start-local.ps1
 ```
 
-Open **http://127.0.0.1:3100**. The launcher retrieves `hydradb_apy_key` and `RAINDROP_WRITE_KEY` from Infisical project `rrflow-hydradb`, environment `dev`, in the parent workspace. It passes them as server environment variables into WSL and sets `RAINDROP_PROJECT_ID=rrflow-hydradb`; it never writes a key file. The server binds only to loopback. The research input is `../research/inputs/brain-sources.json`, outside this Git repository; it must not be published as part of the app.
+Open **http://127.0.0.1:3100**. The launcher retrieves `hydradb_apy_key` and `RAINDROP_WRITE_KEY` from Infisical project `rrflow-hydradb`, environment `dev`, in the parent workspace. It passes them as server environment variables into WSL and sets `RAINDROP_PROJECT_ID=rrflow-hydradb`; it never writes a key file. The server binds only to loopback. The private research input is `../research/inputs/brain-sources.json`, excluded by the root Git ignore rules; it must not be published as part of the app.
 
 For the production build:
 
@@ -30,6 +30,10 @@ The WSL helper currently names this workstation's Node 22.23.3 installation. Ada
 ## What works
 
 - Light/dark dashboard, native graph exploration, discipline search, source/question drill-down, responsive layout.
+- Connectome with typed lessons/practices/sources, source evidence, native graph relationships, search, filters, and visible refresh times. Context avenues sit inside the connectome. Native HydraDB graph/context and Digo app-starter are directly linked.
+- Existing folder or GitHub project selection, with Personal/Shippin scope, bounded metadata snapshots saved in HydraDB, exact GitHub commit references, and project-aware knowledge selection. It never executes discovered scripts.
+- Native HydraDB connector catalog and setup, resource selection and sync controls. Organization-wide webhook controls expose scope before changes. Provider mutations are tested using fixtures; no new live connector or receiver is silently configured.
+- GitHub pushes synchronize committed public source into HydraDB; the dashboard reports indexing progress and Raindrop acceptance. See [source sync details](docs/rrflow/GITHUB_SYNC.md).
 - UI-driven, idempotent import of six research drafts: Engineering core (SWEBOK-aligned), Rust, Go, React, Next.js, TypeScript.
 - Native hosted Cypher in **seniordev / rrflow** owns source revisions, discipline nodes, avenues, questions, and review plans. Source content is immutable per content hash. Plans link to the exact avenue revisions they used.
 - A deterministic review planner composes core + selected discipline + TypeScript for React/Next.js, persists the plan, reloads it, and can delete it from the UI. Missing evidence stays pending.
@@ -58,6 +62,6 @@ wsl -d Ubuntu -- bash /mnt/d/localdev/rrflow-hydradb/rrflow-app/scripts/wsl-run.
 
 ## Still to build
 
-Public SaaS authentication/tenant authorization, provider-independent launch configuration, repository/evidence ingestion, actual AI supervision, progressive inference, Raindrop replay/prompt comparison/promotion, and live infrastructure inventory. The UI labels those boundaries. No infrastructure or prompts have been changed by this app.
+Automatic personal/work classification, a correction inbox, public SaaS authentication/tenant authorization, provider-independent launch configuration, evidence-producing AI supervision, progressive inference, Raindrop replay/prompt comparison/promotion, and live infrastructure inventory. The UI labels those boundaries. No infrastructure or prompts have been changed by this app.
 
 Team decisions and file ownership live in the parent workspace's `TEAM.md` and `coordination/` files.

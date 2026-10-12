@@ -86,6 +86,10 @@ const inspectFolder = async (root: string): Promise<Inspection> => {
       const handle = await open(absolute, process.platform === 'linux' ? 0x20000 : 'r').catch(() => null);
       if (!handle) { result.warnings.push(`Could not safely read ${candidate}.`); continue; }
       try {
+        if (process.platform === 'linux') {
+          const openedPath = await realpath(`/proc/self/fd/${handle.fd}`).catch(() => '');
+          if (!openedPath.startsWith(`${resolvedRoot}${path.sep}`)) continue;
+        }
         const current = await handle.stat();
         if (!current.isFile() || current.size > maxManifestBytes) continue;
         const buffer = Buffer.alloc(maxManifestBytes + 1);
@@ -171,9 +175,9 @@ const summarize = (input: ProjectContextInput, location: string, data: Inspectio
   ] as const) if (data.files.some(file => pattern.test(file))) for (const word of words) topics.add(word);
   if (!manifests.length) data.warnings.push('No supported package.json, Cargo.toml, or go.mod was readable in the bounded preview. File extensions still inform specialist selection.');
   if (data.truncated) data.warnings.push('This is a bounded preview: up to 400 paths, 12 manifests, and five folder levels. Some project content is outside this snapshot.');
-  const revision = data.revision || hash(JSON.stringify({ files: [...data.files].sort(), manifests, stack: [...stack].sort(), topics: [...topics].sort() }));
+  const revision = data.revision || hash(JSON.stringify({ files: [...data.files].sort(), manifestHashes: [...data.contents].map(([file, content]) => [file, hash(content)]).sort(([a], [b]) => a.localeCompare(b)) }));
   return projectContextSchema.parse({
-    id: `project-${hash(`${input.kind}:${location}`).slice(0, 24)}`, kind: input.kind,
+    id: `project-${hash(`${input.workspace}:${input.kind}:${location}`).slice(0, 24)}`, workspace: input.workspace, kind: input.kind,
     name: input.kind === 'github' ? location : path.basename(location), location,
     ...(input.kind === 'github' ? { url: `https://github.com/${location}` } : {}),
     revision, revisionKind: input.kind === 'github' ? 'git_commit' : 'metadata_fingerprint',
@@ -206,24 +210,28 @@ export const inspectAndSaveProject = async (input: ProjectContextInput, receipts
     MERGE (p:Project {ext_id: $id})
     MERGE (s:ProjectContext {ext_id: $snapshotId})
     SET s.payload = $payload, s.revision = $revision, s.loaded_at = $loadedAt,
-      p.name = $name, p.kind = $kind, p.location = $location, p.revision = $revision,
+      p.name = $name, p.kind = $kind, p.location = $location, p.revision = $revision, p.workspace = $workspace,
       p.loaded_at = $loadedAt, p.stack = $stack, p.active_snapshot = $snapshotId
     MERGE (w)-[:HAS_PROJECT]->(p) MERGE (p)-[:HAS_CONTEXT]->(s)
     RETURN p.ext_id AS id`, {
-    workspace: 'shippin', id: context.id, snapshotId, payload: JSON.stringify(context), revision: context.revision,
+    workspace: input.workspace, id: context.id, snapshotId, payload: JSON.stringify(context), revision: context.revision,
     loadedAt: context.loadedAt, name: context.name, kind: context.kind, location, stack: context.stack,
   }, z.array(z.object({ id: z.string() })).min(1), receipts, 'Saved project context and source revision');
   return context;
 };
 
-export const loadProjectContext = async (id: string, receipts: ServiceReceipt[]) => {
+export const loadProjectContext = async (id: string, workspace: 'personal' | 'shippin', receipts: ServiceReceipt[]) => {
   const rows = await projectQuery(`MATCH (w:Workspace {ext_id: $workspace})-[:HAS_PROJECT]->(p:Project {ext_id: $id})-[:HAS_CONTEXT]->(s:ProjectContext)
-    WHERE s.ext_id = p.active_snapshot RETURN s.payload AS payload LIMIT 1`, { workspace: 'shippin', id }, z.array(z.object({ payload: z.string() })), receipts, 'Read saved project context');
+    WHERE s.ext_id = p.active_snapshot RETURN s.payload AS payload LIMIT 1`, { workspace, id }, z.array(z.object({ payload: z.string() })), receipts, 'Read saved project context');
   if (!rows.length) throw new Error('The saved project was not found. Load its folder or GitHub repository again.');
   return projectContextSchema.parse(JSON.parse(rows[0].payload));
 };
 
-export const listProjectContexts = (receipts: ServiceReceipt[]) => projectQuery(`MATCH (w:Workspace {ext_id: $workspace})-[:HAS_PROJECT]->(p:Project)
-  RETURN p.ext_id AS id, p.kind AS kind, p.name AS name, p.location AS location,
+export const listProjectContexts = (workspace: 'personal' | 'shippin', receipts: ServiceReceipt[]) => projectQuery(`MATCH (w:Workspace {ext_id: $workspace})-[:HAS_PROJECT]->(p:Project)
+  RETURN p.ext_id AS id, p.workspace AS workspace, p.kind AS kind, p.name AS name, p.location AS location,
     p.revision AS revision, p.loaded_at AS loadedAt, p.stack AS stack
-  ORDER BY p.loaded_at DESC LIMIT 25`, { workspace: 'shippin' }, z.array(projectSummarySchema), receipts, 'Read saved project pointers');
+  ORDER BY p.loaded_at DESC LIMIT 25`, { workspace }, z.array(projectSummarySchema), receipts, 'Read saved project pointers');
+
+export const removeProjectContext = (id: string, workspace: 'personal' | 'shippin', receipts: ServiceReceipt[]) => projectQuery(`MATCH (w:Workspace {ext_id: $workspace})-[:HAS_PROJECT]->(p:Project {ext_id: $id})
+  OPTIONAL MATCH (p)-[:HAS_CONTEXT]->(s:ProjectContext)
+  DETACH DELETE s, p RETURN count(*) AS removed`, { workspace, id }, z.array(z.object({ removed: z.number() })), receipts, 'Removed saved project context');

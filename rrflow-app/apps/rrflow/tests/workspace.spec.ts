@@ -12,7 +12,7 @@ test('research imports from the UI, stays traceable, and reimports without dupli
     await page.getByRole('button', { name: 'Connections', exact: true }).click();
     await page.getByRole('button', { name: 'Reimport research' }).click();
   }
-  await expect(page.getByRole('status')).toContainText('Your research is connected', { timeout: 110_000 });
+  await expect(page.getByRole('status').filter({ hasText: 'Your research is connected' })).toBeVisible({ timeout: 110_000 });
   const after = await (await request.get('/api/workspace')).json();
   expect(after.brains).toHaveLength(6);
   expect(new Set(after.brains.map((brain: { id: string }) => brain.id)).size).toBe(6);

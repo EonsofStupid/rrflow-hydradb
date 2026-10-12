@@ -20,7 +20,8 @@ const BrainWorkspace = dynamic(() => import('@/components/brain-ui/brain-workspa
 const KnowledgeMap = dynamic(() => import('@/components/knowledge-map/knowledge-map').then(module => module.KnowledgeMap), { loading: () => <div className="loading-bar" role="status">Opening your connected context…</div> });
 const ConnectionsConsole = dynamic(() => import('@/components/connections/connections-console').then(module => module.ConnectionsConsole), { loading: () => <div className="loading-bar">Loading connector controls…</div> });
 const RepositorySync = dynamic(() => import('@/components/repository-sync/repository-sync').then(module => module.RepositorySync));
-type View = 'overview' | 'connectome' | 'live' | 'brains' | 'brain-ui' | 'reviews' | 'improvement' | 'connections';
+const DatabaseManager = dynamic(() => import('@/components/databases/database-manager').then(module => module.DatabaseManager), { loading: () => <div role="status" className="loading-bar">Loading your databases…</div> });
+type View = 'overview' | 'connectome' | 'live' | 'brains' | 'brain-ui' | 'reviews' | 'improvement' | 'connections' | 'databases';
 const navigation = [
   { id: 'overview', label: 'Overview', icon: Layers3 },
   { id: 'connectome', label: 'Connectome', icon: Network },
@@ -29,6 +30,7 @@ const navigation = [
   { id: 'brains', label: 'Engineering disciplines', icon: BrainCircuit },
   { id: 'reviews', label: 'Review work', icon: Workflow },
   { id: 'improvement', label: 'Improvement', icon: Sparkles },
+  { id: 'databases', label: 'Databases', icon: Database },
   { id: 'connections', label: 'Connections', icon: Network },
 ] as const;
 const positions: Record<BrainId, { x: number; y: number }> = {
@@ -131,12 +133,12 @@ export const Dashboard = () => {
       {mobileNav && <button aria-label="Close navigation" className="nav-scrim" onClick={() => setMobileNav(false)} />}
       <aside className={cn('sidebar', mobileNav && 'is-open')}>
         <Link className="wordmark" href="/" aria-label="RRFLOW home"><span className="logo-symbol"><Workflow size={23} /></span> rrflow<span className="wordmark-dot">.</span></Link>
-        <div className="workspace-switch"><span className="workspace-avatar">s.</span><div><strong>Shippin workspace</strong><small>Personal engineering studio</small></div></div>
+        <div className="workspace-switch"><span className="workspace-avatar">r.</span><div><strong>RRFLOW workspace</strong><small>Personal + Shippin work</small></div></div>
         <div className="nav-caption">WORKSPACE</div>
         <nav aria-label="Workspace navigation">
           {navigation.map(item => <button key={item.id} onClick={() => handleNavigate(item.id)} aria-current={view === item.id ? 'page' : undefined} className={cn('nav-item', view === item.id && 'active')}><item.icon size={18} /><span>{item.label}</span>{item.id === 'brains' && <span className="nav-count">{brains.length || '—'}</span>}</button>)}
         </nav>
-        <div className="sidebar-note"><span className="eyebrow"><Fingerprint size={15} /> YOUR ENGINEERING DNA</span><p>One connected mind.<br />Every decision traceable.</p><div className="mini-path"><i /><span /><i /><span /><i /></div></div>
+        <div className="sidebar-note"><span className="eyebrow"><Fingerprint size={15} /> YOUR KNOWLEDGE, CONNECTED</span><p>One connected mind.<br />Every decision traceable.</p><div className="mini-path"><i /><span /><i /><span /><i /></div></div>
         <div className="sidebar-bottom">
           <div className="powered"><Database size={16} /><div><strong>Powered by HydraDB</strong><small>One place for knowledge & work</small></div></div>
           <div className="user"><span className="avatar">J</span><div><strong>Jesse</strong><small>Local workspace</small></div><span className="local-chip">LOCAL</span></div>
@@ -150,7 +152,7 @@ export const Dashboard = () => {
         </header>
 
         <main id="main" tabIndex={-1}>
-          <div className="page-heading"><div><div className="eyebrow accent"><span className="tiny-line" /> ENGINEERING, WITH EVIDENCE</div><h1>{view === 'overview' ? 'Your engineering mind.' : displayName}</h1><p>{view === 'overview' ? 'Connected knowledge. Deliberate decisions. Better things shipped.' : view === 'live' ? 'Live knowledge and memory for your company and service specialists.' : view === 'brain-ui' ? 'A living workspace, populated from your knowledge and measured with Raindrop.' : view === 'brains' ? 'Explore the research and questions behind every specialist.' : view === 'reviews' ? 'Make the work explicit, then gather the evidence to verify it.' : view === 'improvement' ? 'Learn from measured outcomes. Keep every revision traceable.' : 'See what is connected and what still needs to be configured.'}</p></div><Button className="primary-button" onClick={() => setNewReview(true)} disabled={!hasBrains || !workspace?.connected}><Plus size={16} />Start a review</Button></div>
+          <div className="page-heading"><div><div className="eyebrow accent"><span className="tiny-line" /> CONTEXT, WITH EVIDENCE</div><h1>{view === 'overview' ? 'Your engineering mind.' : displayName}</h1><p>{view === 'overview' ? 'Connected knowledge. Deliberate decisions. Better things shipped.' : view === 'connectome' ? 'Memories, research, and source connections — all in one explorable view.' : view === 'live' ? 'Live knowledge and memory for your company and service specialists.' : view === 'brain-ui' ? 'A living workspace, populated from your knowledge and measured with Raindrop.' : view === 'brains' ? 'Explore the research and questions behind every specialist.' : view === 'reviews' ? 'Make the work explicit, then gather the evidence to verify it.' : view === 'improvement' ? 'Learn from measured outcomes. Keep every revision traceable.' : 'See what is connected and what still needs to be configured.'}</p></div><Button className="primary-button" onClick={() => setNewReview(true)} disabled={!hasBrains || !workspace?.connected}><Plus size={16} />Start a review</Button></div>
 
           {error && <div role="alert" className="message error"><CircleAlert size={18} /><span>{error}{hasBrains && !workspace?.connected && <small className="stale-notice">Showing the last successful read from {readableTime(workspace!.checkedAt)}.</small>}</span><Button variant="ghost" size="sm" onClick={() => void refresh()}>Retry connection</Button></div>}
           {notice && <div role="status" className="message notice">{busy ? <LoaderCircle size={18} className="spin" /> : <Check size={18} />}<span>{notice}</span></div>}
@@ -198,10 +200,11 @@ export const Dashboard = () => {
           {view === 'improvement' && <Improvement onOpenBrains={() => setView('live')} />}
           {view === 'live' && <LiveMesh embedded />}
           {view === 'brain-ui' && <BrainWorkspace />}
-          {view === 'connectome' && <KnowledgeMap workspace={workspace} onExplore={handleExplore} onWork={() => setView('brain-ui')} />}
+          {view === 'connectome' && <KnowledgeMap workspace={workspace} onExplore={handleExplore} onWork={() => setView('brain-ui')} onManage={() => setView('databases')} />}
+          {view === 'databases' && <DatabaseManager />}
           {view === 'connections' && <Connections evidence={workspace?.evidence} connected={workspace?.connected || false} brains={brains.length} busy={busy} onImport={handleImport} onRefresh={() => void refresh()} />}
-          {view === 'connections' && <><RepositorySync /><ConnectionsConsole /></>}
-          <footer className="page-footer"><span>Built on Digo <span>·</span> Knowledge lives in HydraDB</span><span><span className="status-dot" /> Methodical by design.</span></footer>
+          {view === 'connections' && <><DatabaseManager /><RepositorySync /><ConnectionsConsole /></>}
+          <footer className="page-footer"><span>Built on <a href="https://github.com/digohq/app-starter" target="_blank" rel="noreferrer">Digo app-starter</a> <span>·</span> Knowledge lives in HydraDB</span><span><span className="status-dot" /> Methodical by design.</span></footer>
         </main>
       </div>
       <Dialog open={drawer} onOpenChange={setDrawer}><DialogContent className="brain-dialog"><DialogHeader><DialogTitle><span className="dialog-title-row"><BrainMark id={selected} />{brainCatalog[selected].name}</span></DialogTitle><DialogDescription>Explore the source-backed avenues in this brain. These questions are draft research; answers and pass conditions have not been evaluated.</DialogDescription></DialogHeader>{detail && <><div className="source-banner"><BookOpen size={18} /><div><strong>{detail.brain.sourceTitle}</strong><a href={detail.brain.sourceUrl} target="_blank" rel="noreferrer">Open original research <ArrowUpRight size={13} /></a><small>Source revision {detail.brain.revision.slice(0, 8)} · Version claims need verification</small><details className="request-evidence"><summary>View retrieval evidence</summary>{detail.requestIds.map(id => <code key={id}>{id}</code>)}</details></div></div><div className="avenue-list">{detail.avenues.map(avenue => <details key={avenue.id}><summary><span>{avenue.title}</span><span>{avenue.questions.length} questions</span></summary>{avenue.domain && <p className="domain-label">{avenue.domain}</p>}<ol>{avenue.questions.map(question => <li key={question.id}><p>{question.text}</p><small>{question.term}</small>{question.binding && <div className="binding"><Fingerprint size={12} />Needs: {question.binding}</div>}</li>)}</ol></details>)}</div></>}{!detail && <div role="status" className="detail-loading">{detailError || 'Loading knowledge from HydraDB…'}</div>}</DialogContent></Dialog>

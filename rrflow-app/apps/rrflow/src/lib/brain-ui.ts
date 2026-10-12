@@ -5,16 +5,21 @@ import { brainCatalog, type BrainId } from './contracts';
 import { trackEvent } from './raindrop';
 import { BRAIN_UI_CATALOG, type BrainUiMessage, type BrainUiModel, type BrainUiComponent } from './brain-ui-contracts';
 import type { ServiceReceipt } from './mesh-contracts';
+import { loadProjectContext } from './project-context';
 
 const composition = (stack: BrainId): BrainId[] => [...new Set<BrainId>(['core', stack, ...(['react', 'nextjs'].includes(stack) ? ['typescript' as const] : [])])];
 
-export const streamBrainWorkspace = async (input: { goal: string; stack: BrainId }, emit: (message: BrainUiMessage) => void, verificationRun = false) => {
-  const ids = composition(input.stack);
+export const streamBrainWorkspace = async (input: { goal: string; stack: BrainId; projectId?: string; projectWorkspace?: 'personal' | 'shippin' }, emit: (message: BrainUiMessage) => void, verificationRun = false) => {
+  const projectReceipts: ServiceReceipt[] = [];
+  let projectError: string | undefined;
+  const project = input.projectId ? await loadProjectContext(input.projectId, input.projectWorkspace || 'shippin', projectReceipts).catch(error => { projectError = error instanceof Error ? error.message : 'Your saved project could not be loaded.'; return undefined; }) : undefined;
+  const ids = [...new Set([...composition(input.stack), ...(project?.stack || [])])];
   const eventId = randomUUID();
   const model: BrainUiModel = {
     eventId, ...input, database: process.env.HYDRA_DB_DATABASE || 'seniordev', collection: process.env.HYDRA_DB_COLLECTION || 'rrflow', startedAt: new Date().toISOString(),
     status: { phase: 'loading', completed: 0, total: ids.length, message: 'Loading the engineering core and your specialists from HydraDB…' },
-    brains: [], avenues: [], failures: [], receipts: [], observation: { status: 'waiting' },
+    ...(project ? { project } : {}),
+    brains: [], avenues: [], failures: [], receipts: projectReceipts, observation: { status: 'waiting' },
   };
   emit({ version: 'v0.9.1', createSurface: { surfaceId: eventId, catalogId: BRAIN_UI_CATALOG } });
   const update = () => {
@@ -27,8 +32,15 @@ export const streamBrainWorkspace = async (input: { goal: string; stack: BrainId
     emit({ version: 'v0.9.1', updateDataModel: { surfaceId: eventId, path: '/', value: model } });
     emit({ version: 'v0.9.1', updateComponents: { surfaceId: eventId, components: [{ id: 'root', component: 'Column', children: components.map(component => component.id) }, ...components] } });
   };
+  if (projectError) {
+    model.status = { phase: 'failed', completed: 0, total: 0, message: projectError };
+    model.observation = { status: 'failed', error: 'No quality event was sent because the selected project could not be loaded.' };
+    update();
+    return;
+  }
   update();
   const terms = [...new Set(input.goal.toLowerCase().match(/[a-z][a-z0-9]{3,}/g) || [])];
+  const projectTerms = project?.topics.filter(term => term.length >= 4) || [];
   // Parallel native reads: each completed brain can render while slower reads continue.
   await Promise.all(ids.map(async id => {
     const receipts: ServiceReceipt[] = [];
@@ -40,11 +52,11 @@ export const streamBrainWorkspace = async (input: { goal: string; stack: BrainId
       model.brains.sort((a, b) => ids.indexOf(a.brain.id) - ids.indexOf(b.brain.id));
       const ranked = detail.avenues.map(avenue => {
         const content = `${avenue.title} ${avenue.questions.map(question => question.text).join(' ')}`.toLowerCase();
-        return { avenue, matches: terms.filter(term => content.includes(term)) };
-      }).sort((a, b) => b.matches.length - a.matches.length || a.avenue.order - b.avenue.order);
-      for (const { avenue, matches } of ranked.slice(0, 3)) model.avenues.push({
+        return { avenue, matches: terms.filter(term => content.includes(term)), projectMatches: projectTerms.filter(term => content.includes(term)) };
+      }).sort((a, b) => (b.matches.length * 2 + b.projectMatches.length) - (a.matches.length * 2 + a.projectMatches.length) || a.avenue.order - b.avenue.order);
+      for (const { avenue, matches, projectMatches } of ranked.slice(0, 3)) model.avenues.push({
         ...avenue, brainId: id, sourceTitle: detail.brain.sourceTitle, sourceUrl: detail.brain.sourceUrl, revision: detail.brain.revision,
-        selection: matches.length ? `Matches words in your goal: ${matches.join(', ')}.` : 'Foundation avenue in source order; no matching goal words.',
+        selection: [matches.length ? `Matches words in your goal: ${matches.join(', ')}.` : '', projectMatches.length ? `Matches your saved project context: ${projectMatches.join(', ')}.` : '', !matches.length && !projectMatches.length ? 'Foundation avenue in source order; no matching goal or project topics.' : ''].filter(Boolean).join(' '),
       });
       model.avenues.sort((a, b) => ids.indexOf(a.brainId) - ids.indexOf(b.brainId));
     } catch (error) {

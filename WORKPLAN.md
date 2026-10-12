@@ -19,7 +19,9 @@ Current first-slice checklist (details and native IDs in `research/IMPLEMENTATIO
 
 The broader checklist below intentionally keeps criteria open where only part of a capability exists.
 
-Build **RRFLOW as a configurable engineering specialist** for shippin.ai and shippin.cloud: methodical oversight of AI work, grounded in project knowledge and verified outcomes, with a UI people can understand without engineering expertise.
+Build **RRFLOW as Jesse's connected personal and work knowledge system**, with clear boundaries between personal life and Shippin projects. Gmail, repositories, ambitions, decisions, and lessons should be understandable memories, with proposed placement, human corrections, and traceable provenance. Its configurable engineering specialist provides methodical oversight of AI work, grounded in project knowledge and verified outcomes.
+
+Current release priorities: visible native memories and context avenues inside the connectome; saved local-folder/GitHub project context; native connector and webhook controls; GitHub push synchronization; and useful Raindrop delivery status. Automatic personal/work classification and a complete correction inbox remain open product work. Do not describe them as completed merely because the scopes are visible.
 
 Its first use case gives Jesse one workspace to launch and operate **shippin.cloud, shippin.ai, and shipping.buzz**: see what runs where, drill into the infrastructure, identify what blocks a launch or recovery, inspect the evidence, and improve the system prompts behind the assistance over time.
 

@@ -34,7 +34,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm build
       - run: pnpm --filter @rrflow/app exec playwright install --with-deps chromium
-      - name: Playwright repository sync checks (no live credentials)
+      - name: Playwright sync, connector, and refresh checks (no live credentials)
         run: |
           pnpm start > /tmp/rrflow-server.log 2>&1 &
           server_pid=$!
@@ -43,4 +43,4 @@ jobs:
             if curl --fail --silent http://127.0.0.1:3100/ > /dev/null; then break; fi
             sleep 1
           done
-          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts
+          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts tests/connections.spec.ts tests/connectome.spec.ts tests/databases.spec.ts tests/project-context.spec.ts --grep 'committed repository|GitHub sync shows|connector setup|connection inputs|context refresh|Personal uses|database manager|database creation|a delayed project list'

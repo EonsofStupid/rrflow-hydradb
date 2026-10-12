@@ -8,6 +8,8 @@ import { useActivity } from '@/components/transparency/activity-provider';
 import { brainCatalog, brainIds, type BrainId } from '@/lib/contracts';
 import { applyBrainUiMessage, readBrainUiStream, type BrainUiModel, type BrainUiSurface } from '@/lib/brain-ui-contracts';
 import styles from './brain-workspace.module.css';
+import { ProjectPicker } from './project-picker';
+import type { ProjectContext } from '@/lib/project-context-contracts';
 
 type Avenue = BrainUiModel['avenues'][number];
 const sourceUrl = (url: string) => { try { return new URL(url).protocol === 'https:' ? url : undefined; } catch { return undefined; } };
@@ -16,6 +18,8 @@ const time = (value: string) => new Date(value).toLocaleTimeString([], { hour: '
 export const BrainWorkspace = () => {
   const [goal, setGoal] = useState('Prepare the shippin.cloud Next.js dashboard for launch: accessible interactions, loading states, and reliable data access.');
   const [stack, setStack] = useState<Exclude<BrainId, 'core'>>('nextjs');
+  const [project, setProject] = useState<ProjectContext | null>(null);
+  const [projectBusy, setProjectBusy] = useState(false);
   const [surface, setSurface] = useState<BrainUiSurface | null>(null);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -40,7 +44,7 @@ export const BrainWorkspace = () => {
     let first = true;
     const seenReceipts = new Set<string>();
     try {
-      const response = await fetch('/api/brain-ui', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal, stack }), signal: request.signal });
+      const response = await fetch('/api/brain-ui', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal, stack, ...(project ? { projectId: project.id, projectWorkspace: project.workspace } : {}) }), signal: request.signal });
       if (!response.ok) throw new Error((await response.json()).error || 'The workspace could not be opened.');
       await readBrainUiStream(response, message => {
         if (controller.current !== request) return;
@@ -88,7 +92,7 @@ export const BrainWorkspace = () => {
     if (component.component === 'WorkflowStatus') return <section key={id} className={styles.status} aria-label="Orchestration status">
       <div className={styles.sectionTitle}><Network size={18} /><h2>Work, with a visible trail</h2><span className={styles.badge}>Triggered workflow</span></div>
       <ol className={styles.stages}>
-        <li><Check size={17} /><strong>Specialists selected</strong><span>Core + {brainCatalog[model.stack].name}{['react', 'nextjs'].includes(model.stack) ? ' + TypeScript' : ''}</span></li>
+        <li><Check size={17} /><strong>Specialists selected</strong><span>{[...new Set<BrainId>(['core', model.stack, ...(['react', 'nextjs'].includes(model.stack) ? ['typescript' as const] : []), ...(model.project?.stack || [])])].map(id => brainCatalog[id].name).join(' + ')}</span>{model.project && <span>Using {model.project.name} · {model.project.revision.slice(0, 12)}</span>}</li>
         <li>{model.status.phase === 'loading' && isLoading ? <LoaderCircle className={styles.spin} size={17} /> : model.failures.length ? <CircleAlert size={17} /> : <Check size={17} />}<strong>Knowledge from HydraDB</strong><span>{model.status.completed} of {model.status.total} reads finished</span></li>
         <li><BrainCircuit size={17} /><strong>{model.brains.length ? 'Interface populated' : 'Waiting for knowledge'}</strong><span>{model.avenues.length} avenues available</span></li>
         <li><Info size={17} /><strong>Engineering checks pending</strong><span>Execution and AI assessment have not run</span></li>
@@ -128,13 +132,14 @@ export const BrainWorkspace = () => {
 
   return <div className={styles.workspace}>
     <section className={styles.intro}><span className={styles.kicker}><Sparkles size={15} /> KNOWLEDGE BECOMES YOUR WORKSPACE</span><h2>The right context.<br />Right where you work.</h2><p>Open a path through your engineering brains. Get sourced guidance, quick explanations, and the questions that deserve a closer look.</p></section>
+    <ProjectPicker project={project} onSelect={value => { setProject(value); setSurface(null); setError(''); const detected = (['nextjs', 'react', 'rust', 'go', 'typescript'] as const).find(id => value?.stack.includes(id)); if (detected) setStack(detected); }} disabled={isLoading || feedbackBusy || projectBusy} onBusy={setProjectBusy} />
     <form className={styles.form} onSubmit={generate}>
       <label className={styles.goal}>What are you working on?<textarea value={goal} onChange={event => setGoal(event.target.value)} minLength={8} maxLength={1000} required rows={3} /></label>
-      <div className={styles.formBottom}><label>Lead specialist<select value={stack} onChange={event => setStack(event.target.value as Exclude<BrainId, 'core'>)}>{brainIds.filter(id => id !== 'core').map(id => <option key={id} value={id}>{brainCatalog[id].name}</option>)}</select></label><Button className="primary-button" type="submit" disabled={isLoading || feedbackBusy}>{isLoading ? <LoaderCircle size={17} className={styles.spin} /> : <Sparkles size={17} />}{isLoading ? model && model.status.phase !== 'loading' ? 'Reporting quality…' : 'Opening knowledge…' : 'Build my workspace'}{!isLoading && <ArrowRight size={16} />}</Button>{isLoading && <Button variant="ghost" type="button" onClick={() => controller.current?.abort()}>Stop</Button>}</div>
-      <p className={styles.fine}>A2UI v0.9.1 · Your stored research selects the content. A deterministic workflow chooses avenues by matching goal words; no model inference is claimed.</p>
+      <div className={styles.formBottom}><label>Lead specialist<select value={stack} onChange={event => setStack(event.target.value as Exclude<BrainId, 'core'>)}>{brainIds.filter(id => id !== 'core').map(id => <option key={id} value={id}>{brainCatalog[id].name}</option>)}</select></label><Button className="primary-button" type="submit" disabled={isLoading || feedbackBusy || projectBusy}>{isLoading ? <LoaderCircle size={17} className={styles.spin} /> : <Sparkles size={17} />}{isLoading ? model && model.status.phase !== 'loading' ? 'Reporting quality…' : 'Opening knowledge…' : 'Build my workspace'}{!isLoading && <ArrowRight size={16} />}</Button>{isLoading && <Button variant="ghost" type="button" onClick={() => controller.current?.abort()}>Stop</Button>}</div>
+      <p className={styles.fine}>A2UI v0.9.1 · Your stored research selects the content. A deterministic workflow chooses avenues from your goal and saved project topics; no model inference is claimed.</p>
     </form>
     {error && <div role="alert" className={styles.errorBox}><CircleAlert size={18} /><span>{error}</span><Button variant="outline" disabled={isLoading} onClick={() => void generate()}>Retry</Button></div>}
-    {model && <div className={styles.freshness}><span><span className={styles.dot} />Requested from HydraDB · {time(model.startedAt)}</span>{firstEvidenceMs !== null && <span data-testid="first-evidence">First knowledge received in {firstEvidenceMs} ms</span>}<button onClick={() => setPanelOpen(true)}>Inspect real requests <ArrowRight size={13} /></button><button disabled={isLoading || feedbackBusy} onClick={() => void generate()}><RefreshCw size={13} />Refresh knowledge</button></div>}
+    {model && <div className={styles.freshness}><span><span className={styles.dot} />Requested from HydraDB · {time(model.startedAt)}</span>{firstEvidenceMs !== null && <span data-testid="first-evidence">First knowledge received in {firstEvidenceMs} ms</span>}<button onClick={() => setPanelOpen(true)}>Inspect real requests <ArrowRight size={13} /></button><button disabled={isLoading || feedbackBusy || projectBusy} onClick={() => void generate()}><RefreshCw size={13} />Refresh knowledge</button></div>}
     {surface && renderComponent('root')}
     {!surface && !isLoading && !error && <div className={styles.empty}><Network size={28} /><h3>One goal. Connected expertise.</h3><p>Choose a specialist to bring the engineering core and relevant language knowledge into one workspace.</p><div><span>HydraDB knowledge</span><ChevronRight size={14} /><span>Dynamic interface</span><ChevronRight size={14} /><span>Raindrop feedback</span></div></div>}
     <Dialog open={!!selected} onOpenChange={open => { if (!open) setSelected(null); }}><DialogContent className="max-w-2xl" onCloseAutoFocus={event => { event.preventDefault(); modalTrigger.current?.focus(); }}><DialogHeader><DialogTitle>{selected?.title || 'Knowledge avenue'}</DialogTitle><DialogDescription>{selected ? `${brainCatalog[selected.brainId].name} · ${selected.questions.length} research questions · Evidence still needed` : 'Source-backed knowledge'}</DialogDescription></DialogHeader>{selected && <div className={styles.modalBody}><p className={styles.selection}><Info size={17} />{selected.selection}</p><ol className={styles.questions}>{selected.questions.map(question => <li key={question.id}><strong>{question.text}</strong><span>Research draft · Not checked</span></li>)}</ol><div className={styles.source}><BookOpen size={18} /><div><strong>{selected.sourceTitle}</strong><p>Revision {selected.revision}</p>{sourceUrl(selected.sourceUrl) && <a href={sourceUrl(selected.sourceUrl)} target="_blank" rel="noreferrer">Open source research <ExternalLink size={13} /></a>}</div></div><details><summary>Where this knowledge came from</summary><p>Database: {model?.database} · Collection: {model?.collection}</p><p>Avenue: {selected.id}</p>{model?.brains.find(item => item.brain.id === selected.brainId)?.requestIds.map(id => <p key={id}>HydraDB request: {id}</p>)}</details></div>}</DialogContent></Dialog>

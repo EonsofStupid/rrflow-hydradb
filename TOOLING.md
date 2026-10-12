@@ -2,7 +2,7 @@
 
 ## Current implementation checkpoint — October 12
 
-Active app: `rrflow-app/apps/rrflow`; run and verification instructions are in `rrflow-app/README.md`. The clean Digo app is running on loopback port 3100. Production build and root pnpm verify passed with seven browser scenarios. Final mobile and desktop layout checks passed.
+Active app: `rrflow-app/apps/rrflow`; run and verification instructions are in `rrflow-app/README.md`. The clean Digo app is running on loopback port 3100. Production build and root pnpm verify passed with 25 Playwright scenarios. Mobile and desktop layout checks passed. The workspace root is the single Git repository; earlier clone notes below are historical.
 
 Both credentials are verified in Infisical Cloud, project `rrflow-hydradb`, environment `dev`, root path `/`:
 - `hydradb_apy_key` → server `HYDRA_DB_API_KEY`.

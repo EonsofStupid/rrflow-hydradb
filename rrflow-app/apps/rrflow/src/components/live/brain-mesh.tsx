@@ -189,14 +189,14 @@ export const BrainMesh = ({ brains, shippinContext, otherDatabases, raindropProj
           <div className="mt-4 grid gap-4">{inGroup('practice').map(brain => <BrainCard key={brain.id} brain={brain} />)}</div>
         </GroupFrame>
         <section aria-labelledby="other-databases" className="rounded-xl border border-dashed border-border p-4">
-          <h3 id="other-databases" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Other databases on this HydraDB key</h3>
+          <h3 id="other-databases" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Personal and other source databases</h3>
           {otherDatabases === null ? (
             <p className="mt-1 text-sm text-muted-foreground">The database listing could not be read on this refresh.</p>
           ) : otherDatabases.length === 0 ? (
             <p className="mt-1 text-sm text-muted-foreground">None. Every database this key can reach is shown above.</p>
           ) : (
             <>
-              <p className="mt-1 text-sm text-muted-foreground">Not part of any RRFLOW project. Listed so nothing this key can reach is hidden.</p>
+              <p className="mt-1 text-sm text-muted-foreground">default-tenant is your Personal database, including connected Gmail and GitHub context. The Shippin specialist brains remain separate. Automatic classification and human corrections are still being developed.</p>
               <ul className="mt-2 flex flex-wrap gap-2">
                 {otherDatabases.map(name => <li key={name} className="rounded-full border border-border px-2.5 py-1 font-mono text-xs">{name}</li>)}
               </ul>

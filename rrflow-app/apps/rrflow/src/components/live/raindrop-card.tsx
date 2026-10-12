@@ -11,17 +11,14 @@ const RAINDROP_ORG = 'ea2ca283';
  * A drop falls into the pool each time Raindrop accepts something this session.
  * Keyed by the accepted count so a new delivery replays the animation; nothing animates for a failure.
  */
-const RaindropPool = ({ accepted, isMonitored }: { accepted: number; isMonitored: boolean }) => (
+const RaindropPool = ({ accepted }: { accepted: number }) => (
   <svg viewBox="0 0 80 96" className="h-24 w-20 shrink-0" aria-hidden>
     <style>{`@keyframes rrflowDropFall{0%{transform:translateY(-30px);opacity:0}15%{opacity:1}70%{transform:translateY(34px);opacity:1}100%{transform:translateY(38px);opacity:0}}
       @keyframes rrflowRipple{0%{rx:2;ry:1;opacity:.9}100%{rx:30;ry:6;opacity:0}}
-      @keyframes rrflowIdle{0%{transform:translateY(-30px);opacity:0}20%{opacity:.35}80%{transform:translateY(34px);opacity:.35}100%{transform:translateY(38px);opacity:0}}
       .rrflow-drop{animation:rrflowDropFall .9s cubic-bezier(.5,0,.75,0) forwards}
       .rrflow-ripple{animation:rrflowRipple 1s ease-out .75s both}
-      .rrflow-idle{animation:rrflowIdle 3.6s ease-in infinite}
-      @media (prefers-reduced-motion: reduce){.rrflow-drop,.rrflow-ripple,.rrflow-idle{animation:none;opacity:0}}`}</style>
+      @media (prefers-reduced-motion: reduce){.rrflow-drop,.rrflow-ripple{animation:none;opacity:0}}`}</style>
     <ellipse cx={40} cy={80} rx={30} ry={6} fill="none" stroke="#38bdf8" strokeOpacity={0.35} />
-    {isMonitored && <path d="M40 22c0 0-7 9-7 14a7 7 0 0 0 14 0c0-5-7-14-7-14z" fill="#38bdf8" className="rrflow-idle" />}
     {accepted > 0 && (
       <g key={accepted}>
         <path d="M40 22c0 0-9 11-9 18a9 9 0 0 0 18 0c0-7-9-18-9-18z" fill="#38bdf8" className="rrflow-drop" />
@@ -44,7 +41,7 @@ export const RaindropCard = ({ project, isMonitored, now }: { project: string | 
   return (
     <section aria-labelledby="raindrop-heading" className="rounded-lg border border-sky-400/40 bg-sky-400/[0.03] p-4">
       <div className="flex items-start gap-4">
-        <RaindropPool accepted={accepted.length} isMonitored={isMonitored} />
+        <RaindropPool accepted={accepted.length} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 id="raindrop-heading" className="text-lg font-semibold">Quality monitoring · Raindrop</h2>

@@ -27,7 +27,7 @@ Updated October 12, 2026. Codex and the existing Claude Code session work in the
 - Managed specialist databases: `rrflow_specialist`, `shippin_cloud`, `shippin_ai`, `shipping_buzz`, `seniordev`. Live readiness, counts, memory feed, and selected-brain hybrid retrieval come from HydraDB.
 - Graph identity: database + collection + label + ext_id. Managed content identity: database + type + native ID. Do not assume BYOG node IDs and managed retrieval IDs are interchangeable.
 - A single initial Workspace probe was written to default-tenant/rrflow before the team aligned on seniordev. No research was imported there; it is not an active second store.
-- Production build and root pnpm verify passed, including seven Playwright scenarios. Light/dark and specialist-view automated axe checks passed. Final mobile and desktop layout checks passed.
+- Production build and root pnpm verify passed, including 25 Playwright scenarios. Light/dark and specialist-view automated axe checks passed. Mobile and desktop layout checks passed. See implementation evidence for the latest combined release.
 - Native Raindrop cloud setup and real event/feedback read-back are verified for rrflow-hydradb. Both Infisical names match; the launcher uses canonical RAINDROP_WRITE_KEY. See implementation evidence for event and native request IDs.
 
 ## File ownership
@@ -51,3 +51,8 @@ Next: expand verified retrieval and saved plans into evidence-producing engineer
 ## Added product direction: brain-driven UI
 
 Jesse requests A2UI tooltips/modals from brains, clear quality-of-life status, and useful Raindrop feedback with fast loading. Codex owns `lib/brain-ui*.ts`, `components/brain-ui/**`, `/api/brain-ui/**`, and its Playwright tests. Native engineering graph reads generate the first interface; no model execution is implied. Claude delivered transparency/receipt integration at 14:53. Codex found and fixed the error-notification entry outcome edge case during integration. See research/A2UI_DELIVERY.md for the exact boundary and sources.
+
+## Product alignment — personal life and Shippin work
+RRFLOW's primary scope is Jesse's personal and work context, explicitly separated. Gmail, repositories, ambitions, lessons, and development practices feed a growing, inspectable connectome. Automatic classification must propose a scope and preserve human corrections; it is not yet complete. Engineering expertise is a specialist within this broader life/work system. Latest sources, memories, and workflow routes belong inside the connectome. Digo/app-starter is the credited foundation. See research/DEVPOST_ALIGNED.md for submission wording with honest capability boundaries.
+
+The user explicitly assigns existing HydraDB default-tenant to Personal. Its Gmail/GitHub sources remain there. Shippin databases stay separate. The dashboard supports creation of additional native databases with Personal/Shippin membership saved in HydraDB. This assignment is a workspace boundary, not a claim that individual emails have been automatically classified.

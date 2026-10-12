@@ -1,5 +1,23 @@
 # RRFLOW implementation evidence — October 12, 2026
 
+## Combined Personal / Shippin release
+
+The workspace root is now the single repository; `rrflow-app` is its application directory. The production build includes the connectome, database manager, project picker, connector/webhook console, and repository sync status. Port 3100 stays running while Jesse tests and presents.
+
+Final local verification: production build passed; root `pnpm verify` passed TypeScript, ESLint, and all 25 Playwright scenarios in 56.5 seconds with no retries. A streaming-response test now observes the browser's cloned response instead of relying on Chromium's evictable DevTools response buffer. The connection-dialog check allows the native 20-second request deadline to finish. Both changes are test-only; the running production app was not restarted while Jesse tested. Exact HydraDB and Raindrop credential scans plus credential-pattern scans passed across 727 staged files.
+
+- HydraDB read-back confirms six ready databases, with `default-tenant` assigned to Personal, the four company/service databases to Shippin, and `seniordev` to shared engineering practice.
+- Connectome reads native knowledge and memory records, shows their types and timestamps, and opens evidence and relationships. Personal and Shippin records clear when switching scope. Context refreshes every 30 seconds while visible.
+- Database creation is implemented against native POST /databases. Positive provisioning transitions are tested with browser fixtures; no additional live database was created for verification. The live existing-database rejection preserves default-tenant.
+- Connector creation, source selection, synchronization controls, and webhook setup are tested with fixtures plus live read-only catalog access. No live connector or organization webhook was created during verification.
+- Real local-folder and public GitHub project imports, revision binding, selected-specialist A2UI, workspace isolation, and test-owned cleanup are exercised against HydraDB.
+- Repository push synchronization uses committed content, stable IDs, content hashes, explicit retirement of its own removed sources, readiness polling, and Raindrop delivery status. Citation paths now include the repository's rrflow-app prefix.
+- The screenshot demonstration retrieved five real Git Bash lesson passages, then submitted helpful feedback. Raindrop accepted the event and verdict; UI counts show 1 event, 1 verdict, 0 failures. Event: `2a0539cd-b479-423a-bf64-ec0d5752b364`; HydraDB request: `6cf71a1d-a26e-4928-a7bb-3a92cd5a3c0c`.
+- Latest screenshots and the timed three-minute talk are in `submission/`. Personal email content is excluded from screenshots.
+- Native Raindrop UI read-back confirms event `2a0539cd-b479-423a-bf64-ec0d5752b364` has the `Answer helpful` signal, five hits and the matching HydraDB request. A2UI event `6576c8be-0b0f-510b-a137-aec6aec33451` has `Brain UI helpful`, nine avenues, core/nextjs/typescript selection, three source revisions, six native request IDs, `outcome=ready`, and `verification_run=true`. Its Details screenshot is saved as `10-raindrop-context-alignment.jpg`.
+
+Recorded lessons are reused in retrieval. A2UI content comes from native research reads and deterministic routing. Feedback capture is working; automatic feedback-to-lesson conversion, prompt promotion, agent execution, automatic email classification, and the correction inbox remain future work.
+
 ## Source and ownership
 
 Clean Digo clone: `rrflow-app`, branch `feat/rrflow-brains`, upstream commit `7c528e1407aeea502423b393f793f5b17c6caf4e`. Rejected old feature commits are absent. The active app is `apps/rrflow`; original Digo source is retained as inactive reference. Codex owns the main UI, discipline graph, review planner, and verification. Claude acknowledged the shared base and owns mesh, live components, and workspace dogfood sync.

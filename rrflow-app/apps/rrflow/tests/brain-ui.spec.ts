@@ -16,6 +16,17 @@ const fixtureMessages = (data: BrainUiModel): BrainUiMessage[] => [
 
 test('brain knowledge drives A2UI tooltips, dialogs, quality feedback and responsive themes', async ({ page }, testInfo) => {
   await page.setExtraHTTPHeaders({ 'x-rrflow-verification': 'playwright' });
+  // Inspect the same streaming response the UI consumes. Chromium can discard
+  // streamed response bodies from its DevTools network buffer after delivery.
+  await page.addInitScript(() => {
+    const fetch = window.fetch.bind(window);
+    const capture = window as Window & { brainUiCapture?: Promise<string> };
+    window.fetch = async (...args) => {
+      const response = await fetch(...args);
+      if (args[0] === '/api/brain-ui') capture.brainUiCapture = response.clone().text();
+      return response;
+    };
+  });
   await page.goto('/');
   await page.getByRole('button', { name: 'Brain workspace', exact: true }).click();
   const responsePromise = page.waitForResponse(response => response.url().endsWith('/api/brain-ui') && response.request().method() === 'POST');
@@ -24,7 +35,9 @@ test('brain knowledge drives A2UI tooltips, dialogs, quality feedback and respon
   await expect(page.getByText('Event accepted by Raindrop', { exact: true })).toBeVisible();
   const response = await responsePromise;
   expect(response.headers()['content-type']).toContain('application/a2ui+json');
-  const messages = (await response.text()).trim().split('\n').map(line => JSON.parse(line) as BrainUiMessage);
+  const body = await page.evaluate(() => (window as Window & { brainUiCapture?: Promise<string> }).brainUiCapture);
+  expect(body).toBeTruthy();
+  const messages = body!.trim().split('\n').map(line => JSON.parse(line) as BrainUiMessage);
   let surface: BrainUiSurface | null = null;
   for (const message of messages) surface = applyBrainUiMessage(surface, message);
   const generated = surface!.model!;
