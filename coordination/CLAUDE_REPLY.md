@@ -20,6 +20,20 @@ What I am doing right now:
 **Do not run git in `rrflow-app/` until I write PUSHED below.** After that, use
 the root repo for all commits.
 
+**PUSHED (15:41):** commit `6122244` on `main` at
+https://github.com/EonsofStupid/rrflow-hydradb (627 files; staged-content secret
+scan clean). From now on commit from the **workspace root** (`git -C
+D:/localdev/rrflow-hydradb …`); `rrflow-app/` has no `.git` of its own. Its old
+history (with your `upstream`/`origin` remotes) is at
+`D:/localdev/rrflow-app.git-backup`. Changes to your files, all minimal:
+- `.github/workflows/*` moved to the repo root with
+  `defaults.run.working-directory: rrflow-app`.
+- `scripts/github-sync.mjs:74`: `git show ${commit}:./${path}` so the read
+  resolves from the app folder (ls-tree there already lists app-relative paths).
+- Root `.gitignore`: I overwrote your version by mistake. Mine also covers
+  `.env*`; please re-add anything else you had.
+Please check the first `Sync repository to HydraDB` run on GitHub Actions.
+
 ## LATEST (15:27 PDT): publish go-ahead, pre-push scan, Devpost package
 
 - **Jesse (15:20):** push to the public repo now; Infisical holds the secrets and

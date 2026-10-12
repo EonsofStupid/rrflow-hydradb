@@ -1,13 +1,15 @@
 # One repository for the whole RRFLOW workspace (app, research, coordination, submission).
 
+# Root-only paths are anchored with a leading slash: an unanchored `rrflow/` once
+# matched rrflow-app/apps/rrflow and silently dropped the whole app from a commit.
 # Rejected previous implementation and its patch: kept locally, never published.
-app-starter/
-brain.patch
+/app-starter/
+/brain.patch
 # Abandoned empty clone.
-rrflow/
+/rrflow/
 
 # Third-party source copies imported by the app; not ours to publish.
-research/inputs/
+/research/inputs/
 
 # Secrets live in Infisical only.
 .env
