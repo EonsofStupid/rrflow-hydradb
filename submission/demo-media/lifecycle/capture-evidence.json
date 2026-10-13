@@ -1,0 +1,420 @@
+{
+  "captures": [
+    {
+      "file": "07-raindrop-delivery.webm",
+      "capturedAt": "2026-10-13T03:27:32.283Z",
+      "usableSeconds": 23,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 8.2,
+          "action": "Existing actual accepted workflow event and native request evidence held for inspection."
+        },
+        {
+          "seconds": 15.2,
+          "action": "Associated public workflow provenance shown."
+        }
+      ],
+      "native": {
+        "observedAt": "2026-10-13T03:27:33.086Z",
+        "commit": "06c7de09a45e501ec869c69fe1fb2c457438c534",
+        "raindrop": {
+          "status": "accepted",
+          "eventId": "github-sync-06c7de09a45e501ec869c69fe1fb2c457438c534-38340002442-1",
+          "httpStatus": 200
+        },
+        "requestIds": [
+          "63c4eb27-a58a-4a15-a223-b6bdf1006e25",
+          "cf14c846-47e2-49df-ac08-d0b15ad099fe",
+          "5b8f1410-eb8c-49dd-9300-1d02f245a6ae",
+          "2b3de292-e0a1-4254-b904-2f4b68498a3a",
+          "07a56c69-0be6-4373-aa2f-88dfd85e24e7",
+          "f27b8efa-78c5-408b-8341-37d4fa2e763e",
+          "ea689fae-54b2-4fb1-83d0-0accc0f3b044",
+          "16ff2716-4223-43bd-90b3-3a95ee4b3990",
+          "7f72dc0c-0ec8-4f01-a87e-6cc1db8f7851",
+          "2858d028-c74f-4dbf-9038-1cc736c66d32",
+          "1fe591db-f29e-4575-80e8-baa30d492828",
+          "d3de518e-982e-464d-b747-29a87bf215a4",
+          "b9059e66-c0b9-4324-90c0-78f9f21b1e1e",
+          "00d97fe8-8cf8-4e02-a2d1-983b40bf63ed",
+          "807afd78-9aaa-4b2b-adf2-4c7a2ed9f774",
+          "a2eb77d6-5615-4338-988e-04cb0ffe4b92",
+          "1185bdb2-0656-484b-afee-4be0aa9f5a84"
+        ]
+      },
+      "writes": [],
+      "screenshots": [
+        "07-raindrop-delivery-accepted.png"
+      ],
+      "suggestedTrimStartSeconds": 2.9,
+      "durationSeconds": 27.9
+    },
+    {
+      "file": "05-human-confirmation.webm",
+      "capturedAt": "2026-10-13T03:27:32.284Z",
+      "usableSeconds": 35,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 9.7,
+          "action": "Human confirmation saved in HydraDB; actual Raindrop status displayed."
+        },
+        {
+          "seconds": 18.8,
+          "action": "Native refresh returned the persisted confirmation."
+        },
+        {
+          "seconds": 21.9,
+          "action": "Reopened saved decision; original source remains in its Shippin database."
+        }
+      ],
+      "native": {
+        "key": "f579a1b18e9bcf5ff0fb63f7ffc2be920dd9f4701fc948c587f2e0fb18f24a92",
+        "sourceId": "github:eonsofstupid/rrflow-hydradb:apps/rrflow/src/lib/access.ts",
+        "title": "EonsofStupid/rrflow-hydradb / rrflow-app/apps/rrflow/src/lib/access.ts",
+        "decision": {
+          "key": "f579a1b18e9bcf5ff0fb63f7ffc2be920dd9f4701fc948c587f2e0fb18f24a92",
+          "destination": "shippin",
+          "note": "",
+          "updatedAt": "2026-10-13T03:27:43.784Z",
+          "sourceVersion": "92dcf3144df73e04776edd4af8429d4660b6352cb3c5c89cba64b8bc131a0d5b"
+        },
+        "telemetry": {
+          "status": "accepted"
+        },
+        "requestIds": [
+          "a902f6f5-eae5-4e53-bfe8-70083211d199",
+          "27a5d3f7-8f8a-48df-818b-23ed55e99043",
+          "9f1e1a56-1e3b-4649-b613-3fbb3ba0bbaa",
+          "5670a72e-0de2-4aef-94f6-eb66320bf5c5",
+          "7de21d1a-d8cb-4100-ac5b-0f2f84e897b6",
+          "03cc336a-248a-4c3e-93d0-4a9293beed5f",
+          "b8f1f85c-6f19-48dd-9886-7f139e5d1acf",
+          "33531f15-d0c5-4125-828a-b1413f028a44",
+          "82477bce-ebe7-4c55-acc7-447ca2a5e8be",
+          "f1c69f95-1ee8-448e-9d0a-2f21a07f0b73",
+          "1353a76a-9cf0-4e0a-8e93-5258cdc5fe7b",
+          "82525887-7d6d-4679-8338-938da85243a5",
+          "0c04a4cc-f53e-481b-9765-8364ea03591f",
+          "5086a07e-d5d0-471b-ba2b-1fb5002f3ea6",
+          "bbe789c3-33d3-404f-9622-d5ce8b2c7f72",
+          "f4f1ecfa-ea46-40e8-a4d4-481e3658252e",
+          "367dc20b-ab28-4bea-9f4c-b623fadf9ae5"
+        ],
+        "persistedAfterRefresh": true
+      },
+      "writes": [
+        {
+          "action": "Explicitly authorized single human confirmation",
+          "database": "rrflow_specialist",
+          "key": "f579a1b18e9bcf5ff0fb63f7ffc2be920dd9f4701fc948c587f2e0fb18f24a92",
+          "destination": "shippin"
+        }
+      ],
+      "screenshots": [
+        "05-human-confirmation-explanation.png",
+        "05-human-confirmation-saved.png",
+        "05-human-confirmation-persisted.png"
+      ],
+      "suggestedTrimStartSeconds": 4.5,
+      "durationSeconds": 41.5
+    },
+    {
+      "file": "04-development-learning.webm",
+      "capturedAt": "2026-10-13T03:27:32.278Z",
+      "usableSeconds": 48,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 8.1,
+          "action": "Opened versioned evidence schema and SHA-256."
+        },
+        {
+          "seconds": 16.2,
+          "action": "Opened actual passing graph regression check and pinned source assertion."
+        },
+        {
+          "seconds": 26.4,
+          "action": "Inspected existing reviewed ambiguous-alert failure, correction, and passing follow-up."
+        }
+      ],
+      "native": {
+        "evidenceId": "learning-d6f79d78a33a3ed46b373477bc8e748e",
+        "commit": "06c7de09a45e501ec869c69fe1fb2c457438c534",
+        "runUrl": "https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/38340002520",
+        "captureMode": "automatic-ci",
+        "schema": {
+          "version": "1.0",
+          "path": "rrflow-app/scripts/learning-evidence.schema.json",
+          "sha256": "d7226048618bc2b7ce08842561c9f40e4b46cc70d262988bdcf921e9c4ff6b6b",
+          "sourceUrl": "https://github.com/EonsofStupid/rrflow-hydradb/blob/06c7de09a45e501ec869c69fe1fb2c457438c534/rrflow-app/scripts/learning-evidence.schema.json"
+        }
+      },
+      "writes": [],
+      "screenshots": [
+        "04-development-learning-automatic-ci.png",
+        "04-development-learning-schema.png",
+        "04-development-learning-source-check.png",
+        "04-development-learning-reviewed-lesson.png"
+      ],
+      "suggestedTrimStartSeconds": 2.9,
+      "durationSeconds": 52.9
+    },
+    {
+      "file": "02-cloud-work-source-ready.webm",
+      "capturedAt": "2026-10-13T03:29:33.458Z",
+      "usableSeconds": 35,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 8.5,
+          "action": "Expanded the actual public Work document and source provenance."
+        },
+        {
+          "seconds": 21.1,
+          "action": "Public original document pointer shown; fixed HydraDB Work destination retained."
+        },
+        {
+          "seconds": 27.2,
+          "action": "Returned to actual indexing status and last import times."
+        }
+      ],
+      "native": {
+        "scope": "work",
+        "database": "rrflow_specialist",
+        "collection": "rrflow_shippin_sources",
+        "location": "external",
+        "connected": true,
+        "points": [
+          {
+            "id": "085535f5-358c-4ebd-8039-30de779efdca",
+            "title": "RRFLOW public repository · TEAM.md",
+            "sourceUrl": "https://github.com/EonsofStupid/rrflow-hydradb/blob/8775997805e99a430cd8aba4a049b4ba35d90a0e/TEAM.md",
+            "hydraId": "qdrant:work:rrflow_shippin_sources:085535f5-358c-4ebd-8039-30de779efdca",
+            "indexingStatus": null
+          },
+          {
+            "id": "b164ac1c-c71e-4682-808b-496128f46d47",
+            "title": "RRFLOW public repository · rrflow-app/README.md",
+            "sourceUrl": "https://github.com/EonsofStupid/rrflow-hydradb/blob/8775997805e99a430cd8aba4a049b4ba35d90a0e/rrflow-app/README.md",
+            "hydraId": "qdrant:work:rrflow_shippin_sources:b164ac1c-c71e-4682-808b-496128f46d47",
+            "indexingStatus": null
+          },
+          {
+            "id": "e71a170f-3ae9-41c8-8b95-c6fbd014f836",
+            "title": "RRFLOW public repository · README.md",
+            "sourceUrl": "https://github.com/EonsofStupid/rrflow-hydradb/blob/8775997805e99a430cd8aba4a049b4ba35d90a0e/README.md",
+            "hydraId": "qdrant:work:rrflow_shippin_sources:e71a170f-3ae9-41c8-8b95-c6fbd014f836",
+            "indexingStatus": null
+          }
+        ]
+      },
+      "writes": [],
+      "screenshots": [
+        "02-cloud-work-source-ready-destination.png",
+        "02-cloud-work-source-ready-provenance.png"
+      ],
+      "suggestedTrimStartSeconds": 3.7,
+      "durationSeconds": 40.7
+    },
+    {
+      "file": "01-native-graph-ready.webm",
+      "capturedAt": "2026-10-13T03:29:33.459Z",
+      "usableSeconds": 37,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 9.4,
+          "action": "Actual TypeScript research and original source pointer loaded."
+        },
+        {
+          "seconds": 14.9,
+          "action": "Opened actual Configuration and Toolchain research questions."
+        },
+        {
+          "seconds": 23.4,
+          "action": "Returned to relationship graph."
+        },
+        {
+          "seconds": 23.4,
+          "action": "Inspected recorded TypeScript to Engineering core direction."
+        },
+        {
+          "seconds": 30.5,
+          "action": "Real zoom and fit controls."
+        }
+      ],
+      "native": {
+        "nodes": 6,
+        "relationships": 7,
+        "originalSourcePointer": "https://docs.google.com/document/d/1WiHxZ88HnGgmmAsKlU2E267COed5G7Lwk_99JX91JIQ/edit",
+        "sourcePointerOpenedExternally": false
+      },
+      "writes": [],
+      "screenshots": [
+        "01-native-graph-ready-graph.png",
+        "01-native-graph-ready-typescript.png",
+        "01-native-graph-ready-avenue.png"
+      ],
+      "suggestedTrimStartSeconds": 2.8,
+      "durationSeconds": 41.8
+    },
+    {
+      "file": "03-code-sync-ready.webm",
+      "capturedAt": "2026-10-13T03:29:33.461Z",
+      "usableSeconds": 40,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 9.6,
+          "action": "Pinned actual GitHub workflow link and native checkpoint shown."
+        },
+        {
+          "seconds": 17.3,
+          "action": "Read-only native checkpoint refresh completed."
+        },
+        {
+          "seconds": 22.3,
+          "action": "Expanded actual source-sync request IDs and accepted Raindrop event."
+        }
+      ],
+      "native": {
+        "commit": "06c7de09a45e501ec869c69fe1fb2c457438c534",
+        "phase": "searchable",
+        "total": 111,
+        "searchable": 111,
+        "completed": 103,
+        "runUrl": "https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/38340002442",
+        "raindrop": {
+          "status": "accepted",
+          "eventId": "github-sync-06c7de09a45e501ec869c69fe1fb2c457438c534-38340002442-1",
+          "httpStatus": 200
+        },
+        "requestIds": [
+          "63c4eb27-a58a-4a15-a223-b6bdf1006e25",
+          "cf14c846-47e2-49df-ac08-d0b15ad099fe",
+          "5b8f1410-eb8c-49dd-9300-1d02f245a6ae",
+          "2b3de292-e0a1-4254-b904-2f4b68498a3a",
+          "07a56c69-0be6-4373-aa2f-88dfd85e24e7",
+          "f27b8efa-78c5-408b-8341-37d4fa2e763e",
+          "ea689fae-54b2-4fb1-83d0-0accc0f3b044",
+          "16ff2716-4223-43bd-90b3-3a95ee4b3990",
+          "7f72dc0c-0ec8-4f01-a87e-6cc1db8f7851",
+          "2858d028-c74f-4dbf-9038-1cc736c66d32",
+          "1fe591db-f29e-4575-80e8-baa30d492828",
+          "d3de518e-982e-464d-b747-29a87bf215a4",
+          "b9059e66-c0b9-4324-90c0-78f9f21b1e1e",
+          "00d97fe8-8cf8-4e02-a2d1-983b40bf63ed",
+          "807afd78-9aaa-4b2b-adf2-4c7a2ed9f774",
+          "a2eb77d6-5615-4338-988e-04cb0ffe4b92",
+          "1185bdb2-0656-484b-afee-4be0aa9f5a84"
+        ]
+      },
+      "writes": [],
+      "screenshots": [
+        "03-code-sync-ready-checkpoint.png",
+        "03-code-sync-ready-evidence.png"
+      ],
+      "suggestedTrimStartSeconds": 2.9,
+      "durationSeconds": 44.8
+    },
+    {
+      "file": "06-retrieve-reviewed-lesson-contents.webm",
+      "capturedAt": "2026-10-13T03:39:15.188Z",
+      "usableSeconds": 35,
+      "status": "captured",
+      "authentication": "Local owner exception; actual production app and cloud services",
+      "privacy": "Personal content covered before navigation; unrelated source regions hidden before reveal",
+      "cues": [
+        {
+          "seconds": 0,
+          "action": "Actual safe workspace view revealed; two-second editing handle."
+        },
+        {
+          "seconds": 8.5,
+          "action": "Actual HydraDB query returned the reviewed lesson as future-work context; no AI answer was generated."
+        },
+        {
+          "seconds": 14.1,
+          "action": "Expanded actual retrieved context showing the human-reviewed diagnosis, correction, and future practice."
+        },
+        {
+          "seconds": 26.6,
+          "action": "Actual native request ID and scoped collection remain visible."
+        }
+      ],
+      "native": {
+        "requestId": "dd7dc5f2-2129-48a2-82a9-7916a9b7583e",
+        "latencyMs": 175.1,
+        "request": {
+          "collections": [
+            "rrflow_lessons"
+          ],
+          "query": "For failure-state UI checks, scope the assertion to the intended region and error message",
+          "type": "knowledge",
+          "queryBy": "hybrid",
+          "mode": "fast",
+          "maxResults": 5,
+          "alpha": "auto",
+          "recencyBias": 0.4,
+          "graphContext": false,
+          "forcefulRelations": false,
+          "temporalReasoning": false
+        },
+        "chunks": [
+          {
+            "id": "reviewed-lesson:e55bf51095223b807ca8925591b296461811d830836ede2018275e94ec08f59d",
+            "title": "Reviewed lesson: Playwright sync, connector, and refresh checks (no live credentials)",
+            "url": ""
+          }
+        ]
+      },
+      "writes": [],
+      "screenshots": [
+        "06-retrieve-reviewed-lesson-contents-scoped-query.png",
+        "06-retrieve-reviewed-lesson-contents-retrieved-lesson.png",
+        "06-retrieve-reviewed-lesson-contents-lesson-contents.png"
+      ],
+      "suggestedTrimStartSeconds": 4,
+      "durationSeconds": 41
+    }
+  ],
+  "privacyReview": "Only curated public examples, public Work source context, engineering research and service receipts. No credentials, personal inbox or secret provider fields."
+}

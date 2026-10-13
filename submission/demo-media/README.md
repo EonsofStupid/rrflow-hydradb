@@ -1,5 +1,13 @@
 # RRFLOW event media
 
+## Full lifecycle film — 4:50
+
+[Watch the expanded film](lifecycle/rrflow-lifecycle-demo.mp4) · [Higgsfield playback](https://d2ol7oe51mr4n9.cloudfront.net/user_3BfnxGUAoM4RM8lwA6WAH3u7aFb/4a777cc4-8565-4829-ba7e-49db9938b747.mp4) · [Captions and evidence](lifecycle/README.md).
+
+This separate native Higgsedit film connects the real user loop—inspect context, confirm its placement, refresh and see it persist—with RRFLOW's development loop: repository sync, automatic CI capture, human-reviewed correction and retrieval of the saved lesson for the next change. The actual returned lesson contents are expanded on screen. Owner footage is labeled local production; the closing event URL is the independently verified Modelence deployment.
+
+The export is **290.004 seconds, 30.66 MB, 1080p, 24 fps, H.264**, silent with 35 editorial captions. All eleven source clips and native previews were reviewed; the complete encoded export decoded successfully and final evidence frames passed visual review. The Higgsfield upload returned HTTP 200, media ID `4a777cc4-8565-4829-ba7e-49db9938b747` is confirmed, and its native result player was displayed. SHA-256: `e1ebed2766aed34409acd6ea1bfa0d640721bb3e7721c2da27f5982ad9914efe`.
+
 ## Finished film
 
 [Watch the captioned three-minute demo](rrflow-event-demo.mp4). The reviewed export is **180.02 seconds, 35,827,710 bytes (35.83 MB), 1920×1080, 24 fps, H.264/AAC**. Its audio track is silent. It combines the Higgsfield concept intro with actual local production UI at normal speed. The public placement is explicitly a preview; the owner-workspace shot shows real TypeScript research drill-down; the receipt is a HydraDB read.

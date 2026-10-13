@@ -1,0 +1,502 @@
+{
+  "version": 1,
+  "reviewed": true,
+  "finalReviewApproved": true,
+  "targetSeconds": 290,
+  "editorial": "Silent captioned film. Actual UI at recorded speed. No synthetic narrator. Source cuts and editorial overlays do not change app results.",
+  "hostedEvent": {
+    "url": "https://rrflow-mv63m3vynl0-prod.cloud.modelence.app",
+    "verifiedAt": "2026-10-13T03:35:00Z",
+    "evidence": "Root hosted Playwright smoke: 8 checks passed; public six-source native HydraDB read; private API 401; login/logout and CSRF verified.",
+    "expiresAt": "2026-10-14T03:24:33.967Z"
+  },
+  "inputs": [
+    {
+      "file": "intro.mp4",
+      "sha256": "3489793de070c8e9663eb96877fda13232830b412df944ea1314d13e12ebe23c",
+      "reviewed": true,
+      "original": "rrflow-concept-intro-web.mp4"
+    },
+    {
+      "file": "entry.webm",
+      "sha256": "84e9df2290a83479882ef96c9961c07f719caae9939deab05d97b86d8a6fe28c",
+      "reviewed": true,
+      "original": "recordings/01-entry.webm"
+    },
+    {
+      "file": "preview.webm",
+      "sha256": "ca8313a0f78574652e4eb35c35e827df7589f8fdb1a72d1a46e9e8395d621d4b",
+      "reviewed": true,
+      "original": "recordings/02-source-preview.webm"
+    },
+    {
+      "file": "close.webm",
+      "sha256": "720251ec41e6f0aaea484eab22026f8d2cb8f0254ac9723e97e1f89ca3bfe37c",
+      "reviewed": true,
+      "original": "recordings/06-close.webm"
+    },
+    {
+      "file": "confirmation.webm",
+      "sha256": "0359e522162e4aedf23f0b3cdea23b38e601be218613bb39b2f09b0224bc9fa4",
+      "reviewed": true,
+      "original": "recordings/lifecycle/05-human-confirmation.webm"
+    },
+    {
+      "file": "graph.webm",
+      "sha256": "cf95dfd79e4b00d74341bce4a8e8558ced0328e5604b48d8ce56a167febf1a70",
+      "reviewed": true,
+      "original": "recordings/lifecycle/01-native-graph-ready.webm"
+    },
+    {
+      "file": "qdrant.webm",
+      "sha256": "0e2e4337ba3870c82780fdbe268e20e9af0540356cb3bc3791333e7ad5d0076e",
+      "reviewed": true,
+      "original": "recordings/lifecycle/02-cloud-work-source-ready.webm"
+    },
+    {
+      "file": "sync.webm",
+      "sha256": "aba4db49143008ac66149bc793e80fde925dbff1d6e2dff98b87d936c77d3ddd",
+      "reviewed": true,
+      "original": "recordings/lifecycle/03-code-sync-ready.webm"
+    },
+    {
+      "file": "learning.webm",
+      "sha256": "e8b90204f237ab77bf783a82716102d2e8f7d3cb21437c5da9fb9fe047d5f733",
+      "reviewed": true,
+      "original": "recordings/lifecycle/04-development-learning.webm"
+    },
+    {
+      "file": "retrieval.webm",
+      "sha256": "5a9b15e097059183ab3b59125d339433e02746a486f7b951da27aa31dcdfe6cf",
+      "reviewed": true,
+      "original": "recordings/lifecycle/06-retrieve-reviewed-lesson-contents.webm"
+    },
+    {
+      "file": "raindrop.webm",
+      "sha256": "671ccf9b77ca772e734fb40cc5faae429f05ffa8c64266f53594a22774d516e6",
+      "reviewed": true,
+      "original": "recordings/lifecycle/07-raindrop-delivery.webm"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "intro",
+      "duration": 8,
+      "label": "Concept illustration",
+      "loop": "user",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Higgsfield concept illustration",
+      "shots": [
+        {
+          "file": "intro.mp4",
+          "from": 0,
+          "duration": 8
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.4,
+          "end": 7.6,
+          "text": "Your context. Your work. Your next attempt.\nConnected through evidence.",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "entry",
+      "duration": 15,
+      "label": "01 · Use RRFLOW · public walkthrough",
+      "loop": "user",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Curated public demo · local recording",
+      "shots": [
+        {
+          "file": "entry.webm",
+          "from": 0.3,
+          "duration": 15
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.4,
+          "end": 6.8,
+          "text": "Personal life and Shippin work.\nOne clear view, with separate boundaries.",
+          "position": "bottom"
+        },
+        {
+          "start": 7,
+          "end": 14.7,
+          "text": "This public walkthrough uses fictional Personal examples\nand already-public work sources.",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "preview",
+      "duration": 27,
+      "label": "01 · Inspect the source · public preview",
+      "loop": "user",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Curated public demo · local recording",
+      "shots": [
+        {
+          "file": "preview.webm",
+          "from": 1,
+          "duration": 27
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 8.4,
+          "text": "Open a source. Understand why it belongs here.\nKeep the original revision within reach.",
+          "position": "bottom"
+        },
+        {
+          "start": 8.6,
+          "end": 18.8,
+          "text": "Try another home and inspect the result.\nThis public action is a preview for this visit.",
+          "position": "bottom"
+        },
+        {
+          "start": 19,
+          "end": 26.8,
+          "text": "The distinction matters:\na preview and a saved decision are different.",
+          "position": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "confirmation",
+      "duration": 35,
+      "label": "02 · Confirm a real placement · public Work source",
+      "loop": "user",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "confirmation.webm",
+          "from": 4.5,
+          "duration": 35
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 7.4,
+          "text": "This access-control source belongs to Shippin work.\nA person confirms the correct suggestion.",
+          "position": "top"
+        },
+        {
+          "start": 8.2,
+          "end": 16.3,
+          "text": "Saved in HydraDB. Raindrop accepted the review event.\nThe original source stays in its database.",
+          "position": "top"
+        },
+        {
+          "start": 17.1,
+          "end": 25.1,
+          "text": "Refresh, then reopen.\nThe human confirmation is still there.",
+          "position": "top"
+        },
+        {
+          "start": 25.4,
+          "end": 34.8,
+          "text": "This decision applies to this source.\nIt does not silently create a rule for everything.",
+          "position": "top"
+        }
+      ],
+      "previewAt": 24
+    },
+    {
+      "id": "graph",
+      "duration": 28,
+      "label": "03 · Explore the specialist · native HydraDB graph",
+      "loop": "user",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "graph.webm",
+          "from": 2.8,
+          "duration": 28
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 6.9,
+          "text": "Six engineering disciplines. Seven recorded relationships.\nOpen the knowledge behind a specialist.",
+          "position": "top"
+        },
+        {
+          "start": 7.7,
+          "end": 12.5,
+          "text": "TypeScript opens its research origin\nand source-backed avenues.",
+          "position": "bottom"
+        },
+        {
+          "start": 13.4,
+          "end": 20.7,
+          "text": "Inspect the questions before relying on them.\nDraft research remains explicitly marked as draft.",
+          "position": "bottom"
+        },
+        {
+          "start": 21.8,
+          "end": 27.8,
+          "text": "A relationship is inspectable evidence,\nwith a direction and an origin.",
+          "position": "top"
+        }
+      ],
+      "previewAt": 17
+    },
+    {
+      "id": "qdrant",
+      "duration": 24,
+      "label": "04 · Connect existing sources · Qdrant Cloud to HydraDB",
+      "loop": "user",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "qdrant.webm",
+          "from": 3.7,
+          "duration": 10
+        },
+        {
+          "file": "qdrant.webm",
+          "from": 22.7,
+          "duration": 14
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 6.1,
+          "text": "Existing Work context comes from Qdrant Cloud.\nThe destination is the Shippin HydraDB database.",
+          "position": "bottom"
+        },
+        {
+          "start": 6.7,
+          "end": 16.5,
+          "text": "Inspect the source and its public revision.\nIts identity stays attached to the imported knowledge.",
+          "position": "bottom"
+        },
+        {
+          "start": 17,
+          "end": 23.8,
+          "text": "These three Work records are indexed in HydraDB.\nThe interface shows each record’s last import.",
+          "position": "bottom"
+        }
+      ],
+      "previewAt": 19
+    },
+    {
+      "id": "sync",
+      "duration": 40,
+      "label": "05 · Develop RRFLOW · code becomes shared knowledge",
+      "loop": "development",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "sync.webm",
+          "from": 2.9,
+          "duration": 40
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 7.2,
+          "text": "Now use the same discipline to build RRFLOW.\nMain-branch changes trigger configured source sync.",
+          "position": "bottom"
+        },
+        {
+          "start": 7.8,
+          "end": 15,
+          "text": "The checkpoint links the public workflow and commit.\nHydraDB owns the recorded synchronization state.",
+          "position": "bottom"
+        },
+        {
+          "start": 15.7,
+          "end": 23.5,
+          "text": "This read shows 111 searchable sources,\nwith 103 finished through every indexing stage.",
+          "position": "top"
+        },
+        {
+          "start": 23.8,
+          "end": 31.6,
+          "text": "This incremental run found zero changed files.\nIt did not freshly ingest all 111 sources.",
+          "position": "top"
+        },
+        {
+          "start": 31.9,
+          "end": 39.8,
+          "text": "Source changes, checks and native request IDs\nremain available for inspection.",
+          "position": "top"
+        }
+      ],
+      "previewAt": 25
+    },
+    {
+      "id": "learning",
+      "duration": 48,
+      "label": "06 · Capture automatically · review the lesson",
+      "loop": "development",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "learning.webm",
+          "from": 2.9,
+          "duration": 48
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 5.8,
+          "text": "The latest CI observation was captured automatically.\nForty-one actual checks, tied to commit 06c7de09.",
+          "position": "bottom"
+        },
+        {
+          "start": 6.4,
+          "end": 13.7,
+          "text": "Open the versioned evidence schema.\nIt records outcomes; it does not invent a diagnosis.",
+          "position": "bottom"
+        },
+        {
+          "start": 14.6,
+          "end": 23.8,
+          "text": "Inspect the passing graph regression check\nand its pinned source assertion.",
+          "position": "top"
+        },
+        {
+          "start": 24.9,
+          "end": 32.5,
+          "text": "An earlier, imported CI case became a reviewed lesson:\na broad alert selector matched two messages.",
+          "position": "bottom"
+        },
+        {
+          "start": 32.8,
+          "end": 40.6,
+          "text": "The reviewed correction targets the intended alert.\nA linked later run passed that same check.",
+          "position": "bottom"
+        },
+        {
+          "start": 40.9,
+          "end": 47.8,
+          "text": "The failure, correction and follow-up stay together.\nA person reviewed this lesson; code was not fixed autonomously.",
+          "position": "bottom"
+        }
+      ],
+      "previewAt": 35
+    },
+    {
+      "id": "retrieval",
+      "duration": 35,
+      "label": "07 · Retrieve the lesson · context for the next change",
+      "loop": "development",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "retrieval.webm",
+          "from": 4,
+          "duration": 35
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 8.3,
+          "text": "Ask for the reviewed failure-state UI practice.\nSearch only the saved lesson collection.",
+          "position": "bottom"
+        },
+        {
+          "start": 8.6,
+          "end": 16.8,
+          "text": "HydraDB returns the reviewed lesson as one result.\nThe diagnosis and correction travel with it.",
+          "position": "bottom"
+        },
+        {
+          "start": 17.1,
+          "end": 25.2,
+          "text": "The practice is specific: scope the alert check\nto its intended region and error message.",
+          "position": "bottom"
+        },
+        {
+          "start": 25.5,
+          "end": 34.8,
+          "text": "The next developer can inspect and reuse this context.\nRetrieval is demonstrated; an automatic code change is not.",
+          "position": "bottom"
+        }
+      ],
+      "previewAt": 23
+    },
+    {
+      "id": "raindrop",
+      "duration": 23,
+      "label": "08 · Observe the loop · actual Raindrop delivery",
+      "loop": "development",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Owner workspace · local production",
+      "shots": [
+        {
+          "file": "raindrop.webm",
+          "from": 2.9,
+          "duration": 23
+        }
+      ],
+      "captions": [
+        {
+          "start": 0.3,
+          "end": 6,
+          "text": "Raindrop accepted the workflow event: HTTP 200.\nThe recorded event identity is visible.",
+          "position": "top"
+        },
+        {
+          "start": 6.5,
+          "end": 14.5,
+          "text": "Native request IDs connect this status\nto the same synchronization evidence.",
+          "position": "top"
+        },
+        {
+          "start": 14.8,
+          "end": 22.8,
+          "text": "Delivery, saved evidence and reviewed practice are distinct.\nAn accepted event alone does not prove improved quality.",
+          "position": "top"
+        }
+      ],
+      "previewAt": 10
+    },
+    {
+      "id": "close",
+      "duration": 7,
+      "label": "RRFLOW · inspect, decide, remember, improve",
+      "loop": "development",
+      "reviewed": true,
+      "captionsReviewed": true,
+      "provenance": "Curated public demo · local recording",
+      "shots": [
+        {
+          "file": "close.webm",
+          "from": 1,
+          "duration": 7
+        }
+      ],
+      "captions": []
+    }
+  ]
+}

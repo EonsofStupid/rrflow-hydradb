@@ -10,6 +10,8 @@ Hosted event: https://rrflow-mv63m3vynl0-prod.cloud.modelence.app. The curated p
 
 ## Three-minute demonstration
 
+The new [4:50 lifecycle film](demo-media/lifecycle/rrflow-lifecycle-demo.mp4) covers both the user experience and the development capture → reviewed correction → retrieval loop. It is a finished, silent, captioned Higgsfield edit of actual UI. [Playback and evidence](demo-media/lifecycle/README.md) · [Presenter script](DEMO_LIFECYCLE_SCRIPT.md) · [Devpost video upload handoff](DEVPOST_VIDEO_UPLOAD.md). The original three-minute film remains available and unchanged.
+
 Use [the timed talk and exact clicks](THREE_MINUTE_DEMO.md): recorded lesson → live retrieval → generated A2UI guidance → Raindrop event and helpfulness feedback. This demonstrates reuse of experience and quality capture; automatic feedback-to-lesson promotion remains future work.
 
 ## Current screenshots

@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "path": "renders/rrflow-lifecycle-demo.mp4",
+  "frames": 6960,
+  "durationSeconds": 290,
+  "diagnostics": [],
+  "fallbacks": [],
+  "backend": "cpu",
+  "bytes": 30657340,
+  "sha256": "e1ebed2766aed34409acd6ea1bfa0d640721bb3e7721c2da27f5982ad9914efe"
+}

@@ -1,0 +1,174 @@
+1
+00:00:00,400 --> 00:00:07,600
+Your context. Your work. Your next attempt.
+Connected through evidence.
+
+2
+00:00:08,400 --> 00:00:14,800
+Personal life and Shippin work.
+One clear view, with separate boundaries.
+
+3
+00:00:15,000 --> 00:00:22,700
+This public walkthrough uses fictional Personal examples
+and already-public work sources.
+
+4
+00:00:23,300 --> 00:00:31,400
+Open a source. Understand why it belongs here.
+Keep the original revision within reach.
+
+5
+00:00:31,600 --> 00:00:41,800
+Try another home and inspect the result.
+This public action is a preview for this visit.
+
+6
+00:00:42,000 --> 00:00:49,800
+The distinction matters:
+a preview and a saved decision are different.
+
+7
+00:00:50,300 --> 00:00:57,400
+This access-control source belongs to Shippin work.
+A person confirms the correct suggestion.
+
+8
+00:00:58,200 --> 00:01:06,300
+Saved in HydraDB. Raindrop accepted the review event.
+The original source stays in its database.
+
+9
+00:01:07,100 --> 00:01:15,100
+Refresh, then reopen.
+The human confirmation is still there.
+
+10
+00:01:15,400 --> 00:01:24,800
+This decision applies to this source.
+It does not silently create a rule for everything.
+
+11
+00:01:25,300 --> 00:01:31,900
+Six engineering disciplines. Seven recorded relationships.
+Open the knowledge behind a specialist.
+
+12
+00:01:32,700 --> 00:01:37,500
+TypeScript opens its research origin
+and source-backed avenues.
+
+13
+00:01:38,400 --> 00:01:45,700
+Inspect the questions before relying on them.
+Draft research remains explicitly marked as draft.
+
+14
+00:01:46,800 --> 00:01:52,800
+A relationship is inspectable evidence,
+with a direction and an origin.
+
+15
+00:01:53,300 --> 00:01:59,100
+Existing Work context comes from Qdrant Cloud.
+The destination is the Shippin HydraDB database.
+
+16
+00:01:59,700 --> 00:02:09,500
+Inspect the source and its public revision.
+Its identity stays attached to the imported knowledge.
+
+17
+00:02:10,000 --> 00:02:16,800
+These three Work records are indexed in HydraDB.
+The interface shows each record’s last import.
+
+18
+00:02:17,300 --> 00:02:24,200
+Now use the same discipline to build RRFLOW.
+Main-branch changes trigger configured source sync.
+
+19
+00:02:24,800 --> 00:02:32,000
+The checkpoint links the public workflow and commit.
+HydraDB owns the recorded synchronization state.
+
+20
+00:02:32,700 --> 00:02:40,500
+This read shows 111 searchable sources,
+with 103 finished through every indexing stage.
+
+21
+00:02:40,800 --> 00:02:48,600
+This incremental run found zero changed files.
+It did not freshly ingest all 111 sources.
+
+22
+00:02:48,900 --> 00:02:56,800
+Source changes, checks and native request IDs
+remain available for inspection.
+
+23
+00:02:57,300 --> 00:03:02,800
+The latest CI observation was captured automatically.
+Forty-one actual checks, tied to commit 06c7de09.
+
+24
+00:03:03,400 --> 00:03:10,700
+Open the versioned evidence schema.
+It records outcomes; it does not invent a diagnosis.
+
+25
+00:03:11,600 --> 00:03:20,800
+Inspect the passing graph regression check
+and its pinned source assertion.
+
+26
+00:03:21,900 --> 00:03:29,500
+An earlier, imported CI case became a reviewed lesson:
+a broad alert selector matched two messages.
+
+27
+00:03:29,800 --> 00:03:37,600
+The reviewed correction targets the intended alert.
+A linked later run passed that same check.
+
+28
+00:03:37,900 --> 00:03:44,800
+The failure, correction and follow-up stay together.
+A person reviewed this lesson; code was not fixed autonomously.
+
+29
+00:03:45,300 --> 00:03:53,300
+Ask for the reviewed failure-state UI practice.
+Search only the saved lesson collection.
+
+30
+00:03:53,600 --> 00:04:01,800
+HydraDB returns the reviewed lesson as one result.
+The diagnosis and correction travel with it.
+
+31
+00:04:02,100 --> 00:04:10,200
+The practice is specific: scope the alert check
+to its intended region and error message.
+
+32
+00:04:10,500 --> 00:04:19,800
+The next developer can inspect and reuse this context.
+Retrieval is demonstrated; an automatic code change is not.
+
+33
+00:04:20,300 --> 00:04:26,000
+Raindrop accepted the workflow event: HTTP 200.
+The recorded event identity is visible.
+
+34
+00:04:26,500 --> 00:04:34,500
+Native request IDs connect this status
+to the same synchronization evidence.
+
+35
+00:04:34,800 --> 00:04:42,800
+Delivery, saved evidence and reviewed practice are distinct.
+An accepted event alone does not prove improved quality.
