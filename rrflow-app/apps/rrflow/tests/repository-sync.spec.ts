@@ -5,7 +5,7 @@ import type { RepositorySyncSnapshot, RepositorySyncState } from '../src/lib/rep
 
 test('committed repository changes add, edit, retire and retry safely without live credentials', () => {
   const output = execFileSync(process.execPath, [resolve('tests/helpers/repository-sync-fixture.mjs')], { encoding: 'utf8', timeout: 30_000 });
-  expect(JSON.parse(output).scenarios).toEqual(['add', 'nested-repository-citations', 'no-op', 'edit', 'delete-retry', 'indexing-failure-retry', 'malformed-upstream', 'corrupt-checkpoint-no-writes', 'foreign-manifest-no-writes']);
+  expect(JSON.parse(output).scenarios).toEqual(['add', 'nested-repository-citations', 'no-op', 'edit', 'delete-retry', 'indexing-failure-retry', 'malformed-upstream', 'corrupt-checkpoint-no-writes', 'foreign-manifest-no-writes', 'long-path-identifiers']);
 });
 
 test('GitHub sync shows native progress, refreshes into readiness and preserves failure visibility', async ({ page }) => {

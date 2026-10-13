@@ -21,3 +21,10 @@ Images 01–06 show the earlier build. Prefer 07–09 for the current submission
 [Raindrop context-alignment feedback](screenshots/10-raindrop-context-alignment.jpg) shows native read-back of the generated-workspace event and its helpfulness signal.
 
 **Latest integrated dashboard:** [HydraDB and Raindrop on Overview](screenshots/11-dashboard-hydradb-raindrop.png) and [context-alignment feedback inside the dashboard](screenshots/12-dashboard-context-alignment.png). The presentation flow now works entirely inside RRFLOW; opening the provider's website is optional.
+# Latest live captures
+
+- `screenshots/13-context-inbox-live.png`: real Personal collection sample with source titles hidden; lane counts are a bounded sample.
+- `screenshots/14-learning-trail-live.png`: automatic GitHub CI capture and the evidence-linked reviewed lesson.
+- `screenshots/15-learning-rule-evidence-live.png`: historical failure, its versioned interpretation schema, and source drill-down.
+
+These three captures use native data. Earlier UI test screenshots may use explicitly labeled fixtures. Modelence is a supported deployment direction under evaluation, not a deployed submission URL; see `research/MODELENCE_DEPLOYMENT.md`.

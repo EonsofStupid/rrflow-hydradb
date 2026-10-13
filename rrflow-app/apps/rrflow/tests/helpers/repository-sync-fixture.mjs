@@ -28,6 +28,7 @@ const fetch = async (input, options = {}) => {
   if (url.pathname === '/context/ingest') {
     assert.equal(options.body.get('upsert'), 'true');
     const docs = JSON.parse(options.body.get('app_knowledge'));
+    if (docs.some(doc => Buffer.byteLength(doc.id) > 100)) return new Response(JSON.stringify({ success: false, error: { message: 'Invalid app_knowledge source id: source_id exceeds maximum of 100 bytes' } }), { status: 400 });
     for (const doc of docs) { sources.set(doc.id, doc); ingested.push(doc); }
     return envelope({ failed_count: 0, results: docs.map(doc => ({ id: doc.id, status: 'queued', error: null })) }, 202);
   }
@@ -72,8 +73,18 @@ try {
   await assert.rejects(run, /manifest is invalid/); assert.equal(writes, writesBefore);
   assert.throws(() => readCheckpoint([{ state: JSON.stringify({ ...valid, database: 'other' }) }]), /different scope/);
   assert.throws(() => indexingProgress({ statuses: [] }, ['missing']), /omitted/);
+  checkpoint = valid;
+  const longPath = 'apps/rrflow/src/components/context-organizer/deeply-nested-knowledge-workspace/long-source.ts';
+  mkdirSync(join(app, 'apps/rrflow/src/components/context-organizer/deeply-nested-knowledge-workspace'), { recursive: true });
+  writeFileSync(join(app, longPath), 'export const stableLongPath = true;\n'); commit();
+  const longSource = await run(); assert.equal(longSource.changed, 1); assert.equal(longSource.phase, 'searchable');
+  assert.ok(Buffer.byteLength(sourceId(longPath)) <= 100);
+  assert.equal(sourceId('README.md'), 'github:eonsofstupid/rrflow-hydradb:README.md');
+  assert.ok(sources.get(sourceId(longPath)).url.endsWith(`/rrflow-app/${longPath}`));
+  const afterLongSource = ingested.length;
+  assert.equal((await run()).changed, 0); assert.equal(ingested.length, afterLongSource);
   assert.ok(events.length >= 7);
-  console.log(JSON.stringify({ scenarios: ['add', 'nested-repository-citations', 'no-op', 'edit', 'delete-retry', 'indexing-failure-retry', 'malformed-upstream', 'corrupt-checkpoint-no-writes', 'foreign-manifest-no-writes'], sources: sources.size }));
+  console.log(JSON.stringify({ scenarios: ['add', 'nested-repository-citations', 'no-op', 'edit', 'delete-retry', 'indexing-failure-retry', 'malformed-upstream', 'corrupt-checkpoint-no-writes', 'foreign-manifest-no-writes', 'long-path-identifiers'], sources: sources.size }));
 } finally {
   process.chdir(original);
   // mkdtemp created this exact isolated fixture directory; never remove the real checkout.

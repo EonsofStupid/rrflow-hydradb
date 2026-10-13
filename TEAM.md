@@ -19,6 +19,8 @@ Updated October 12, 2026. Codex and the existing Claude Code session work in the
 
 ## Current application and evidence
 
+- Evening release adds Context inbox (Personal/Shippin/review with saved corrections), named collection discovery, two seeded Qdrant source libraries, and a Learning trail with actual CI, schema provenance, reviewed corrections, and workspace dogfooding. Production build and full local verification passed: 39 Playwright cases plus one opt-in live import verified separately. GitHub CI also passed and stored an automatic observation. Six Qdrant imports remain in HydraDB graph creation at last observation. Modelence hosting is researched, not deployed. See the latest implementation evidence and `rrflow-app/docs/rrflow/CONTEXT_AND_LEARNING.md`.
+
 - Clean upstream: https://github.com/digohq/app-starter at `7c528e1407aeea502423b393f793f5b17c6caf4e`, branch `feat/rrflow-brains`.
 - `rrflow-app/apps/rrflow` is the only active pnpm application. Digo's original apps/packages are preserved as inactive source reference. Rejected `app-starter/` feature commits were not imported.
 - All Node dependencies and application execution use Ubuntu WSL. Launch from PowerShell with `rrflow-app/scripts/start-local.ps1`; use `-Mode start` after a production build.

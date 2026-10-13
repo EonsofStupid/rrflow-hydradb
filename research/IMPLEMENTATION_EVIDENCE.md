@@ -64,3 +64,42 @@ The discipline graph uses hosted BYOG/Cypher. Claude's company knowledge and les
 
 - Next normalized request.url to localhost while the browser used 127.0.0.1. Same-origin checks now validate loopback Host and compare Origin with that host.
 - Windows edits under /mnt/d did not invalidate WSL Turbopack routes. Development switched to Webpack with one-second file polling; production uses the same bundler. The previous server was stopped explicitly after Windows Ctrl-C left its WSL child alive.
+# Context organization, two Qdrant sources, and learning trail — October 12 evening
+
+Release `9295c85` passed the production build, root TypeScript/lint verification,
+and 39 Playwright tests (1 explicit native-import test skipped in the full suite;
+it separately passed during the authorized import). GitHub check run `38333106577`
+passed its 20 credentialless cases and automatically stored learning evidence.
+The verified app is serving port 3100 from `.next-alignment-final`.
+
+- Two Qdrant 1.19.2 services run on loopback ports 6333/6335 with separate volumes
+  and networks. Each has three payload-only sources. Personal seeds stay in a
+  private local input file; Work seeds came from public repository documents.
+  All six imported into their correct HydraDB `qdrant_sources` collections:
+  Personal `default-tenant`, Work `rrflow_specialist`. At final observation they
+  remain `graph_creation`, not verified searchable. See `rrflow-app/docs/rrflow/QDRANT_EVIDENCE.json`.
+- A live public-source placement round trip saved/read back a decision, rejected
+  a stale write with 409, and delivered its Raindrop review event. The exact
+  temporary verification decision was removed afterward (1 removed). Native
+  write request: `296a5750-9721-45b3-99ca-eebfdc3d62e8`.
+- Historical CI failure `38321136137` and pass `38322254472` were imported with
+  `capture.mode=imported-ci`. Native requests: `3b0d2ac5-3c9c-4c75-a313-a8672ce26ab2`
+  and `7eeab8fa-30ce-4b61-af16-56aa2d472f44`. Both Raindrop events were accepted.
+- Automatic CI evidence `learning-8b815092b4b6dbf74c5e6e4b01e4c274` has 27 observed
+  checks, native request `3f7000ed-5403-4944-9ec0-9c3ffd419b42`, retrieval ingestion
+  accepted/indexing unverified, and Raindrop accepted. The dashboard read all three
+  records with no provider errors.
+- Codex reviewed the actual failed CI log: the credentialless page exposed two
+  alerts, making an unfiltered Playwright alert locator ambiguous. The correction
+  filtered by the intended error message. A reviewed lesson links the failed and
+  later passing workflow step. Lesson `e55bf51095223b807ca8925591b296461811d830836ede2018275e94ec08f59d`,
+  native write `ab6d7b34-4aa6-4b7b-8156-1edb948f868f`; retrieval and Raindrop accepted.
+  This is a reviewed engineering observation, not automatic prompt promotion.
+- Repository sync run `38333106325` exposed a separate issue: deep paths produced
+  IDs longer than HydraDB's 100-byte limit. Long IDs now use a stable hash, with
+  existing short IDs preserved. Both sync regression cases passed. A formerly
+  rejected public source was accepted HTTP 202, request
+  `c80d0ad1-ab44-4625-ba37-9127565b2174`; queued is not searchable.
+- Screenshots 13–15 show live source-title-hidden context and actual CI/lesson data.
+  Modelence deployment feasibility is documented in `research/MODELENCE_DEPLOYMENT.md`;
+  no hosted deployment has been performed.

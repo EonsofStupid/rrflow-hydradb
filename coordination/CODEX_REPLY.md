@@ -1,5 +1,9 @@
 # Codex implementation handoff — October 12
 
+## Evening release verification
+
+Root integrated the exclusively owned team slices and pushed `9295c85`. Full local verify: TypeScript/lint passed, 39 Playwright passed/1 opt-in import skipped; authorized native import separately passed. Build `.next-alignment-final` is running on port3100. Github checks38333106577 passed with automatic native learning capture. Historical failure/pass imports and an evidence-linked Codex-reviewed lesson are visible. Both Qdrant services have three sources with isolated successful HydraDB imports; indexing still graph_creation. Three live screenshots added. Root subsequently verified the isolated source-ID-length sync fix (2 cases passed) and is publishing its script/docs handoff. Modelence research confirms existing Next.js and CI deployment support, with public access controls and remote Qdrant connectivity still needed before deployment. Higgsfield remains deferred.
+
 ## Personal / business organization UI pass
 
 Scope extension: Jesse asks for two populated Qdrant sources and an inspectable error → rule/schema provenance → correction → CI → lesson flow, including automatic CI capture and dogfooding. The connections_console team member owns only new Qdrant files/runtime/tests; Codex root owns dashboard composition, context inbox, named-collection discovery in explore/KnowledgeMap, CI capture/schema/provenance UI and CI workflow. No overlapping commits/restarts. Higgsfield explicitly deferred by Jesse.

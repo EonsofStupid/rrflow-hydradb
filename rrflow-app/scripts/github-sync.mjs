@@ -20,7 +20,11 @@ export const isSyncPath = path => !path.split('/').some(part => part === '..' ||
 );
 export const sourceId = path => {
   if (!isSyncPath(path)) throw new Error('Refusing a source outside this repository sync scope.');
-  return `github:${checkpointId}:${path}`;
+  const readable = `github:${checkpointId}:${path}`;
+  // HydraDB caps source IDs at 100 UTF-8 bytes. Preserve existing short IDs,
+  // and give deeper paths a stable identity without truncating the path itself.
+  return Buffer.byteLength(readable) <= 100 ? readable
+    : `github:${createHash('sha256').update(`${checkpointId}:${path}`).digest('hex')}`;
 };
 export const assertSafeSource = (path, content, keys = []) => {
   if (!isSyncPath(path) || Buffer.byteLength(content) > 200_000 || content.includes('\0')) throw new Error(`Unsupported public source: ${path}`);
@@ -85,7 +89,11 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
     const body = await response.json().catch(() => null);
     const id = response.headers.get('x-request-id') ?? body?.meta?.request_id;
     if (id) requestIds.push(id);
-    if (!response.ok || body?.success !== true) throw new Error(`HydraDB ${init.method || 'GET'} ${path.split('?')[0]} failed (HTTP ${response.status}).`);
+    if (!response.ok || body?.success !== true) {
+      const upstream = typeof body?.error?.message === 'string' ? body.error.message : '';
+      const reason = upstream.replaceAll(key, '[redacted]').replaceAll(env.RAINDROP_WRITE_KEY, '[redacted]').slice(0, 500);
+      throw new Error(`HydraDB ${init.method || 'GET'} ${path.split('?')[0]} failed (HTTP ${response.status}).${reason ? ` ${reason}` : ''}`);
+    }
     return body.data;
   };
   const graph = (query, params) => hydra('/byog/query', {
