@@ -1,0 +1,5 @@
+[
+  { "start": 0.4, "end": 5.1, "text": "A place for context. A reason for every decision." },
+  { "start": 5.5, "end": 10.3, "text": "Explore the curated event during its 24-hour window.\nAfter expiry, access requires workspace sign-in." },
+  { "start": 10.7, "end": 14.9, "text": "RRFLOW · Built on Digo + HydraDB\ngithub.com/EonsofStupid/rrflow-hydradb" }
+]

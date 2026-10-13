@@ -1,0 +1,28 @@
+{
+  "provider": "Higgsfield",
+  "model": "seedance_2_5",
+  "jobId": "444a8651-5ab8-4899-bb28-d12cf6128d32",
+  "status": "completed",
+  "purpose": "Abstract concept illustration before actual product footage",
+  "quotedCredits": 96,
+  "params": {
+    "model": "seedance_2_5",
+    "mode": "t2v",
+    "aspect_ratio": "16:9",
+    "duration": 8,
+    "resolution": "1080p",
+    "generate_audio": false,
+    "bitrate_mode": "high",
+    "count": 1,
+    "prompt": "An eight-second premium cinematic motion-design concept intro for a thoughtful knowledge-work software demo. Abstract conceptual imagery only, clearly not a screenshot or working application. Dark charcoal studio background with subtle glass reflections, restrained mint and lavender palette, one amber accent. Start with a sparse arrangement of small translucent rounded glass cards suspended in shallow depth. Over the first three seconds, the cards glide deliberately into two clearly separated curved constellations: lavender on the left, mint on the right. Thin elegant lines connect each constellation to its own small luminous center, preserving a visible gap between groups. One amber card pauses between them, held still to imply a human decision is needed. Around second five, a single precise amber pulse traces from that card toward the mint group, then settles into place; a faint durable connection remains. Finish on a calm balanced composition with generous empty center and upper-third negative space for titles added later in editing. Slow controlled camera push, subtle parallax, clean architectural lighting, polished glass materials, crisp readable shapes, smooth easing, no frantic particle storm. No text, letters, logos, numbers, interface controls, screenshots, people, hands, faces, brains, neural anatomy, charts or fabricated performance metrics. No flashing or strobing. Hold the final composition for the last second."
+  },
+  "resultUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_3BfnxGUAoM4RM8lwA6WAH3u7aFb/hf_20261013_020518_444a8651-5ab8-4899-bb28-d12cf6128d32.mp4",
+  "localFile": "rrflow-concept-intro.mp4",
+  "webFile": "rrflow-concept-intro-web.mp4",
+  "durationSeconds": 8.041667,
+  "width": 1920,
+  "height": 1080,
+  "framesPerSecond": 24,
+  "audioStreams": 0,
+  "validation": "ffprobe verified the original 1080p/24fps silent clip; four sampled frames inspected for public conceptual content without text or working UI. A separate H.264 fast-start copy is provided for playback and editing."
+}

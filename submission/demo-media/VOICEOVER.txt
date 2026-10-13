@@ -1,0 +1,13 @@
+Your life. Your work. Your judgment. RRFLOW gives scattered context a place.
+
+RRFLOW connects personal and work knowledge while keeping their boundaries visible. This event opens a curated walkthrough for twenty-four hours. The Personal examples are fictional. Work documents and development evidence come from our public repository. The real workspace stays behind a password.
+
+Start with a source. Instead of an unexplained label, I can inspect why it belongs here and open the original document at a specific revision. If the suggestion needs review, I can change its placement. In this public walkthrough, that change is a preview for this visit. Nothing is written into somebody else’s workspace.
+
+Inside the owner's local workspace, knowledge becomes inspectable structure. Open the TypeScript specialist and follow its connected engineering avenues to the source. These nodes represent stored disciplines, questions and relationships. They are not a trained neural network. RRFLOW makes the context and its provenance visible, so a person can judge what belongs in the next step.
+
+We used this loop while developing RRFLOW itself. This Playwright check failed because its alert selector matched two messages. The public correction targets the intended message. A later run passes the same check. RRFLOW keeps the original failure, the exact rule, the reviewed diagnosis and the follow-up together. The useful practice is concrete: when alerts can coexist, target the intended message within its region. A passing run supports that review; it does not prove causation by itself.
+
+Every service call should leave an understandable result. Here the interface exposes the provider, outcome and request evidence from this recorded action. HydraDB owns the context. Raindrop observes supported interactions. We keep delivery, persistence and indexing states distinct, so the status reflects what actually happened.
+
+RRFLOW connects two kinds of growth: clearer decisions in your life and work, and better evidence for the next development attempt. Explore the curated demo during the event. After the window closes, access requires a workspace session.

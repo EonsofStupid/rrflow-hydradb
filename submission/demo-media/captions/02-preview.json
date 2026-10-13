@@ -1,0 +1,8 @@
+[
+  { "start": 0.4, "end": 3.2, "text": "Start with a source. Inspect why it belongs here." },
+  { "start": 3.5, "end": 10.5, "text": "A placement has a reason and an original source.\nThis link points to a pinned public repository revision." },
+  { "start": 11, "end": 16.8, "text": "Move this example to “Needs your judgment.”\nThe UI makes the review state visible." },
+  { "start": 17.3, "end": 23.6, "text": "Inspect it again, then return it to Shippin work." },
+  { "start": 24, "end": 30, "text": "This is a preview for this visit.\nIt does not write into the real workspace." },
+  { "start": 30.5, "end": 36.6, "text": "Understand the context before choosing its home." }
+]

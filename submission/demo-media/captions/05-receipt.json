@@ -1,0 +1,5 @@
+[
+  { "start": 0.4, "end": 6.6, "position": "top", "text": "Inspect the actual HydraDB read receipt." },
+  { "start": 7, "end": 14.4, "position": "top", "text": "The snapshot timestamp and native request ID\nmake this read traceable." },
+  { "start": 15, "end": 21.5, "position": "top", "text": "This public endpoint reads only the dedicated demo database.\nIt does not expose the owner's private knowledge." }
+]

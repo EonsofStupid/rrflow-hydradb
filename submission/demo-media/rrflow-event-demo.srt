@@ -1,0 +1,131 @@
+1
+00:00:00,400 --> 00:00:03,700
+Your life. Your work. Your judgment.
+
+2
+00:00:04,000 --> 00:00:07,800
+Give scattered context a place.
+
+3
+00:00:08,300 --> 00:00:12,900
+One place for life and work.
+Clear boundaries for each.
+
+4
+00:00:13,600 --> 00:00:19,600
+Open the curated event with one click.
+The real workspace requires a password.
+
+5
+00:00:20,000 --> 00:00:27,600
+Personal examples are fictional.
+Work sources and development evidence are public.
+
+6
+00:00:28,400 --> 00:00:31,200
+Start with a source. Inspect why it belongs here.
+
+7
+00:00:31,500 --> 00:00:38,500
+A placement has a reason and an original source.
+This link points to a pinned public repository revision.
+
+8
+00:00:39,000 --> 00:00:44,800
+Move this example to “Needs your judgment.”
+The UI makes the review state visible.
+
+9
+00:00:45,300 --> 00:00:51,600
+Inspect it again, then return it to Shippin work.
+
+10
+00:00:52,000 --> 00:00:58,000
+This is a preview for this visit.
+It does not write into the real workspace.
+
+11
+00:00:58,500 --> 00:01:04,600
+Understand the context before choosing its home.
+
+12
+00:01:05,400 --> 00:01:09,700
+The owner's local workspace reads
+real engineering knowledge from HydraDB.
+
+13
+00:01:10,300 --> 00:01:14,700
+Open TypeScript to inspect its original research.
+
+14
+00:01:15,000 --> 00:01:18,900
+These questions are draft research.
+Answers and pass conditions have not been evaluated.
+
+15
+00:01:19,700 --> 00:01:26,700
+Return to the selected discipline
+and inspect its recorded relationships.
+
+16
+00:01:27,200 --> 00:01:34,600
+Keep the source visible as knowledge grows.
+A person can inspect the context for the next step.
+
+17
+00:01:35,500 --> 00:01:39,600
+The development loop starts with a real failed check.
+The public GitHub evidence stays linked.
+
+18
+00:01:40,000 --> 00:01:48,000
+A Playwright alert selector matched two messages.
+The check rejected that ambiguity.
+
+19
+00:01:48,500 --> 00:01:56,500
+The reviewed correction targets the intended alert.
+Its exact source assertion is linked here.
+
+20
+00:01:57,000 --> 00:02:05,000
+A later run passed the same check.
+Passing alone does not prove causation.
+
+21
+00:02:05,500 --> 00:02:14,400
+Reusable practice: when alerts coexist,
+select the intended message within its region.
+
+22
+00:02:15,000 --> 00:02:22,500
+Keep the failure, correction and follow-up together.
+A reviewed lesson becomes context for the next attempt.
+
+23
+00:02:23,400 --> 00:02:29,600
+Inspect the actual HydraDB read receipt.
+
+24
+00:02:30,000 --> 00:02:37,400
+The snapshot timestamp and native request ID
+make this read traceable.
+
+25
+00:02:38,000 --> 00:02:44,500
+This public endpoint reads only the dedicated demo database.
+It does not expose the owner's private knowledge.
+
+26
+00:02:45,400 --> 00:02:50,100
+A place for context. A reason for every decision.
+
+27
+00:02:50,500 --> 00:02:55,300
+Explore the curated event during its 24-hour window.
+After expiry, access requires workspace sign-in.
+
+28
+00:02:55,700 --> 00:02:59,900
+RRFLOW · Built on Digo + HydraDB
+github.com/EonsofStupid/rrflow-hydradb

@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "output": "rrflow-event-demo.mp4",
+  "finalReviewApproved": true,
+  "note": "Editorial captions are summaries aligned to real screen actions, not a transcript of generated speech. All source clips run at normal speed. Review actual recordings before filling inputs or approving this edit.",
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "Give context a place",
+      "duration": 8,
+      "reviewed": true,
+      "shots": [
+        {
+          "path": "rrflow-concept-intro-web.mp4",
+          "in": 0,
+          "duration": 8
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/00-intro.json",
+      "captionsReviewed": true,
+      "narration": null,
+      "script": "Your life. Your work. Your judgment. RRFLOW gives scattered context a place."
+    },
+    {
+      "id": "public-entry",
+      "title": "Curated public event and clear boundaries",
+      "duration": 20,
+      "label": "Curated public demo · fictional Personal examples",
+      "reviewed": true,
+      "shots": [
+        {
+          "path": "recordings/01-entry.webm",
+          "in": 0.3,
+          "duration": 20
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/01-entry.json",
+      "captionsReviewed": true,
+      "narration": null
+    },
+    {
+      "id": "placement-preview",
+      "title": "Inspect a public source and preview a different home",
+      "duration": 37,
+      "label": "Curated public demo · placement changes are previews",
+      "reviewed": true,
+      "shots": [
+        {
+          "path": "recordings/02-source-preview.webm",
+          "in": 1,
+          "duration": 37
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/02-preview.json",
+      "captionsReviewed": true,
+      "narration": null
+    },
+    {
+      "id": "protected-placement",
+      "title": "Owner workspace and actual engineering source drill-down",
+      "duration": 30,
+      "label": "Owner workspace · local production recording",
+      "reviewed": true,
+      "shots": [
+        {
+          "in": 0.9,
+          "path": "recordings/03-protected-work-graph-verified.webm",
+          "duration": 30
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/03-workspace.json",
+      "captionsReviewed": true,
+      "narration": null
+    },
+    {
+      "id": "learning-evidence",
+      "title": "A public failure, its reviewed correction and a passing follow-up",
+      "duration": 48,
+      "label": "Public development evidence · reviewed practice",
+      "reviewed": true,
+      "shots": [
+        {
+          "path": "recordings/04-learning-evidence.webm",
+          "in": 1,
+          "duration": 48,
+          "crop": {
+            "width": 1360,
+            "height": 766,
+            "x": 280,
+            "y": 314
+          }
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/04-learning.json",
+      "captionsReviewed": true,
+      "narration": null
+    },
+    {
+      "id": "service-receipt",
+      "title": "Actual service receipt and request evidence",
+      "duration": 22,
+      "label": "Actual service receipt · status as recorded",
+      "reviewed": true,
+      "shots": [
+        {
+          "path": "recordings/05-native-hydra-receipt.webm",
+          "in": 1,
+          "duration": 22,
+          "crop": {
+            "width": 1360,
+            "height": 766,
+            "x": 280,
+            "y": 314
+          }
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/05-receipt.json",
+      "captionsReviewed": true,
+      "narration": null
+    },
+    {
+      "id": "close",
+      "title": "Explore the time-limited curated event",
+      "duration": 15,
+      "label": "Curated public event · password access after expiry",
+      "reviewed": true,
+      "shots": [
+        {
+          "path": "recordings/06-close.webm",
+          "in": 1,
+          "duration": 15
+        }
+      ],
+      "captionMode": "on-screen-summary",
+      "captions": "captions/06-close.json",
+      "captionsReviewed": true,
+      "narration": null
+    }
+  ],
+  "captureLabel": "Recorded Oct 12, 2026 · local app"
+}

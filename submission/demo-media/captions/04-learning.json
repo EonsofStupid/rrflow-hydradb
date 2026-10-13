@@ -1,0 +1,8 @@
+[
+  { "start": 0.5, "end": 4.6, "position": "top", "text": "The development loop starts with a real failed check.\nThe public GitHub evidence stays linked." },
+  { "start": 5, "end": 13, "position": "top", "text": "A Playwright alert selector matched two messages.\nThe check rejected that ambiguity." },
+  { "start": 13.5, "end": 21.5, "position": "top", "text": "The reviewed correction targets the intended alert.\nIts exact source assertion is linked here." },
+  { "start": 22, "end": 30, "position": "top", "text": "A later run passed the same check.\nPassing alone does not prove causation." },
+  { "start": 30.5, "end": 39.4, "position": "top", "text": "Reusable practice: when alerts coexist,\nselect the intended message within its region." },
+  { "start": 40, "end": 47.5, "position": "top", "text": "Keep the failure, correction and follow-up together.\nA reviewed lesson becomes context for the next attempt." }
+]
