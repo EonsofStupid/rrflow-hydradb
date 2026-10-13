@@ -6,12 +6,19 @@ const password = process.env.RRFLOW_WORKSPACE_PASSWORD;
 assert(password && password.length >= 16, 'Provide the server-side workspace password through the environment.');
 const client = await request.newContext({ baseURL: origin });
 const browser = await chromium.launch({ headless: true });
+let hostValidation = 'application rejected unexpected Host with HTTP 403';
 try {
   for (const path of ['/api/workspace', '/api/mesh', '/api/organization', '/api/qdrant', '/api/learning']) {
     assert.equal((await client.get(path)).status(), 401, `${path} must require a session.`);
   }
   assert.equal((await client.get('/workspace', { maxRedirects: 0 })).status(), 307);
-  assert.equal((await client.get('/api/workspace', { headers: { host: 'unexpected.example' } })).status(), 403);
+  try {
+    assert.equal((await client.get('/api/workspace', { headers: { host: 'unexpected.example' } })).status(), 403);
+  } catch (error) {
+    // HTTPS can reject the hostile hostname at TLS, before application routing.
+    if (new URL(origin).protocol !== 'https:' || error.code !== 'ERR_TLS_CERT_ALTNAME_INVALID') throw error;
+    hostValidation = 'TLS rejected unexpected hostname before application routing';
+  }
   const demo = await client.get('/api/demo');
   assert.equal(demo.status(), 200);
   const curated = await demo.json();
@@ -36,6 +43,6 @@ try {
   await page.getByRole('button', { name: 'Sign out of private workspace' }).click();
   await page.waitForURL(`${origin}/`);
   assert.equal((await context.request.get(`${origin}/api/workspace`)).status(), 401);
-  console.log(JSON.stringify({ passed: true, origin, publicSources: curated.snapshot.sources.length, nativeRequestId: curated.requestId, checks: ['anonymous protection', 'host validation', 'native curated read', 'real browser login', 'secure cookie', 'authenticated workspace', 'cross-site rejection', 'logout'] }));
+  console.log(JSON.stringify({ passed: true, origin, publicSources: curated.snapshot.sources.length, nativeRequestId: curated.requestId, hostValidation, checks: ['anonymous protection', 'host validation', 'native curated read', 'real browser login', 'secure cookie', 'authenticated workspace', 'cross-site rejection', 'logout'] }));
   await context.close();
 } finally { await browser.close(); await client.dispose(); }

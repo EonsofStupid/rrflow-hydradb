@@ -1,5 +1,17 @@
 # Modelence deployment preparation
 
+## Root release update — October 13, 2026 UTC
+
+The historical preparation below is complete. Root deployed verified application commit `f6bcda83033a610bdf7dc4f5c0561ee5a0576a41` successfully to https://rrflow-mv63m3vynl0-prod.cloud.modelence.app (`rrflow-mv63m3vynl0` / `prod`). The user configured the fixed cutoff `2026-10-14T03:24:33.967Z`; live session status confirmed the event open at 03:31 UTC. No restart or redeployment was needed after settings took effect.
+
+Eight hosted Playwright smoke checks passed, including actual login/logout, cookie properties, private APIs, cross-site rejection, and six curated sources read from HydraDB, request `bf25bcb1-a6c2-42b7-a33c-d3650df19181`. The hostile-host probe is rejected at TLS on HTTPS; the smoke script now reports that distinction instead of requiring an application HTTP response through a failed TLS handshake. Its original HTTP-mode check remains intact.
+
+Hosted Qdrant optional runtime values were absent; user was asked to apply the two URL fields from Infisical `qdrant-endpoint` and the two key fields from `qdrant`. The deployment CLI credential does not authorize dashboard environment methods; one read-only request returned Unauthorized and no mutation was attempted. Do not claim hosted Qdrant connected until a new native read verifies it.
+
+GitHub automatic deployment remains disabled pending a durable supported CI credential. The cached interactive credential has a one-hour lifetime and was not copied into GitHub secrets. CI evidence capture and HydraDB source sync are independently active.
+
+## Original preparation handoff
+
 Codex worker `/root/connections_console` owns only the new root `modelence.config.json`, `rrflow-app/scripts/modelence-validate.mjs`, `rrflow-app/docs/rrflow/MODELENCE_DEPLOYMENT.md`, and narrow Modelence entries in `.gitignore` for this task. Root owns application authentication, public demo, integration, validation builds, and release.
 
 Official deployment guide and live JSON schema reviewed October 12, 2026. Published CLI `modelence@0.26.3` was fetched into the existing npm execution cache and its `deploy --help` inspected; no application dependency was added. No authentication, environment creation, upload, deployment, or paid resource was initiated.

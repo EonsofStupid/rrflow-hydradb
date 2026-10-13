@@ -6,7 +6,7 @@ Public source: https://github.com/EonsofStupid/rrflow-hydradb
 
 Foundation: [Digo app-starter](https://github.com/digohq/app-starter), retaining its MIT license. Native integrations: HydraDB graph/context/connector/webhook APIs, Raindrop events and feedback, and Infisical credentials. Tests: Playwright.
 
-The app is currently local at http://127.0.0.1:3100. Do not describe this loopback address as a hosted public demo.
+Hosted event: https://rrflow-mv63m3vynl0-prod.cloud.modelence.app. The curated public walkthrough uses fictional Personal examples and public Work sources. Its fixed cutoff is `2026-10-14T03:24:33.967Z` (October 13, 8:24 p.m. Pacific); after that, the workspace password is required. Real private data always requires the password. Hosted browser login/logout and the native HydraDB demo read are verified. Qdrant Cloud is connected locally; hosted Qdrant environment configuration is still pending.
 
 ## Three-minute demonstration
 
@@ -27,4 +27,4 @@ Images 01–06 show the earlier build. Prefer 07–09 for the current submission
 - `screenshots/14-learning-trail-live.png`: automatic GitHub CI capture and the evidence-linked reviewed lesson.
 - `screenshots/15-learning-rule-evidence-live.png`: historical failure, its versioned interpretation schema, and source drill-down.
 
-These three captures use native data. Earlier UI test screenshots may use explicitly labeled fixtures. Modelence is a supported deployment direction under evaluation, not a deployed submission URL; see `research/MODELENCE_DEPLOYMENT.md`.
+These three captures use native data. Earlier UI test screenshots may use explicitly labeled fixtures. See [the published deployment evidence](../rrflow-app/docs/rrflow/MODELENCE_DEPLOYMENT.md) for hosted access checks and current limitations.

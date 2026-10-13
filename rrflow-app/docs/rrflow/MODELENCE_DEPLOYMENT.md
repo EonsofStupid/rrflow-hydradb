@@ -1,6 +1,14 @@
 # Modelence deployment
 
-Prepared October 12, 2026. This configuration deploys the existing Next.js application; it does not adopt Modelence's application framework or move RRFLOW state out of HydraDB. Hosting has not been performed by this preparation step.
+Published October 12, 2026 Pacific / October 13 UTC. This configuration deploys the existing Next.js application; it does not adopt Modelence's application framework or move RRFLOW state out of HydraDB.
+
+Live application: https://rrflow-mv63m3vynl0-prod.cloud.modelence.app. Target app `rrflow-mv63m3vynl0`, environment `prod`. The deployed application source is commit `f6bcda83033a610bdf7dc4f5c0561ee5a0576a41`; the next commit changed only media documentation. The CLI completed the build and rollout successfully. The public event cutoff is **`2026-10-14T03:24:33.967Z`**, October 13 at 8:24 p.m. Pacific. It was verified active at 03:31 UTC; retain this exact cutoff during later deployments.
+
+The hosted Playwright smoke passed all eight checks: anonymous private API protection, unexpected-host rejection at TLS, native curated HydraDB read, real browser login, secure HttpOnly session cookie, authenticated workspace read, cross-origin login rejection, and logout. Public HydraDB read receipt: `bf25bcb1-a6c2-42b7-a33c-d3650df19181`, six curated sources. Application-level unexpected-host rejection was separately verified on the local deployment-mode server; the hosted TLS layer rejects that test before application routing.
+
+Qdrant Cloud works locally. At the hosted check, the four optional Qdrant URL/key variables had not been configured, and the hosted UI correctly reported both sources disconnected. Set the two URL variables from Infisical `qdrant-endpoint` and the two API-key variables from `qdrant`, then apply the environment. Existing HydraDB imports remain available. No key values belong in this document.
+
+The GitHub workflow contains deployment after verification, but that job remains disabled until a suitable Modelence CI credential is configured. The interactive CLI cache expires after one hour and is not a durable automation credential. GitHub CI evidence capture and source synchronization are already active; automatic hosted deployment is a separate pending configuration.
 
 The public entrance is `/`, the curated demonstration is `/demo`, and the password-protected real workspace is `/workspace`. Easy public access to the curated event lasts 24 hours from publication; afterward access requires the workspace password. Public demonstration data lives separately in HydraDB's `rrflow_public_demo/rrflow_demo`; the deployment configuration does not copy Personal records into it. Authentication and demo behavior are verified with the application release checks, not by this configuration file alone.
 
@@ -84,4 +92,4 @@ Then run the exact start command above with `PORT=3000` and the hosted environme
 - Auth cache lives in `~/.modelence/auth.json` or `$MODELENCE_HOME/auth.json`. The project selection and temporary archives live under `.modelence/`. The optional framework setup command writes `.modelence.env` and may create `.modelence.backup.env`; that framework setup is not required for this Next.js service. All these local paths are ignored.
 - The CLI packages tracked files plus nonignored untracked files. Review the diff and upload inputs before release. Generated output, private research inputs, local credentials, and CLI cache must remain ignored.
 
-No account selection, browser login, environment creation, upload, paid resource creation, or cloud deployment was performed as part of this preparation. The remaining release actions belong to the root agent after combined verification.
+Root completed account confirmation, artifact upload, cloud build and rollout after combined verification. Runtime settings remain in the selected Modelence environment. The preparation handoff in `coordination/CODEX_MODELENCE.md` retains its historical scope; the published result and current limitations are recorded above.
