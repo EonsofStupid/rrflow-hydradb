@@ -4,6 +4,8 @@
 
 [Watch the captioned three-minute demo](rrflow-event-demo.mp4). The reviewed export is **180.02 seconds, 35,827,710 bytes (35.83 MB), 1920×1080, 24 fps, H.264/AAC**. Its audio track is silent. It combines the Higgsfield concept intro with actual local production UI at normal speed. The public placement is explicitly a preview; the owner-workspace shot shows real TypeScript research drill-down; the receipt is a HydraDB read.
 
+[Play or download the full film from Higgsfield](https://d2ol7oe51mr4n9.cloudfront.net/user_3BfnxGUAoM4RM8lwA6WAH3u7aFb/62d868e1-fcd1-4caa-a7af-87d162a101b3.mp4). The finished film is confirmed in the owner's Higgsfield media library as `62d868e1-fcd1-4caa-a7af-87d162a101b3`. Upload returned HTTP 200; checksum, duration and size match this reviewed export. The native result player was displayed successfully. This is the completed film, not only the generated introduction.
+
 [Editorial captions](rrflow-event-demo.srt) · [Exact edit manifest](rrflow-event-demo.manifest.json) · [Final contact sheet](final-contact-sheet.jpg)
 
 Validation: all seven input scenes and 28 caption cues passed the editor's checks; the complete exported file decoded without an FFmpeg error. Six full-resolution samples and the full timeline contact sheet were visually inspected. Captions preserve the UI evidence, native request ID and status disclosure. No password, real inbox or private Personal source was recorded. SHA-256: `45131b0c0534fdae676cc061aa552546315f8baef53d0285ae083ba371b3b584`.
