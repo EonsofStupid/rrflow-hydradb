@@ -1,0 +1,41 @@
+{
+  "$schema": "https://cloud.modelence.com/schema/modelence.config.json?version=1",
+  "resources": {
+    "rrflow": {
+      "type": "service",
+      "image": "node-22-slim",
+      "root": "rrflow-app",
+      "build": {
+        "commands": [
+          "corepack enable && pnpm install --frozen-lockfile",
+          "pnpm build"
+        ]
+      },
+      "start": {
+        "commands": [
+          "pnpm --filter @rrflow/app exec next start --hostname 0.0.0.0 --port \"$PORT\""
+        ]
+      }
+    }
+  },
+  "env": {
+    "NODE_ENV": { "type": "text", "scopes": ["runtime"], "value": "production" },
+    "RRFLOW_ACCESS_MODE": { "type": "text", "scopes": ["runtime"], "value": "public" },
+    "RRFLOW_DEMO_EXPIRES_AT": { "type": "text", "scopes": ["runtime"], "required": true },
+    "RRFLOW_WORKSPACE_PASSWORD": { "type": "secret", "scopes": ["runtime"] },
+    "RRFLOW_SESSION_SECRET": { "type": "secret", "scopes": ["runtime"] },
+    "RRFLOW_PUBLIC_ORIGIN": { "type": "text", "scopes": ["runtime"], "required": false },
+    "HYDRA_DB_API_KEY": { "type": "secret", "scopes": ["runtime"] },
+    "HYDRA_DB_DATABASE": { "type": "text", "scopes": ["runtime"], "value": "seniordev" },
+    "HYDRA_DB_COLLECTION": { "type": "text", "scopes": ["runtime"], "value": "rrflow" },
+    "RAINDROP_WRITE_KEY": { "type": "secret", "scopes": ["runtime"] },
+    "RAINDROP_PROJECT_ID": { "type": "text", "scopes": ["runtime"], "value": "rrflow-hydradb" },
+    "GITHUB_TOKEN": { "type": "secret", "scopes": ["runtime"], "required": false },
+    "QDRANT_PERSONAL_URL": { "type": "secret", "scopes": ["runtime"], "required": false },
+    "QDRANT_PERSONAL_API_KEY": { "type": "secret", "scopes": ["runtime"], "required": false },
+    "QDRANT_PERSONAL_COLLECTION": { "type": "text", "scopes": ["runtime"], "value": "rrflow_personal_sources" },
+    "QDRANT_WORK_URL": { "type": "secret", "scopes": ["runtime"], "required": false },
+    "QDRANT_WORK_API_KEY": { "type": "secret", "scopes": ["runtime"], "required": false },
+    "QDRANT_WORK_COLLECTION": { "type": "text", "scopes": ["runtime"], "value": "rrflow_shippin_sources" }
+  }
+}

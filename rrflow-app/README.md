@@ -1,6 +1,6 @@
 # RRFLOW
 
-A local context workspace for Jesse's personal and Shippin projects, with a dedicated engineering specialist, adapted from [Digo app-starter](https://github.com/digohq/app-starter) at `7c528e1407aeea502423b393f793f5b17c6caf4e`.
+A context workspace for Jesse's personal and Shippin projects, with a dedicated engineering specialist, adapted from [Digo app-starter](https://github.com/digohq/app-starter) at `7c528e1407aeea502423b393f793f5b17c6caf4e`.
 
 The active app is **`apps/rrflow`**. It reuses Digo's Next.js/TypeScript/Tailwind structure, shadcn/Radix button and dialog components, design-token conventions, and bundled Lexend font. The MIT license is preserved. Original `apps/web`, `apps/api`, and `packages` remain upstream references; they are excluded from the active pnpm workspace and do not run. The active app uses neither Prisma/Postgres/Redis nor Jest.
 
@@ -48,7 +48,7 @@ wsl -d Ubuntu -- env RRFLOW_DIST_DIR=.next-presentation bash /mnt/d/localdev/rrf
 - A deterministic review planner composes core + selected discipline + TypeScript for React/Next.js, persists the plan, reloads it, and can delete it from the UI. Missing evidence stays pending.
 - The Specialist brains view reads live readiness, indexed-passage/memory counts, lessons, and native hybrid retrieval from the five allowlisted HydraDB databases built by Claude.
 - Native Raindrop reporting for specialist retrieval and user feedback, scoped to `rrflow-hydradb`, with bounded delivery and visible per-event status. A real browser-driven event and its feedback were read back in Raindrop. Fast/Deep retrieval is an explicit choice; no generated answer, experiment, or automatic improvement is claimed.
-- Secrets stay server-side. API routes reject non-loopback hostnames and cross-site access. These restrictions are intentional until real account access exists.
+- Secrets stay server-side. A hosted owner password protects private pages and APIs; an explicitly curated public event has a fixed server-enforced cutoff. This is a single-owner gate, not multi-user SaaS identity.
 
 ## State and evidence
 
@@ -74,3 +74,13 @@ wsl -d Ubuntu -- bash /mnt/d/localdev/rrflow-hydradb/rrflow-app/scripts/wsl-run.
 Automatic personal/work classification, a correction inbox, public SaaS authentication/tenant authorization, provider-independent launch configuration, evidence-producing AI supervision, progressive inference, Raindrop replay/prompt comparison/promotion, and live infrastructure inventory. The UI labels those boundaries. No infrastructure or prompts have been changed by this app.
 
 Team decisions and file ownership live in the parent workspace's `TEAM.md` and `coordination/` files.
+
+## Guided event and cloud sources
+
+The hosted entrance offers a curated walkthrough and a password-protected owner workspace. `RRFLOW_DEMO_EXPIRES_AT` fixes the public cutoff; after it, the tour requires a session too. Restarting or updating the application does not extend access. Curated Personal examples are illustrative, Work documents are pinned public sources, and the CI trail links actual failure/correction/follow-up evidence. Preview placements do not write into the owner workspace.
+
+React Flow and Motion power the typed relationship map. The Connectome switches between real HydraDB memories/sources and original Qdrant records, with provenance and import/indexing status. Source records are not mislabeled as generated memories. Qdrant Cloud has separate `rrflow_personal_sources` and `rrflow_shippin_sources` collections on the existing cluster; HydraDB remains the canonical knowledge and decision store.
+
+Use `./scripts/start-local.ps1 -Mode start -QdrantCloud` to inject the existing `qdrant` and `qdrant-endpoint` Infisical secrets, alongside HydraDB/Raindrop. Without that switch, the separate local Qdrant services remain the default.
+
+See [Modelence deployment](docs/rrflow/MODELENCE_DEPLOYMENT.md) for exact build/start commands, runtime mapping, and the publication cutoff. GitHub CI includes a deployment job after verification; it remains disabled until the verified Modelence target, token, URL, and `MODELENCE_DEPLOY_ENABLED=true` are configured. Every later push deploys the commit that passed checks to the same target without resetting the event cutoff.

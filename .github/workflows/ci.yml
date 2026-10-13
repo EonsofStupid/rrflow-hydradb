@@ -52,7 +52,7 @@ jobs:
             if curl --fail --silent http://127.0.0.1:3100/ > /dev/null; then break; fi
             sleep 1
           done
-          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts tests/connections.spec.ts tests/connectome.spec.ts tests/databases.spec.ts tests/project-context.spec.ts tests/organization.spec.ts tests/learning-capture.spec.ts tests/learning-trail.spec.ts tests/qdrant.spec.ts --reporter=list,json --grep 'committed repository|GitHub sync shows|connector setup|connection inputs|context refresh|Personal uses|database manager|database creation|a delayed project list|context organization|connectome discovers|learning capture|learning trail|Qdrant source UI'
+          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts tests/connections.spec.ts tests/connectome.spec.ts tests/databases.spec.ts tests/project-context.spec.ts tests/organization.spec.ts tests/learning-capture.spec.ts tests/learning-trail.spec.ts tests/qdrant.spec.ts tests/access.spec.ts tests/public-demo-contracts.spec.ts tests/public-demo.spec.ts --reporter=list,json --grep 'committed repository|GitHub sync shows|connector setup|connection inputs|context refresh|Personal uses|database manager|database creation|a delayed project list|context organization|connectome discovers|learning capture|learning trail|Qdrant source UI|Qdrant connection configuration|Qdrant shared-cluster|access |curated demo|public demo|private entry|demo route|demo access|published event|React Flow'
       - name: Capture actual verification outcomes into HydraDB
         id: capture_learning
         if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'EonsofStupid/rrflow-hydradb' }}
@@ -64,3 +64,56 @@ jobs:
           HYDRA_DB_API_KEY: ${{ secrets.HYDRA_DB_API_KEY }}
           RAINDROP_WRITE_KEY: ${{ secrets.RAINDROP_WRITE_KEY }}
           RRFLOW_INGEST_LEARNING: '1'
+
+  deploy:
+    name: Deploy verified main to Modelence
+    needs: verify
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'EonsofStupid/rrflow-hydradb' && vars.MODELENCE_DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Validate configured deployment target
+        env:
+          MODELENCE_TOKEN: ${{ secrets.MODELENCE_TOKEN }}
+          MODELENCE_APP: ${{ vars.MODELENCE_APP }}
+          MODELENCE_ENV: ${{ vars.MODELENCE_ENV }}
+          MODELENCE_PUBLIC_URL: ${{ vars.MODELENCE_PUBLIC_URL }}
+        run: |
+          node -e 'for (const key of ["MODELENCE_TOKEN", "MODELENCE_APP", "MODELENCE_ENV", "MODELENCE_PUBLIC_URL"]) { if (!process.env[key]) throw new Error("Missing " + key); } if (new URL(process.env.MODELENCE_PUBLIC_URL).protocol !== "https:") throw new Error("Use the HTTPS deployment URL");'
+      - name: Deploy the commit that passed verification
+        env:
+          CI: '1'
+          MODELENCE_TOKEN: ${{ secrets.MODELENCE_TOKEN }}
+          MODELENCE_APP: ${{ vars.MODELENCE_APP }}
+          MODELENCE_ENV: ${{ vars.MODELENCE_ENV }}
+        run: npx --yes modelence@0.26.3 deploy --app "$MODELENCE_APP" --env "$MODELENCE_ENV"
+      - name: Confirm hosted access boundaries
+        env:
+          MODELENCE_PUBLIC_URL: ${{ vars.MODELENCE_PUBLIC_URL }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const base = process.env.MODELENCE_PUBLIC_URL;
+          assert.equal((await fetch(base)).status, 200);
+          assert.equal((await fetch(new URL('/api/workspace', base))).status, 401);
+          const session = await fetch(new URL('/api/session', base));
+          assert.equal(session.status, 200);
+          const state = await session.json();
+          assert.equal(state.authenticated, false);
+          assert.equal(state.local, false);
+          assert.equal(state.configured, true);
+          const demo = await fetch(new URL('/api/demo', base));
+          assert.equal(demo.status, state.demo.open ? 200 : 401);
+          console.log('Hosted entrance, private boundary and fixed event cutoff verified.');
+          NODE

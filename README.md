@@ -4,7 +4,7 @@
 
 RRFLOW starts with a real founder's context: personal ambitions, Gmail, repositories, lessons, and the work of launching **shippin.ai, shippin.cloud, and shipping.buzz**. The product direction is to keep personal and Shippin work separate, propose where new information belongs, and make corrections part of its lasting understanding.
 
-The working prototype visualizes native HydraDB knowledge, research avenues, company sources, engineering memories, and source evidence. **Personal uses the existing `default-tenant` database**, including its connected Gmail/GitHub source collections. Shippin has separate company/service databases. The dashboard can create additional native databases and save their Personal/Shippin assignment in HydraDB. It creates typed A2UI guidance and records real retrieval and feedback delivery in Raindrop. Automatic personal/work classification and a complete human review inbox remain in development; the interface must not imply that they have already run.
+The working prototype visualizes native HydraDB knowledge, research avenues, company sources, engineering memories, and source evidence. **Personal uses the existing `default-tenant` database**, including its connected Gmail/GitHub source collections. Shippin has separate company/service databases. The dashboard can create additional native databases and save their Personal/Shippin assignment in HydraDB. The Context inbox explains proposed placements and saves human corrections. Connectome uses React Flow for inspectable relationships and exposes original HydraDB and Qdrant records with provenance. Typed A2UI guidance and real retrieval/feedback delivery in Raindrop keep evidence visible. Classification is conservative routing with human review; autonomous prompt promotion and model training are not implemented.
 
 ## One repository
 
@@ -14,10 +14,12 @@ The active application is [`rrflow-app/apps/rrflow`](rrflow-app/apps/rrflow). Al
 - [Aligned Devpost copy](research/DEVPOST_ALIGNED.md)
 - [Team decisions](TEAM.md) and [implementation checklist](WORKPLAN.md)
 - [Research and native integration evidence](research/README.md)
+- [Three-minute captioned demo](submission/demo-media/rrflow-event-demo.mp4) and [presenter script](submission/demo-media/VOICEOVER.txt)
+- [Modelence deployment and 24-hour event setup](rrflow-app/docs/rrflow/MODELENCE_DEPLOYMENT.md)
 
 ## Foundation and products
 
-Built from **[Digo app-starter](https://github.com/digohq/app-starter)** at `7c528e1407aeea502423b393f793f5b17c6caf4e`, retaining its [MIT license](rrflow-app/LICENSE). The active app uses Next.js, React, TypeScript, Tailwind, and shadcn/Radix components. Original Digo apps remain inactive reference code.
+Built from **[Digo app-starter](https://github.com/digohq/app-starter)** at `7c528e1407aeea502423b393f793f5b17c6caf4e`, retaining its [MIT license](rrflow-app/LICENSE). The active app uses Next.js, React, TypeScript, React Flow, Motion, Tailwind, and shadcn/Radix components. Original Digo apps remain inactive reference code.
 
 **HydraDB** owns authoritative knowledge and application records through native graph/context APIs. **Raindrop** observes interactions and feedback. **Infisical** supplies server credentials. **Playwright** verifies the application; the active app does not use Jest or a second application database.
 
@@ -34,7 +36,7 @@ pnpm build
 pnpm start
 ```
 
-The current application binds to `127.0.0.1:3100`. A public GitHub repository is not a publicly deployed SaaS. Public authentication and tenant access enforcement must precede an Internet-facing deployment. Private source research and credentials are excluded from Git.
+The local application binds to `127.0.0.1:3100`. Hosted mode provides a single-owner password gate and a separate curated public event with a fixed server-enforced cutoff. It is not multi-user SaaS identity. Modelence configuration is committed; a hosted URL is published only after an actual deployment succeeds. Private source research and credentials are excluded from Git.
 
 ## Verification
 

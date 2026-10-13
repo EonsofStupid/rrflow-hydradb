@@ -63,5 +63,6 @@ test('connection inputs reject unmanaged scopes, local webhooks and unexpected f
   expect((await result.json()).receipts).toEqual([]);
   const blocked = await request.post('/api/connections', { headers: { origin: 'https://unrelated.example' }, data: { action: 'test-webhook' } });
   expect(blocked.ok()).toBeFalsy();
-  expect((await blocked.json()).receipts).toEqual([]);
+  expect(blocked.status()).toBe(403);
+  expect(await blocked.json()).toEqual({ error: 'Cross-site workspace access is not allowed.' });
 });

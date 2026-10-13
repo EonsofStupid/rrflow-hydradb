@@ -1,241 +1,97 @@
 'use client';
 
-import { useId, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import { Background, Controls, Handle, MarkerType, MiniMap, Position, ReactFlow, useNodesState, type Edge, type Node, type NodeProps } from '@xyflow/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { ArrowRight, CircleDot, Network, X } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
+import '@xyflow/react/dist/style.css';
+import styles from './relation-graph.module.css';
 
-export interface GraphEdgeInput {
-  source: string;
-  relation: string;
-  target: string;
-  weight?: number | null;
-}
+export interface GraphEdgeInput { source: string; relation: string; target: string; weight?: number | null }
+interface RelationGraphProps { edges: GraphEdgeInput[]; focus?: string | null; height?: number; className?: string; onSelect?: (node: string) => void }
+type EntityNode = Node<{ label: string; degree: number; active: boolean; connected: boolean; inspect: (name: string) => void }, 'entity'>;
+type Selection = { kind: 'node'; name: string } | { kind: 'edge'; index: number } | null;
 
-interface RelationGraphProps {
-  edges: GraphEdgeInput[];
-  /** Node to emphasize, e.g. the item being inspected. */
-  focus?: string | null;
-  height?: number;
-  className?: string;
-  onSelect?: (node: string) => void;
-}
+const Entity = ({ data }: NodeProps<EntityNode>) => <div className={cn(styles.entity, data.active && styles.active, data.connected && styles.connected)}>
+  <Handle type="target" position={Position.Left} isConnectable={false} className={styles.handle} />
+  <button type="button" className="nodrag nopan" onClick={() => data.inspect(data.label)} aria-label={`Inspect ${data.label}`} aria-pressed={data.active}>
+    <span className={styles.nodeMark} aria-hidden><CircleDot size={18} /></span>
+    <span className={styles.nodeText}><strong title={data.label}>{data.label}</strong><small>{data.degree} {data.degree === 1 ? 'connection' : 'connections'}</small></span>
+  </button>
+  <Handle type="source" position={Position.Right} isConnectable={false} className={styles.handle} />
+</div>;
+const nodeTypes = { entity: Entity };
+const caption = (value: string) => value.replaceAll('_', ' ');
 
-interface LayoutNode {
-  id: string;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  degree: number;
-}
-
-/**
- * Dependency-free force layout for HydraDB graph slices. A few hundred
- * iterations of repulsion + springs is plenty for the ≤ 80 edges we show;
- * the goal is a legible picture of what the graph lane returned, not a
- * physics toy.
- */
-const layout = (
-  edges: GraphEdgeInput[],
-  width: number,
-  height: number,
-): Map<string, LayoutNode> => {
-  const nodes = new Map<string, LayoutNode>();
-  const touch = (id: string) => {
-    let node = nodes.get(id);
-    if (!node) {
-      const angle = nodes.size * 2.399963; // golden angle spiral: deterministic start
-      const radius = 12 + 9 * Math.sqrt(nodes.size);
-      node = {
-        id,
-        x: width / 2 + Math.cos(angle) * radius,
-        y: height / 2 + Math.sin(angle) * radius,
-        vx: 0,
-        vy: 0,
-        degree: 0,
-      };
-      nodes.set(id, node);
+export const RelationGraph = ({ edges, focus = null, height = 380, className, onSelect }: RelationGraphProps) => {
+  const [selection, setSelection] = useState<Selection>(null);
+  const { resolvedTheme } = useTheme();
+  const reduceMotion = useReducedMotion();
+  const instructionsId = useId();
+  const graphId = useId();
+  const visible = useMemo(() => edges.slice(0, 80), [edges]);
+  const entities = useMemo(() => {
+    const degrees = new Map<string, number>();
+    for (const edge of visible) {
+      degrees.set(edge.source, (degrees.get(edge.source) ?? 0) + 1);
+      if (edge.target !== edge.source) degrees.set(edge.target, (degrees.get(edge.target) ?? 0) + 1);
     }
-    node.degree += 1;
-    return node;
-  };
-  const springs = edges.map((edge) => [touch(edge.source), touch(edge.target)] as const);
+    return [...degrees].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  }, [visible]);
+  const selectedEdge = selection?.kind === 'edge' ? visible[selection.index] : null;
+  const selectedName = selection?.kind === 'node' ? selection.name : focus;
+  const activeName = entities.some(([name]) => name === selectedName) ? selectedName : null;
+  const connections = useMemo(() => activeName ? visible.filter(edge => edge.source === activeName || edge.target === activeName) : [], [activeName, visible]);
+  const neighbors = useMemo(() => new Set(connections.flatMap(edge => [edge.source, edge.target])), [connections]);
+  const inspect = useCallback((name: string) => { setSelection({ kind: 'node', name }); onSelect?.(name); }, [onSelect]);
+  const columns = Math.max(2, Math.ceil(Math.sqrt(entities.length)));
+  const desiredNodes = useMemo<EntityNode[]>(() => entities.map(([name, degree], index) => ({
+    id: name, type: 'entity', width: 170, height: 70, position: { x: (index % columns) * 235, y: Math.floor(index / columns) * 145 },
+    data: { label: name, degree, active: name === activeName || !!selectedEdge && [selectedEdge.source, selectedEdge.target].includes(name), connected: neighbors.has(name), inspect },
+    draggable: false, selectable: false, focusable: false, style: { pointerEvents: 'all' },
+  })), [entities, columns, activeName, selectedEdge, neighbors, inspect]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<EntityNode>(desiredNodes);
+  useEffect(() => {
+    // React Flow reports measured dimensions through onNodesChange. Keep them
+    // when updating display data so refreshed nodes retain their handle bounds.
+    setNodes(current => {
+      const previous = new Map(current.map(node => [node.id, node]));
+      return desiredNodes.map(node => ({ ...node, measured: previous.get(node.id)?.measured }));
+    });
+  }, [desiredNodes, setNodes]);
+  const flowEdges = useMemo<Edge[]>(() => visible.map((edge, index) => ({
+    id: `relation-${index}`, source: edge.source, target: edge.target, type: 'default', label: caption(edge.relation),
+    markerEnd: { type: MarkerType.ArrowClosed, color: 'var(--accent)', width: 16, height: 16 },
+    className: cn(styles.edge, (selection?.kind === 'edge' && selection.index === index || activeName && [edge.source, edge.target].includes(activeName)) && styles.activeEdge),
+    labelStyle: { fill: 'var(--text)', fontSize: 11, fontWeight: 500 }, labelBgStyle: { fill: 'rgb(var(--card-rgb))', fillOpacity: 0.96 }, labelBgPadding: [7, 4], labelBgBorderRadius: 5,
+    interactionWidth: 24, reconnectable: false, deletable: false, focusable: true, ariaRole: 'button', ariaLabel: `Inspect relationship: ${edge.source} ${caption(edge.relation)} ${edge.target}`,
+    domAttributes: { onKeyDown: event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelection({ kind: 'edge', index }); } } },
+  })), [visible, selection, activeName]);
 
-  const list = [...nodes.values()];
-  const ideal = Math.max(
-    60,
-    Math.min(140, Math.sqrt((width * height) / Math.max(1, list.length)) * 0.9),
-  );
-  for (let iteration = 0; iteration < 260; iteration += 1) {
-    const cooling = 1 - iteration / 260;
-    for (let i = 0; i < list.length; i += 1) {
-      for (let j = i + 1; j < list.length; j += 1) {
-        const a = list[i];
-        const b = list[j];
-        let dx = a.x - b.x;
-        let dy = a.y - b.y;
-        let distance = Math.hypot(dx, dy) || 0.01;
-        if (distance < 1) {
-          dx = Math.random() - 0.5;
-          dy = Math.random() - 0.5;
-          distance = 1;
-        }
-        const force = (ideal * ideal) / distance / 40;
-        const fx = (dx / distance) * force;
-        const fy = (dy / distance) * force;
-        a.vx += fx;
-        a.vy += fy;
-        b.vx -= fx;
-        b.vy -= fy;
-      }
-    }
-    for (const [a, b] of springs) {
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const distance = Math.hypot(dx, dy) || 0.01;
-      const force = ((distance - ideal) / distance) * 0.05;
-      a.vx += dx * force;
-      a.vy += dy * force;
-      b.vx -= dx * force;
-      b.vy -= dy * force;
-    }
-    for (const node of list) {
-      // Gentle gravity toward the center keeps disconnected pieces on screen.
-      node.vx += (width / 2 - node.x) * 0.004;
-      node.vy += (height / 2 - node.y) * 0.004;
-      node.x += Math.max(-12, Math.min(12, node.vx * cooling));
-      node.y += Math.max(-12, Math.min(12, node.vy * cooling));
-      node.vx *= 0.6;
-      node.vy *= 0.6;
-      node.x = Math.max(24, Math.min(width - 24, node.x));
-      node.y = Math.max(20, Math.min(height - 20, node.y));
-    }
-  }
-  return nodes;
-};
+  if (!visible.length) return <div className={cn(styles.empty, className)}><Network size={24} aria-hidden /><strong>No relationships returned yet</strong><p>This graph will show connections when they are available in the selected result.</p></div>;
 
-const WIDTH = 720;
-
-export const RelationGraph = ({
-  edges,
-  focus = null,
-  height = 380,
-  className,
-  onSelect,
-}: RelationGraphProps) => {
-  const [hovered, setHovered] = useState<string | null>(null);
-  const markerId = useId().replaceAll(':', '');
-  const nodes = useMemo(() => layout(edges.slice(0, 80), WIDTH, height), [edges, height]);
-
-  if (edges.length === 0) {
-    return (
-      <div
-        className={cn(
-          'rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground',
-          className,
-        )}
-      >
-        No graph relations in this result.
-      </div>
-    );
-  }
-
-  const active = hovered ?? focus;
-  const isDim = (id: string) => active !== null && active !== id;
-
-  return (
-    <svg
-      viewBox={`0 0 ${WIDTH} ${height}`}
-      className={cn('w-full rounded-md border bg-muted/30', className)}
-      role={onSelect ? 'group' : 'img'}
-      aria-label={`Graph with ${nodes.size} entities and ${edges.length} relations`}
-    >
-      <defs>
-        <marker
-          id={markerId}
-          viewBox="0 0 10 10"
-          refX="22"
-          refY="5"
-          markerWidth="7"
-          markerHeight="7"
-          orient="auto-start-reverse"
-        >
-          <path d="M 0 0 L 10 5 L 0 10 z" className="fill-muted-foreground/60" />
-        </marker>
-      </defs>
-      {edges.slice(0, 80).map((edge, index) => {
-        const a = nodes.get(edge.source);
-        const b = nodes.get(edge.target);
-        if (!a || !b) return null;
-        const highlighted = active !== null && (edge.source === active || edge.target === active);
-        const mx = (a.x + b.x) / 2;
-        const my = (a.y + b.y) / 2;
-        return (
-          <g key={`${edge.source}-${edge.relation}-${edge.target}-${index}`}>
-            <line
-              x1={a.x}
-              y1={a.y}
-              x2={b.x}
-              y2={b.y}
-              markerEnd={`url(#${markerId})`}
-              className={cn(
-                'stroke-muted-foreground/40',
-                highlighted && 'stroke-primary',
-                active !== null && !highlighted && 'stroke-muted-foreground/15',
-              )}
-              strokeWidth={highlighted ? 2 : 1.2}
-            />
-            <text
-              x={mx}
-              y={my - 4}
-              textAnchor="middle"
-              className={cn(
-                'fill-muted-foreground text-[9px]',
-                highlighted && 'fill-primary font-medium',
-                active !== null && !highlighted && 'opacity-20',
-              )}
-            >
-              {edge.relation}
-            </text>
-          </g>
-        );
-      })}
-      {[...nodes.values()].map((node) => {
-        const radius = 6 + Math.min(10, node.degree * 1.5);
-        const isFocus = focus === node.id;
-        return (
-          <g
-            key={node.id}
-            transform={`translate(${node.x} ${node.y})`}
-            className={onSelect ? 'cursor-pointer' : undefined}
-            onMouseEnter={() => setHovered(node.id)}
-            onMouseLeave={() => setHovered(null)}
-            onClick={() => onSelect?.(node.id)}
-            tabIndex={onSelect ? 0 : undefined}
-            role={onSelect ? 'button' : undefined}
-            aria-label={node.id}
-            onKeyDown={(event) => {
-              if (onSelect && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); onSelect(node.id); }
-            }}
-          >
-            <circle
-              r={radius}
-              className={cn(
-                'fill-background stroke-primary transition-opacity',
-                isFocus && 'fill-primary',
-                isDim(node.id) && 'opacity-30',
-              )}
-              strokeWidth={isFocus ? 3 : 1.5}
-            />
-            <text
-              y={radius + 11}
-              textAnchor="middle"
-              className={cn('fill-foreground text-[10px]', isDim(node.id) && 'opacity-30')}
-            >
-              {node.id.length > 26 ? `${node.id.slice(0, 25)}…` : node.id}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
-  );
+  return <section className={cn(styles.root, className)} aria-label="Knowledge relationship graph">
+    <header className={styles.header}><span><Network size={15} aria-hidden />{entities.length} entities <span aria-hidden>·</span> {visible.length} relationships</span><small>{edges.length > 80 ? `Showing the first 80 of ${edges.length} returned relationships` : 'From this result'}</small></header>
+    <div className={styles.canvas} style={{ height: Math.max(280, height) }} aria-describedby={instructionsId}>
+      <ReactFlow id={graphId} nodes={nodes} onNodesChange={onNodesChange} edges={flowEdges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.18, maxZoom: 1.05 }} minZoom={0.2} maxZoom={2.5}
+        colorMode={resolvedTheme === 'dark' ? 'dark' : 'light'} nodesDraggable={false} nodesConnectable={false} nodesFocusable={false} edgesFocusable deleteKeyCode={null} edgesReconnectable={false}
+        onEdgeClick={(_, edge) => setSelection({ kind: 'edge', index: Number(edge.id.slice('relation-'.length)) })}
+        onPaneClick={() => setSelection(null)} zoomOnScroll={false} panOnScroll={false} zoomOnPinch panOnDrag preventScrolling={false}
+        ariaLabelConfig={{ 'controls.zoomIn.ariaLabel': 'Zoom into relationships', 'controls.zoomOut.ariaLabel': 'Zoom out of relationships', 'controls.fitView.ariaLabel': 'Fit all relationships', 'minimap.ariaLabel': 'Relationship overview' }}>
+        <Background gap={22} size={1} color="var(--line)" />
+        <Controls showInteractive={false} position="bottom-left" />
+        <MiniMap position="bottom-right" className={styles.minimap} nodeColor="var(--accent)" maskColor="rgb(var(--background-rgb) / 0.65)" pannable zoomable />
+      </ReactFlow>
+    </div>
+    <p id={instructionsId} className={styles.help}>Drag the canvas to explore. Use + / − to zoom. Select an entity or a connection to inspect it; Tab and Enter work too.</p>
+    <AnimatePresence mode="wait" initial={false}>
+      {(selectedEdge || selection?.kind === 'node' && activeName) && <motion.div key={selectedEdge ? `edge-${selection?.kind === 'edge' ? selection.index : ''}` : activeName} className={styles.detail} role="region" aria-label="Selected graph details"
+        initial={reduceMotion ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }} transition={{ duration: reduceMotion ? 0 : 0.16 }}>
+        <button type="button" className={styles.close} aria-label="Close graph details" onClick={() => setSelection(null)}><X size={15} /></button>
+        {selectedEdge ? <><span className={styles.eyebrow}>Recorded relationship</span><div className={styles.relationship}><button onClick={() => inspect(selectedEdge.source)}>{selectedEdge.source}</button><span><ArrowRight size={14} aria-hidden />{caption(selectedEdge.relation)}<ArrowRight size={14} aria-hidden /></span><button onClick={() => inspect(selectedEdge.target)}>{selectedEdge.target}</button></div><p>Direction: {selectedEdge.source} → {selectedEdge.target}{typeof selectedEdge.weight === 'number' && Number.isFinite(selectedEdge.weight) ? ` · Returned weight: ${selectedEdge.weight}` : ''}</p></> : <><span className={styles.eyebrow}>Selected entity</span><strong className={styles.detailTitle}>{activeName}</strong><p>{connections.length} recorded {connections.length === 1 ? 'relationship' : 'relationships'} in this view. Follow a connection to inspect its direction.</p><div className={styles.connectionList}>{connections.map((edge, index) => <button key={`${edge.source}-${edge.target}-${index}`} onClick={() => setSelection({ kind: 'edge', index: visible.indexOf(edge) })}><span>{edge.source}</span><span className={styles.predicate}>{caption(edge.relation)} →</span><span>{edge.target}</span></button>)}</div></>}
+      </motion.div>}
+    </AnimatePresence>
+  </section>;
 };

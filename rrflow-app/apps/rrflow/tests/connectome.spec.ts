@@ -1,4 +1,48 @@
 import { test, expect } from '@playwright/test';
+import { brainCatalog, type BrainId } from '../src/lib/contracts';
+
+test('React Flow graph inspects returned relationships and opens the selected brain by pointer and keyboard', async ({ page }) => {
+  const brains = (['core', 'typescript'] as BrainId[]).map(id => ({ id, ...brainCatalog[id], questions: 1, avenues: 1, sourceTitle: `${id} fixture research`, sourceUrl: 'https://example.com/research', revision: 'fixture-v1' }));
+  await page.route('**/api/workspace', route => route.fulfill({ json: { connected: true, checkedAt: new Date().toISOString(), brains, runs: [], edges: [{ source: 'typescript', target: 'core', kind: 'EXTENDS' }] } }));
+  await page.route('**/api/brains/*', route => {
+    const id = new URL(route.request().url()).pathname.split('/').at(-1);
+    return route.fulfill({ json: { brain: brains.find(brain => brain.id === id), avenues: [{ id: 'fixture-avenue', title: 'Boundary evidence', domain: 'Contracts', order: 1, questions: [{ id: 'fixture-question', text: 'Check the returned contract.', term: '', binding: '', order: 1 }] }], requestIds: ['fixture-graph-read'] } });
+  });
+  await page.route('**/api/databases', route => route.fulfill({ json: { databases: [{ name: 'default-tenant', workspace: 'personal', ready: true, status: 'ready' }], checkedAt: new Date().toISOString(), receipts: [] } }));
+  await page.route('**/api/explore/default-tenant/collections', route => route.fulfill({ json: { collections: [] } }));
+  await page.route('**/api/explore/default-tenant/items?*', route => route.fulfill({ json: { items: [], total: 0 } }));
+  await page.goto('/workspace');
+  await page.getByRole('button', { name: 'Connectome', exact: true }).click();
+  const graph = page.getByRole('region', { name: 'Knowledge relationship graph', exact: true });
+  await expect(graph).toContainText('2 entities');
+  await expect(graph).toContainText('1 relationships');
+  await expect(graph.getByRole('button', { name: 'Inspect TypeScript', exact: true })).toBeVisible();
+  await expect.poll(() => graph.locator('.react-flow__edges').evaluate(element => { const bounds = element.getBoundingClientRect(); return bounds.width > 0 && bounds.height > 0; })).toBeTruthy();
+  await expect(graph.getByRole('button', { name: 'Zoom into relationships' })).toBeVisible();
+  await graph.getByRole('button', { name: 'Zoom into relationships' }).click();
+  await graph.getByRole('button', { name: 'Fit all relationships' }).click();
+  const relationship = graph.getByRole('button', { name: 'Inspect relationship: TypeScript builds on Engineering core', exact: true });
+  await relationship.focus();
+  await page.keyboard.press('Enter');
+  await expect(graph.getByRole('region', { name: 'Selected graph details' })).toContainText('Direction: TypeScript → Engineering core');
+  await graph.getByRole('button', { name: 'Close graph details' }).click();
+  await graph.getByRole('button', { name: 'Inspect TypeScript', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('typescript fixture research');
+  await page.keyboard.press('Escape');
+  await graph.getByRole('button', { name: 'Inspect Engineering core', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog')).toContainText('core fixture research');
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'Refresh context', exact: true }).click();
+  await expect(relationship).toBeVisible();
+  await relationship.focus();
+  await page.keyboard.press('Enter');
+  await expect(graph.getByRole('region', { name: 'Selected graph details' })).toContainText('Direction: TypeScript → Engineering core');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  expect((await new AxeBuilder({ page }).include('section[aria-label="Knowledge relationship graph"]').analyze()).violations).toEqual([]);
+});
 
 test('connectome discovers named Gmail and GitHub collections and clears old source cards', async ({ page }) => {
   await page.route('**/api/explore/default-tenant/collections', route => route.fulfill({ json: { collections: ['gmail', 'github'], requestId: 'fixture-collections' } }));

@@ -1,0 +1,27 @@
+.root{min-width:0;overflow:hidden;margin:14px 0;border:1px solid var(--line);border-radius:15px;background:var(--surface);box-shadow:inset 0 1px 0 rgb(var(--card-rgb) / .7)}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:11px;color:var(--text)}
+.header>span{display:flex;align-items:center;gap:7px}.header svg{color:var(--accent)}.header small{font-size:10px;color:var(--muted)}
+.canvas{position:relative;width:100%;min-width:0;background:radial-gradient(ellipse at 25% 25%,var(--glow),transparent 65%),rgb(var(--background-rgb) / .4)}
+.entity{width:170px;height:70px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(135deg,rgb(var(--card-rgb) / .98),var(--surface));box-shadow:0 5px 16px #0000000c;transition:border-color .15s,box-shadow .15s}
+.entity button{display:flex;align-items:center;gap:10px;width:100%;min-height:68px;padding:12px;border:0;background:none;text-align:left;color:var(--text);cursor:pointer;border-radius:12px}
+.nodeMark{display:grid;place-items:center;flex:none;width:30px;height:30px;border:1px solid var(--line);border-radius:9px;background:var(--accent-soft);color:var(--accent)}
+.nodeText{display:grid;gap:5px;min-width:0}.nodeText strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.45;overflow-wrap:anywhere;font-weight:600}.nodeText small{font-size:9px;line-height:1.3;color:var(--muted)}
+.entity:hover,.entity.connected{border-color:var(--accent)}.entity.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft),0 8px 20px #00000014}.entity.active .nodeMark{background:var(--accent);color:rgb(var(--primary-foreground-rgb))}
+.handle{width:5px!important;height:5px!important;border:0!important;background:var(--accent)!important;pointer-events:none}
+.edge :global(.react-flow__edge-path){stroke:var(--accent);stroke-opacity:.5;stroke-width:1.5}.activeEdge :global(.react-flow__edge-path),.edge:hover :global(.react-flow__edge-path){stroke-opacity:1;stroke-width:2.5}
+/* A zero-size SVG parent can pass hit testing while Chromium skips its paint. */
+.root :global(.react-flow__edges){width:100%;height:100%}
+.root :global(.react-flow__controls){overflow:hidden;border:1px solid var(--line);border-radius:9px;box-shadow:0 3px 12px #00000012}
+.root :global(.react-flow__controls-button){width:31px;height:31px;border-color:var(--line);background:rgb(var(--card-rgb));color:var(--text);fill:currentColor}.root :global(.react-flow__controls-button:hover){background:var(--accent-soft)}
+.root :global(.react-flow__attribution){background:rgb(var(--card-rgb) / .86);font-size:8px;color:var(--muted)}.root :global(.react-flow__attribution a){color:inherit}
+.minimap{width:110px!important;height:75px!important;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:rgb(var(--card-rgb))!important;bottom:12px!important}
+.help{padding:10px 14px;border-top:1px solid var(--line);font-size:10px!important;line-height:1.7;color:var(--muted);margin:0!important}
+.detail{position:relative;min-width:0;border-top:1px solid var(--line);background:linear-gradient(115deg,var(--accent-soft),transparent);padding:16px;display:grid;gap:10px;color:var(--text)}
+.detail p{font-size:11px!important;line-height:1.7;overflow-wrap:anywhere;color:var(--muted);margin:0!important}.detailTitle{font-size:16px;padding-right:26px;overflow-wrap:anywhere}.eyebrow{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding-right:25px}
+.close{position:absolute;right:10px;top:10px;padding:5px;color:var(--muted);border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.relationship{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-right:15px}.relationship>button{font-weight:600;font-size:13px;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;text-align:left}.relationship>span{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.connectionList{display:grid;gap:6px;max-height:170px;overflow:auto}.connectionList button{display:flex;align-items:center;gap:8px;flex-wrap:wrap;text-align:left;border:1px solid var(--line);border-radius:8px;padding:9px;background:var(--surface);font-size:11px;overflow-wrap:anywhere}.predicate{color:var(--muted);font-size:10px}
+.empty{display:grid;justify-items:center;gap:10px;padding:28px;border:1px dashed var(--line);border-radius:14px;text-align:center;color:var(--muted);font-size:12px}.empty svg{color:var(--accent)}.empty p{font-size:11px;max-width:340px;line-height:1.7}.empty strong{font-weight:500;color:var(--text)}
+.root button:focus-visible,.root :global(.react-flow__edge:focus-visible){outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:520px){.header{padding:10px}.header small{width:100%}.minimap{width:80px!important;height:55px!important}.help{font-size:9px!important}.detail{padding:12px}.relationship{gap:7px}.canvas{min-height:300px}}
+@media(prefers-reduced-motion:reduce){.root *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

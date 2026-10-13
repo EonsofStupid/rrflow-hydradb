@@ -53,7 +53,8 @@ test('database creation rejects invalid names, unsupported scopes and cross-site
   }
   const blocked = await request.post('/api/databases', { headers: { origin: 'https://unrelated.example' }, data: { name: 'do_not_create', workspace: 'personal' } });
   expect(blocked.ok()).toBeFalsy();
-  expect((await blocked.json()).receipts).toEqual([]);
+  expect(blocked.status()).toBe(403);
+  expect(await blocked.json()).toEqual({ error: 'Cross-site workspace access is not allowed.' });
 });
 
 test('existing Personal database cannot be recreated or reassigned through create', async ({ request }) => {

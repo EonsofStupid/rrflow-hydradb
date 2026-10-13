@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { brainCatalog, brainIds, type BrainDetail, type BrainId, type ReviewRun, type Workspace } from '@/lib/contracts';
 import { cn } from '@/lib/utils';
+import { SignOut } from '@/components/access/sign-out';
 
 const LiveMesh = dynamic(() => import('@/components/live/live-mesh').then(module => module.LiveMesh), { loading: () => <div className="loading-bar">Opening the live specialist brains…</div> });
 const BrainWorkspace = dynamic(() => import('@/components/brain-ui/brain-workspace').then(module => module.BrainWorkspace), { loading: () => <div className="loading-bar" role="status">Opening your brain workspace…</div> });
@@ -47,7 +48,7 @@ const readableTime = (date: string) => new Date(date).toLocaleDateString(undefin
 const BrainMark = ({ id, large = false }: { id: BrainId; large?: boolean }) =>
   <span aria-hidden="true" className={cn('brain-mark', `tone-${brainCatalog[id].color}`, large && 'large')}>{brainMarks[id]}</span>;
 
-export const Dashboard = () => {
+export const Dashboard = ({ protectedSession = false }: { protectedSession?: boolean }) => {
   const [view, setView] = useState<View>('overview');
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [selected, setSelected] = useState<BrainId>('core');
@@ -152,7 +153,7 @@ export const Dashboard = () => {
       <div className="workspace-main">
         <header className="topbar">
           <div className="breadcrumb"><button className="icon-button mobile-menu" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu size={20} /></button><span>Workspace</span><ChevronRight size={14} /><strong>{displayName}</strong></div>
-          <div className="topbar-actions"><span className={cn('connection-pill', workspace?.connected && 'connected')}><span className="status-dot" />{workspace?.connected ? 'HydraDB connected' : workspace ? 'Connection needed' : 'Connecting'}</span><span className="topbar-divider" /><button className="icon-button theme-toggle" aria-label={mounted && resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>{mounted && resolvedTheme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}</button><span className="avatar small">J</span></div>
+          <div className="topbar-actions">{protectedSession && <SignOut />}<span className={cn('connection-pill', workspace?.connected && 'connected')}><span className="status-dot" />{workspace?.connected ? 'HydraDB connected' : workspace ? 'Connection needed' : 'Connecting'}</span><span className="topbar-divider" /><button className="icon-button theme-toggle" aria-label={mounted && resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>{mounted && resolvedTheme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}</button><span className="avatar small">J</span></div>
         </header>
 
         <main id="main" tabIndex={-1}>

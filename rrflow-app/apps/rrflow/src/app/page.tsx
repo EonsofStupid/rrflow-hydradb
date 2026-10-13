@@ -1,3 +1,3 @@
-import { Dashboard } from '@/components/dashboard';
-export default function Page() { return <Dashboard />; }
+import { WorkspaceEntry } from '@/components/access/workspace-entry';
+export default function Page() { return <WorkspaceEntry />; }
 

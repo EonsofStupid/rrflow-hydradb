@@ -23,6 +23,11 @@
 .hydradb-plugin-data/
 dogfood/.state.json
 
+# Modelence CLI target, authentication, upload bundles, and legacy setup secrets.
+.modelence/
+.modelence.env
+.modelence.*.env
+
 # Dependencies, builds and test output.
 node_modules/
 .next/
@@ -37,3 +42,8 @@ playwright-report/
 *.tsbuildinfo
 .DS_Store
 Thumbs.db
+
+# Source footage stays local; publish the reviewed, captioned final export.
+/submission/demo-media/recordings/
+/submission/demo-media/rrflow-concept-intro.mp4
+/submission/demo-media/render-work/
