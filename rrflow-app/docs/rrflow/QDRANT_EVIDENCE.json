@@ -1,0 +1,93 @@
+{
+  "checkedAt": "2026-10-13T01:35:50.467Z",
+  "appPort": 3104,
+  "responseMs": 583,
+  "sources": [
+    {
+      "scope": "personal",
+      "endpoint": "http://127.0.0.1:6333",
+      "database": "default-tenant",
+      "sourceCollection": "rrflow_sources",
+      "destinationCollection": "qdrant_sources",
+      "sourceCount": 3,
+      "importedWithMatchingVersion": 3,
+      "completed": 0,
+      "states": [
+        {
+          "id": "qdrant:personal:rrflow_sources:2859bdd0-3dae-4bfb-8431-901a3baec408",
+          "indexingStatus": "graph_creation",
+          "importedAt": "2026-10-13T01:32:52.655Z"
+        },
+        {
+          "id": "qdrant:personal:rrflow_sources:3a11e989-befa-4f9f-8b34-875f07ecf43b",
+          "indexingStatus": "graph_creation",
+          "importedAt": "2026-10-13T01:32:52.655Z"
+        },
+        {
+          "id": "qdrant:personal:rrflow_sources:fed59983-32d7-4015-820f-6216c2e06ca2",
+          "indexingStatus": "graph_creation",
+          "importedAt": "2026-10-13T01:32:52.655Z"
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "scope": "work",
+      "endpoint": "http://127.0.0.1:6335",
+      "database": "rrflow_specialist",
+      "sourceCollection": "rrflow_sources",
+      "destinationCollection": "qdrant_sources",
+      "sourceCount": 3,
+      "importedWithMatchingVersion": 3,
+      "completed": 0,
+      "states": [
+        {
+          "id": "qdrant:work:rrflow_sources:085535f5-358c-4ebd-8039-30de779efdca",
+          "indexingStatus": "graph_creation",
+          "importedAt": "2026-10-13T01:32:53.386Z"
+        },
+        {
+          "id": "qdrant:work:rrflow_sources:b164ac1c-c71e-4682-808b-496128f46d47",
+          "indexingStatus": "graph_creation",
+          "importedAt": "2026-10-13T01:32:53.386Z"
+        },
+        {
+          "id": "qdrant:work:rrflow_sources:e71a170f-3ae9-41c8-8b95-c6fbd014f836",
+          "indexingStatus": "graph_creation",
+          "importedAt": "2026-10-13T01:32:53.386Z"
+        }
+      ],
+      "warnings": []
+    }
+  ],
+  "receipts": [
+    {
+      "database": "rrflow_specialist",
+      "endpoint": "/byog/query",
+      "httpStatus": 200,
+      "requestId": "31f8ec79-e0f8-492a-91cf-2494e4e7f756",
+      "latencyMs": 306
+    },
+    {
+      "database": "rrflow_specialist",
+      "endpoint": "/context/status",
+      "httpStatus": 200,
+      "requestId": "d71fd28c-8efe-448e-8ee6-b8822576149f",
+      "latencyMs": 306
+    },
+    {
+      "database": "default-tenant",
+      "endpoint": "/context/status",
+      "httpStatus": 200,
+      "requestId": "81b53e92-f5c7-4301-a978-08e09ed4459b",
+      "latencyMs": 302
+    },
+    {
+      "database": "default-tenant",
+      "endpoint": "/byog/query",
+      "httpStatus": 200,
+      "requestId": "925443ff-2f38-44b7-beee-c4b73c61e588",
+      "latencyMs": 354
+    }
+  ]
+}

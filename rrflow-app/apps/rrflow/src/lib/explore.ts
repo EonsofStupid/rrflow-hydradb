@@ -157,6 +157,12 @@ export const listDatabases = async (): Promise<ExploreDatabasesResponse> => {
 
 // ---- Items -------------------------------------------------------------------
 
+export const listCollections = async (database: string): Promise<{ collections: string[]; requestId: string | null }> => {
+  const response = await hydra(`/databases/collections?database=${encodeURIComponent(database)}`);
+  const data = collectionsSchema.parse(unwrap(response.body));
+  return { collections: data.collections ?? data.sub_tenant_ids ?? [], requestId: response.requestId };
+};
+
 const listedItemSchema = z.object({
   id: z.string().optional(),
   memory_id: z.string().optional(),

@@ -28,13 +28,22 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
-      - run: corepack enable
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm type-check
-      - run: pnpm lint
-      - run: pnpm build
-      - run: pnpm --filter @rrflow/app exec playwright install --with-deps chromium
+      - id: corepack
+        run: corepack enable
+      - id: install
+        run: pnpm install --frozen-lockfile
+      - id: typecheck
+        run: pnpm type-check
+      - id: lint
+        run: pnpm lint
+      - id: build
+        run: pnpm build
+      - id: playwright_setup
+        run: pnpm --filter @rrflow/app exec playwright install --with-deps chromium
       - name: Playwright sync, connector, and refresh checks (no live credentials)
+        id: playwright
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: ${{ github.workspace }}/rrflow-app/apps/rrflow/test-results/learning-playwright.json
         run: |
           pnpm start > /tmp/rrflow-server.log 2>&1 &
           server_pid=$!
@@ -43,4 +52,15 @@ jobs:
             if curl --fail --silent http://127.0.0.1:3100/ > /dev/null; then break; fi
             sleep 1
           done
-          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts tests/connections.spec.ts tests/connectome.spec.ts tests/databases.spec.ts tests/project-context.spec.ts --grep 'committed repository|GitHub sync shows|connector setup|connection inputs|context refresh|Personal uses|database manager|database creation|a delayed project list'
+          pnpm --filter @rrflow/app exec playwright test tests/repository-sync.spec.ts tests/connections.spec.ts tests/connectome.spec.ts tests/databases.spec.ts tests/project-context.spec.ts tests/organization.spec.ts tests/learning-capture.spec.ts tests/learning-trail.spec.ts tests/qdrant.spec.ts --reporter=list,json --grep 'committed repository|GitHub sync shows|connector setup|connection inputs|context refresh|Personal uses|database manager|database creation|a delayed project list|context organization|connectome discovers|learning capture|learning trail|Qdrant source UI'
+      - name: Capture actual verification outcomes into HydraDB
+        id: capture_learning
+        if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'EonsofStupid/rrflow-hydradb' }}
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/capture-ci.mjs --report apps/rrflow/test-results/learning-playwright.json
+        env:
+          RRFLOW_CI_STEPS_JSON: ${{ toJSON(steps) }}
+          HYDRA_DB_API_KEY: ${{ secrets.HYDRA_DB_API_KEY }}
+          RAINDROP_WRITE_KEY: ${{ secrets.RAINDROP_WRITE_KEY }}
+          RRFLOW_INGEST_LEARNING: '1'

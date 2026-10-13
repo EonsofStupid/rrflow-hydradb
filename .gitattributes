@@ -1,0 +1,2 @@
+# Evidence source hashes must match the committed schema bytes on Windows and Linux.
+rrflow-app/scripts/learning-evidence.schema.json text eol=lf

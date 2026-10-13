@@ -1,0 +1,36 @@
+name: rrflow-qdrant
+services:
+  personal:
+    image: qdrant/qdrant:v1.19.2@sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad
+    container_name: rrflow-qdrant-personal
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - personal_data:/qdrant/storage
+      - personal_snapshots:/qdrant/snapshots
+    networks: [personal]
+    environment:
+      QDRANT__TELEMETRY_DISABLED: "true"
+  work:
+    image: qdrant/qdrant:v1.19.2@sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad
+    container_name: rrflow-qdrant-work
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6335:6333"
+    volumes:
+      - work_data:/qdrant/storage
+      - work_snapshots:/qdrant/snapshots
+    networks: [work]
+    environment:
+      QDRANT__TELEMETRY_DISABLED: "true"
+volumes:
+  personal_data:
+  personal_snapshots:
+  work_data:
+  work_snapshots:
+networks:
+  personal:
+    driver: bridge
+  work:
+    driver: bridge

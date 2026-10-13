@@ -1,4 +1,4 @@
-param([ValidateSet('dev','start')][string]$Mode = 'dev', [ValidatePattern('^\.next(?:-[a-z0-9-]+)?$')][string]$BuildDirectory = '.next')
+param([ValidateSet('dev','start')][string]$Mode = 'dev', [ValidatePattern('^\.next(?:-[a-z0-9-]+)?$')][string]$BuildDirectory = '.next', [ValidateRange(1024,65535)][int]$Port = 3100)
 $ErrorActionPreference = 'Stop'
 $taskWorkspace = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $taskPreviousLocation = Get-Location
@@ -24,7 +24,13 @@ try {
   $taskSecretJson = $null
   $taskRecords = $null
   $taskRaindropJson = $null
-  & wsl -d Ubuntu -- bash "$taskLinuxRoot/rrflow-app/scripts/wsl-run.sh" $Mode
+  if ($Port -eq 3100) {
+    & wsl -d Ubuntu -- bash "$taskLinuxRoot/rrflow-app/scripts/wsl-run.sh" $Mode
+  } elseif ($Mode -eq 'start') {
+    & wsl -d Ubuntu -- bash "$taskLinuxRoot/rrflow-app/scripts/wsl-run.sh" --filter '@rrflow/app' exec next start --hostname 127.0.0.1 --port $Port
+  } else {
+    & wsl -d Ubuntu -- bash "$taskLinuxRoot/rrflow-app/scripts/wsl-run.sh" --filter '@rrflow/app' exec next dev --webpack --hostname 127.0.0.1 --port $Port
+  }
 } finally {
   $env:HYDRA_DB_API_KEY = $null
   $env:RRFLOW_RESEARCH_PATH = $null

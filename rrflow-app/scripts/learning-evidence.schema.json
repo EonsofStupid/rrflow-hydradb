@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/EonsofStupid/rrflow-hydradb/learning-evidence/1.0",
+  "title": "RRFLOW captured verification evidence",
+  "description": "An observed verification result, not a diagnosis, approved lesson, or promoted engineering rule. Raw logs, stack traces, attachments and credentials are excluded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "id", "kind", "repository", "commit", "runUrl", "at", "conclusion", "checks", "schema", "capture"],
+  "properties": {
+    "version": { "const": 1 },
+    "id": { "type": "string", "pattern": "^learning-[a-f0-9]{32}$" },
+    "kind": { "enum": ["ci", "local-verification"] },
+    "repository": { "const": "EonsofStupid/rrflow-hydradb" },
+    "commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "runUrl": { "type": ["string", "null"] },
+    "at": { "type": "string", "format": "date-time" },
+    "conclusion": { "enum": ["passed", "failed", "unknown"] },
+    "checks": { "type": "array", "minItems": 1, "maxItems": 1000, "items": { "$ref": "#/$defs/check" } },
+    "schema": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "path", "sha256", "sourceUrl"],
+      "properties": {
+        "version": { "const": "1.0" },
+        "path": { "const": "rrflow-app/scripts/learning-evidence.schema.json" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "sourceUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "capture": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "tool"],
+      "properties": {
+        "mode": { "enum": ["automatic-ci", "local-verification", "imported-ci"] },
+        "tool": { "const": "Playwright + GitHub Actions" }
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "status", "sourcePath", "line", "rule"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 250 },
+        "status": { "enum": ["passed", "failed", "skipped", "unknown"] },
+        "sourcePath": { "type": ["string", "null"] },
+        "line": { "type": ["integer", "null"], "minimum": 1 },
+        "rule": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "title", "sourceUrl", "explanation"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1, "maxLength": 100 },
+            "title": { "type": "string", "minLength": 1, "maxLength": 250 },
+            "sourceUrl": { "type": "string", "format": "uri" },
+            "explanation": { "type": "string", "minLength": 1, "maxLength": 1000 }
+          }
+        }
+      }
+    },
+    "stepOutcome": {
+      "description": "GitHub step.outcome is read before continue-on-error alters conclusion. success maps to passed; failure or timed_out maps to failed; skipped maps to skipped; cancelled, absent, neutral or unrecognized outcomes map to unknown. Historical gh run view imports use actual run/job/step conclusion fields and are marked imported-ci. Outcomes record what ran; they do not establish a cause or authorize a policy change.",
+      "enum": ["passed", "failed", "skipped", "unknown"]
+    },
+    "playwrightOutcome": {
+      "description": "A Playwright check passes only when its expected outcome is reported and an executed result agrees. Unexpected outcomes and flaky retries remain failed observations; skipped stays skipped; interrupted, absent or inconsistent results stay unknown. Runner errors are failed observations. Missing, malformed, empty or truncated reports cannot establish a passing suite. Raw errors and output are not copied.",
+      "enum": ["passed", "failed", "skipped", "unknown"]
+    }
+  }
+}

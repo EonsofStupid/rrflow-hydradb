@@ -1,4 +1,19 @@
 import { test, expect } from '@playwright/test';
+
+test('connectome discovers named Gmail and GitHub collections and clears old source cards', async ({ page }) => {
+  await page.route('**/api/explore/default-tenant/collections', route => route.fulfill({ json: { collections: ['gmail', 'github'], requestId: 'fixture-collections' } }));
+  await page.route('**/api/explore/default-tenant/items?**', route => {
+    const params = new URL(route.request().url()).searchParams;
+    const collection = params.get('collection');
+    return route.fulfill({ json: { items: params.get('kind') === 'memory' ? [] : [{ id: collection, kind: 'knowledge', collection, title: `Fixture ${collection} source`, type: collection, timestamp: null, description: null, metadata: {}, additionalMetadata: {} }], total: 1, requestId: 'fixture-read' } });
+  });
+  await page.goto('/'); await page.getByRole('button', { name: 'Connectome', exact: true }).click();
+  const map = page.getByRole('region', { name: 'Living connectome' });
+  await expect(map.getByRole('button').filter({ hasText: 'Fixture gmail source' })).toBeVisible();
+  await map.getByLabel('Source collection', { exact: true }).selectOption('github');
+  await expect(map.getByRole('button').filter({ hasText: 'Fixture github source' })).toBeVisible();
+  await expect(map.getByRole('button').filter({ hasText: 'Fixture gmail source' })).toHaveCount(0);
+});
 import AxeBuilder from '@axe-core/playwright';
 
 test('connectome opens native TypeScript avenues and typed memories with visible evidence', async ({ page, request }) => {

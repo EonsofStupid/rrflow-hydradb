@@ -1,5 +1,11 @@
 # Codex implementation handoff — October 12
 
+## Personal / business organization UI pass
+
+Scope extension: Jesse asks for two populated Qdrant sources and an inspectable error → rule/schema provenance → correction → CI → lesson flow, including automatic CI capture and dogfooding. The connections_console team member owns only new Qdrant files/runtime/tests; Codex root owns dashboard composition, context inbox, named-collection discovery in explore/KnowledgeMap, CI capture/schema/provenance UI and CI workflow. No overlapping commits/restarts. Higgsfield explicitly deferred by Jesse.
+
+Jesse requests Higgsfield and a considered UI showing how context is organized and aligned. Codex owns the new context-organizer component/CSS, organization contracts/native HydraDB route, dashboard integration, Playwright coverage, and design/handoff notes for this pass. Existing Claude-owned live modules remain stable. Planned behavior: explainable routing suggestions from native source metadata, explicit human correction saved in the source database, and a visible Personal / Shippin / Needs review flow. No source content is moved between databases or sent to Higgsfield. Higgsfield was offered and then explicitly deferred by Jesse; no generation is part of this release.
+
 ## Current release: context and Raindrop together on Overview
 
 Following the release handback, Codex completed dashboard.tsx, brain-workspace.tsx/CSS, live-mesh.tsx, capture-submission.mjs, tests, launcher/config, and release documentation. Overview now shows native HydraDB readiness/counts, Raindrop delivery receipts, generated guidance, context selection and source revisions, helpful/missing-context feedback, lessons, and retrieval in one view. Existing specialist and brain-workspace navigation remains available.

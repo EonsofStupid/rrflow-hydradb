@@ -18,6 +18,10 @@ export const KnowledgeMap = ({ workspace, onExplore, onWork, onManage }: { works
   const [database, setDatabase] = useState('default-tenant');
   const [databases, setDatabases] = useState<DatabaseSummary[]>([]);
   const [databaseError, setDatabaseError] = useState('');
+  const [collections, setCollections] = useState<{ database: string; names: string[]; error?: string } | null>(null);
+  const [chosenCollection, setChosenCollection] = useState<{ database: string; name: string } | null>(null);
+  const collection = chosenCollection?.database === database ? chosenCollection.name : collections?.database === database && collections.names.includes('gmail') ? 'gmail' : '';
+  const collectionsReady = collections?.database === database;
   const [items, setItems] = useState<Item[]>([]);
   const [checkedAt, setCheckedAt] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
@@ -39,12 +43,25 @@ export const KnowledgeMap = ({ workspace, onExplore, onWork, onManage }: { works
     } catch (error) { setDatabaseError(error instanceof Error ? error.message : 'Database status is unavailable.'); }
   }, []);
   useEffect(() => { void loadDatabases(); }, [loadDatabases]);
+  useEffect(() => {
+    const controller = new AbortController();
+    void (async () => {
+      try {
+        const response = await fetch(`/api/explore/${database}/collections`, { cache: 'no-store', signal: controller.signal });
+        const body = await response.json();
+        if (!response.ok) throw new Error(body.error || 'Collections could not load.');
+        if (!controller.signal.aborted) setCollections({ database, names: body.collections });
+      } catch { if (!controller.signal.aborted) setCollections({ database, names: [], error: 'Named source collections could not load. Only the default collection is shown.' }); }
+    })();
+    return () => controller.abort();
+  }, [database]);
   const refresh = useCallback(async (signal?: AbortSignal) => {
+    if (!collectionsReady) return;
     const version = ++refreshNumber.current;
     setBusy(true);
-    const targets = database === 'rrflow_specialist' ? [['seniordev', 'memory'], [database, 'knowledge']] : [[database, 'memory'], [database, 'knowledge']];
+    const targets = database === 'rrflow_specialist' && !collection ? [['seniordev', 'memory'], [database, 'knowledge']] : [[database, 'memory'], [database, 'knowledge']];
     const responses = await Promise.allSettled(targets.map(async ([sourceDatabase, type]) => {
-      const response = await fetch(`/api/explore/${sourceDatabase}/items?kind=${type}&pageSize=100`, { cache: 'no-store', signal });
+      const response = await fetch(`/api/explore/${sourceDatabase}/items?kind=${type}&pageSize=100${collection ? `&collection=${encodeURIComponent(collection)}` : ''}`, { cache: 'no-store', signal });
       const body = await response.json();
       if (!response.ok) throw new Error(`${sourceDatabase}: ${body.error || 'Context could not be loaded.'}`);
       return (body as ExploreListResponse).items.map(item => ({ ...item, database: sourceDatabase }));
@@ -57,7 +74,7 @@ export const KnowledgeMap = ({ workspace, onExplore, onWork, onManage }: { works
     }
     setErrors(responses.flatMap(result => result.status === 'rejected' ? [result.reason instanceof Error ? result.reason.message : 'Context could not be loaded.'] : []));
     setBusy(false);
-  }, [database]);
+  }, [database, collection, collectionsReady]);
   useEffect(() => {
     const abort = new AbortController();
     void refresh(abort.signal);
@@ -67,7 +84,7 @@ export const KnowledgeMap = ({ workspace, onExplore, onWork, onManage }: { works
   const chooseDatabase = (name: string) => {
     if (name === database) { setFilter('All context'); setSearch(''); void refresh(); return; }
     refreshNumber.current++; requestNumber.current++;
-    setItems([]); setCheckedAt(null); setErrors([]); setSelected(null); setDetail(null); setFilter('All context'); setSearch(''); setDatabase(name);
+    setItems([]); setCheckedAt(null); setErrors([]); setSelected(null); setDetail(null); setFilter('All context'); setSearch(''); setCollections(null); setChosenCollection(null); setBusy(true); setDatabase(name);
   };
   const chooseScope = (value: 'personal' | 'shippin') => { setScope(value); chooseDatabase(value === 'personal' ? 'default-tenant' : 'rrflow_specialist'); };
   const scopeName = (item: Item) => item.database === 'seniordev' ? 'Shared engineering practice' : scope === 'personal' ? 'Personal context' : 'Shippin context';
@@ -93,6 +110,8 @@ export const KnowledgeMap = ({ workspace, onExplore, onWork, onManage }: { works
     <div className={styles.scopes}><div className={scope === 'personal' ? styles.activeScope : undefined}><span>PERSONAL</span><strong>Your life & ambitions</strong><p>Your existing default-tenant database belongs here, including its Gmail and GitHub context. Personal/work classification and human corrections are still being developed.</p><button aria-pressed={scope === 'personal'} onClick={() => chooseScope('personal')}>Personal context <ChevronRight size={15} /></button></div><div className={scope === 'shippin' ? styles.activeScope : undefined}><span>SHIPPIN · WORK</span><strong>Three services. Shared understanding.</strong><p>shippin.ai · shippin.cloud · shipping.buzz</p><button aria-pressed={scope === 'shippin'} onClick={() => chooseScope('shippin')}>Shippin context <ChevronRight size={15} /></button><button onClick={onWork}>Open a project workflow <ChevronRight size={15} /></button></div></div>
     <div className={styles.databaseBar}><label>Knowledge database<select value={database} onChange={event => chooseDatabase(event.target.value)}>{!scopedDatabases.some(item => item.name === database) && <option value={database}>{database}</option>}{scopedDatabases.map(item => <option key={item.name} value={item.name}>{item.name}{item.ready === false ? ' · preparing' : ''}</option>)}</select></label><p>{scope === 'personal' ? 'Personal' : 'Shippin work'} · {currentDatabase ? currentDatabase.ready === true ? 'Ready in HydraDB' : currentDatabase.status || 'Readiness not yet confirmed' : 'Checking database status…'}</p><Button variant="outline" onClick={onManage}>Create or manage databases</Button></div>
     {databaseError && <p role="alert">{databaseError}</p>}
+    <div className={styles.databaseBar}><label>Source collection<select aria-label="Source collection" value={collection} disabled={!collectionsReady} onChange={event => { refreshNumber.current++; requestNumber.current++; setItems([]); setSelected(null); setDetail(null); setCheckedAt(null); setErrors([]); setChosenCollection({ database, name: event.target.value }); }}><option value="">Default collection</option>{collections?.database === database && collections.names.filter(Boolean).map(name => <option key={name} value={name}>{name}</option>)}</select></label><p>Choose Gmail, GitHub, or another connected collection to inspect its actual sources.</p></div>
+    {collections?.database === database && collections.error && <p role="alert">{collections.error}</p>}
     <div className={styles.products} aria-label="Connected products"><a href="https://github.com/digohq/app-starter" target="_blank" rel="noreferrer"><strong>Digo app-starter</strong><span>Our TypeScript application foundation</span><ExternalLink size={14} /></a><a href="https://dashboard.hydradb.com/graph" target="_blank" rel="noreferrer"><strong>HydraDB graph</strong><span>Open the native knowledge graph</span><ExternalLink size={14} /></a><a href="https://dashboard.hydradb.com/context" target="_blank" rel="noreferrer"><strong>HydraDB context</strong><span>Inspect the native source library</span><ExternalLink size={14} /></a></div>
     <div className={styles.connectome}>
       <div className={styles.visual}><div className={styles.sectionHead}><h3><BrainCircuit size={18} /> Shared engineering knowledge</h3><span>{workspace?.brains.length ?? '—'} disciplines</span></div><p>Shared research for your projects. Click a skill to reveal its knowledge avenues.</p><RelationGraph edges={edges} height={290} onSelect={name => { const brain = workspace?.brains.find(item => item.name === name); if (brain) onExplore(brain.id); }} /><div className={styles.skills}>{workspace?.brains.map(brain => <button key={brain.id} onClick={() => onExplore(brain.id)} aria-label={`Open ${brain.name} avenues`}><span>{brain.name}</span><strong>{brain.avenues}<small> avenues</small></strong></button>)}</div></div>
