@@ -18,7 +18,7 @@ import { SignOut } from '@/components/access/sign-out';
 
 const LiveMesh = dynamic(() => import('@/components/live/live-mesh').then(module => module.LiveMesh), { loading: () => <div className="loading-bar">Opening the live specialist brains…</div> });
 const BrainWorkspace = dynamic(() => import('@/components/brain-ui/brain-workspace').then(module => module.BrainWorkspace), { loading: () => <div className="loading-bar" role="status">Opening your brain workspace…</div> });
-const KnowledgeMap = dynamic(() => import('@/components/knowledge-map/knowledge-map').then(module => module.KnowledgeMap), { loading: () => <div className="loading-bar" role="status">Opening your connected context…</div> });
+const KnowledgeMap = dynamic(() => import('@/components/knowledge-map/connectome').then(module => module.Connectome), { loading: () => <div className="loading-bar" role="status">Opening your connected context…</div> });
 const ConnectionsConsole = dynamic(() => import('@/components/connections/connections-console').then(module => module.ConnectionsConsole), { loading: () => <div className="loading-bar">Loading connector controls…</div> });
 const RepositorySync = dynamic(() => import('@/components/repository-sync/repository-sync').then(module => module.RepositorySync));
 const DatabaseManager = dynamic(() => import('@/components/databases/database-manager').then(module => module.DatabaseManager), { loading: () => <div role="status" className="loading-bar">Loading your databases…</div> });

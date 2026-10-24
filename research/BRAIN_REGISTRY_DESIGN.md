@@ -113,7 +113,7 @@ Full logical brain naming, immutable project identity, revision checks, aliases 
 - [ ] Agree on canonical namespace and purpose vocabulary. Preserve existing IDs and document aliases.
 - [ ] Implement registry read/resolution and an owner-visible reconciliation report in existing HydraDB storage; run a dry migration comparison against the native catalog.
 - [x] Replace hardcoded connector destinations with existing catalog/membership resolution; keep unresolved scopes unavailable. Validation evidence is recorded in the resume checkpoint.
-- [ ] Add the Source Atlas inside the Connectome, with a list/tree equivalent and source/route drill-down.
+- [x] Add a read-only Source Atlas inside the Connectome: native database assignments, connector defaults, source/memory drill-down, project snapshots and repository sync evidence. See `SOURCE_ATLAS_DELIVERY.md`. Canonical logical brain/source links and a complete route registry remain pending.
 - [ ] Enforce the same contract across dashboard, MCP, workers and CI; prove the cases above with Playwright.
 - [ ] Reconcile duplicates and obsolete routes one at a time, preserving checkpoints and showing exact effects before any disconnect/delete operation.
 
