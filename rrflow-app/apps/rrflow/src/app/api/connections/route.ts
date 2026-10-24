@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkLocalRequest } from '@/lib/http';
 import { connectionsActionSchema, connectionsQuerySchema } from '@/lib/connections-contracts';
-import { changeConnections, readConnections } from '@/lib/connections';
+import { changeConnections, readConnections, ConnectionScopeError } from '@/lib/connections';
 import type { ServiceReceipt } from '@/lib/mesh-contracts';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +15,7 @@ export const GET = async (request: Request) => {
     if (!parsed.success) return NextResponse.json({ error: 'Choose a valid connection view.', receipts }, { status: 400, headers });
     return NextResponse.json(await readConnections(parsed.data, receipts), { headers });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Connections could not load.', receipts }, { status: 503, headers });
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Connections could not load.', receipts }, { status: error instanceof ConnectionScopeError ? error.httpStatus : 503, headers });
   }
 };
 export const POST = async (request: Request) => {
@@ -31,6 +31,6 @@ export const POST = async (request: Request) => {
     if (!parsed.success) return NextResponse.json({ error: 'Check the required settings. Use a managed brain and a public HTTPS webhook URL without credentials or query parameters.', receipts }, { status: 400, headers });
     return NextResponse.json(await changeConnections(parsed.data, receipts), { headers });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'The connection could not be updated.', receipts }, { status: 503, headers });
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'The connection could not be updated.', receipts }, { status: error instanceof ConnectionScopeError ? error.httpStatus : 503, headers });
   }
 };

@@ -18,6 +18,30 @@ export type DatabaseItem = {
 };
 export type DatabaseSummary = DatabaseItem;
 export const builtInDatabaseWorkspace = (name: string): DatabaseWorkspace | null => Object.hasOwn(builtInDatabaseWorkspaces, name) ? builtInDatabaseWorkspaces[name] : null;
+export type DatabaseAssignment = { name: string; workspace: DatabaseWorkspace | null; available: boolean; provisioningFailed: boolean; issue: string | null };
+export type DatabaseAssignments = { databases: DatabaseAssignment[]; warnings: string[] };
+
+/** Join real native existence to explicit membership; a name is never a permission. */
+export const resolveDatabaseAssignments = (
+  names: readonly string[], failedNames: readonly string[],
+  memberships: readonly { name: string; workspace: 'personal' | 'shippin' | null }[] | null,
+): DatabaseAssignments => {
+  const failed = new Set(failedNames);
+  const warnings = memberships === null ? ['Saved workspace assignments could not be verified. Only built-in assignments can be used until a successful refresh.'] : [];
+  const databases = [...new Set([...names, ...failedNames])].map(name => {
+    const builtIn = builtInDatabaseWorkspace(name);
+    const saved = memberships?.filter(item => item.name === name) ?? [];
+    const scopes = new Set(saved.map(item => item.workspace));
+    const conflict = scopes.size > 1 || !!builtIn && saved.some(item => item.workspace !== builtIn);
+    const workspace = conflict ? null : builtIn ?? saved[0]?.workspace ?? null;
+    const issue = conflict ? 'Workspace assignments conflict. Review the registry before using this destination.'
+      : failed.has(name) ? 'Native database provisioning failed.'
+        : !createDatabaseSchema.shape.name.safeParse(name).success ? 'This native name needs compatibility review.'
+          : !workspace ? memberships === null ? 'Workspace assignment is unavailable.' : 'Assign this database to a workspace before connecting sources.' : null;
+    return { name, workspace, available: issue === null, provisioningFailed: failed.has(name), issue };
+  });
+  return { databases, warnings };
+};
 export type DatabasesSnapshot = {
   databases: DatabaseItem[]; checkedAt: string; receipts: ServiceReceipt[]; error?: string; warnings?: string[];
 };

@@ -56,6 +56,17 @@ test('a real folder supplies scoped saved context and selects specialists withou
     await writeFile(path.join(outside, 'package.json'), '{"dependencies":{"outside-secret":"PRIVATE_FIXTURE_VALUE"}}');
     await symlink(outside, path.join(folder, 'escape'));
     await page.setExtraHTTPHeaders({ 'x-rrflow-verification': 'playwright' });
+    // Chromium may discard streamed bodies from its DevTools buffer. Clone the
+    // same response consumed by the app, preserving real server streaming.
+    await page.addInitScript(() => {
+      const fetch = window.fetch.bind(window);
+      const capture = window as Window & { projectUiCapture?: Promise<string> };
+      window.fetch = async (...args) => {
+        const response = await fetch(...args);
+        if (args[0] === '/api/brain-ui') capture.projectUiCapture = response.clone().text();
+        return response;
+      };
+    });
     await page.goto('/');
     await page.getByRole('button', { name: 'Brain workspace', exact: true }).click();
     await page.getByLabel('Project workspace', { exact: true }).selectOption('personal');
@@ -83,8 +94,13 @@ test('a real folder supplies scoped saved context and selects specialists withou
     const streamPromise = page.waitForResponse(response => response.url().endsWith('/api/brain-ui'));
     await page.getByRole('button', { name: 'Build my workspace', exact: true }).click();
     const stream = await streamPromise;
+    expect(stream.ok()).toBeTruthy();
+    expect(stream.headers()['content-type']).toContain('application/a2ui+json');
+    await expect.poll(() => page.evaluate(() => !!(window as Window & { projectUiCapture?: Promise<string> }).projectUiCapture)).toBe(true);
+    const body = await page.evaluate(() => (window as Window & { projectUiCapture?: Promise<string> }).projectUiCapture);
+    expect(body).toBeTruthy();
     let surface: BrainUiSurface | null = null;
-    for (const line of (await stream.text()).trim().split('\n')) surface = applyBrainUiMessage(surface, JSON.parse(line));
+    for (const line of body!.trim().split('\n')) surface = applyBrainUiMessage(surface, JSON.parse(line));
     expect(surface?.model?.project?.id).toBe(projectId);
     expect(surface?.model?.brains.map(item => item.brain.id)).toEqual(expect.arrayContaining(['core', 'nextjs', 'typescript', 'react']));
     expect(surface?.model?.avenues.some(item => item.selection.includes('saved project context'))).toBeTruthy();

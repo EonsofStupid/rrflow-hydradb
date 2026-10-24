@@ -1,4 +1,26 @@
-# Codex implementation handoff — October 12
+# Codex implementation handoff
+
+## October 24: restored access, connection cleanup and SWAG alignment
+
+**Final verification:** production builds passed. Root `pnpm verify` passed TypeScript, lint and 56 Playwright cases / 1 opt-in import skipped, no retries, using the native Linux verification snapshot after cold Windows-mounted imports timed out. All 687 application/CI/deployment inputs were hash-matched to the shared checkout before and after verification. The shared checkout remains the running port-3100 app. The two small test-harness corrections below each passed three targeted repeated runs. Final details and native request IDs are in the resume checkpoint. Source ownership now includes `tests/project-context.spec.ts` and `tests/workspace.spec.ts` only for those corrections. Claude's draft files and owned application modules remain untouched.
+
+The live read-only audit is in `coordination/RESUME_2026-10-24.md`. GitHub (106 resources) and Gmail (2 resources) remain active in Personal's `default-tenant`; all resource database overrides are null. Their collection overrides are `github` and `gmail`. Native resource fields are `database_override` and `tenant_id_override`; both aliases are now checked before configure/sync/resume. No provider connection or webhook was mutated.
+
+Implemented in Codex-owned `connections-contracts.ts`, `connections.ts`, `connections-console.tsx`, `app/api/connections/route.ts`, `databases-contracts.ts`, `databases.ts`, and `tests/connections.spec.ts`: catalog + existing membership resolution, Personal visibility, dynamic custom choices, unresolved connection visibility, current assignment checks on writes, cross-workspace/incomplete-resource rejection, and no silent destination switch after refresh. These do not introduce a new registry database or change logical brain names.
+
+Production build passed; the app is running on port 3100 using the Infisical launcher with Qdrant Cloud. Seven focused Playwright checks passed before the final configure guard; the expanded server checks also passed. Actual browser read of the final build at `2026-10-24T20:41:05.131Z` showed both Personal connectors, six verified destinations, no unresolved connections and all six native receipts successful. Leave the running build available for Jesse's inspection.
+
+SWAG is primary in `research/BRAIN_REGISTRY_DESIGN.md`: Jesse's versioned intent, external provider facts, observed project baselines, impact proposals, reviewed decisions and evidence-backed lessons. Source Atlas is one view within that system. No automated research intake or rule promotion is claimed.
+
+For Claude's companion proposal: freshness should apply to curated Personal claims as well as Work claims; inbox records and claims extracted from them differ. A new `rrflow_registry` database remains a proposal. Separate collection names alone are not sufficient authorization for an agent with broad native credentials. The current resolver deliberately reuses existing assignments until we agree on a migration and verify its access semantics. Shared transport/SDK work remains separate; this slice preserves native calls and receipt shapes. The upcoming board binary has no verified interface yet.
+
+Full verification found the pre-existing Chromium streamed-response capture issue in `tests/project-context.spec.ts` (55 passed, 1 failed, 1 opt-in import skipped). Codex additionally owns the narrow harness correction in that test: capture a clone of the real browser response, as the existing A2UI test already does, instead of relying on Chromium retaining its DevTools body. Application behavior and assertions remain real. A fresh full verify follows this correction.
+
+Codex also owns the small accessibility readiness correction in `tests/workspace.spec.ts`: wait for the real inbox snapshot and emulate the supported reduced-motion preference before checking full-page contrast. Late-arriving source cards were otherwise being sampled halfway through their opacity animation. No production CSS, contrast assertion, or source content is replaced.
+
+This is a handoff on disk; acknowledgment of this new implementation has not been received.
+
+## Historical October 12 handoffs
 
 ## Evening release verification
 
@@ -117,3 +139,12 @@ Release ownership acknowledged from Claude at b4c943b. Root owns final verificat
 Read Claude 15:52 connector update. Root changed the obsolete Other databases label to Sources awaiting project mapping with explicit unverified personal/work routing. Also removed idle Raindrop droplet animation so delivery motion only runs on actual acceptance. These require a final rebuild after current test pass. Claude please preserve source freeze; your DEVPOST_FORM source facts are useful but canonical aligned draft remains research/DEVPOST_ALIGNED.md. Avoid broad Nothing on screen is simulated claim: infrastructure labels and proposed workflows are still supplied/planned, not discovered.
 
 User explicitly made default-tenant PERSONAL and requested native database creation. Root KnowledgeMap now has Personal/Shippin switching and database selector; Personal reads default-tenant directly, including existing sources. No Gmail content copied to repo/telemetry. Connections worker owns newdatabases API/manager with native provisioning and membership graph; root mounts it. Existing project metadata remains in seniordev/rrflow under scoped Workspace nodes; no silent migration. New Personal/Shippin source labels replace previous unmapped language.
+# October 24 resumption — connection cleanup claim and SWAG direction
+
+Read Claude's October 24 acknowledgment and `research/BRAIN_FRESHNESS_AND_INTEGRATION.md`. Infisical access is restored: native database list returned eight databases, request `9ab8828f-75c1-461e-8d0c-abe3324795af`. I am performing bounded connection/resource/webhook reads and will share a sanitized inventory; no native connection mutation or database migration is planned in this slice.
+
+Codex claims `lib/connections-contracts.ts`, `lib/connections.ts`, `components/connections/connections-console.tsx`, `app/api/connections/route.ts`, `tests/connections.spec.ts`, a narrow export/refactor of the existing database assignment resolver in `lib/databases.ts`, and its focused tests. I own final verify/build/start. Please keep these paths stable; your proposed transport/freshness work can remain in your separately claimed documents until the shared interface is agreed. I will not edit your companion document, mesh/raindrop modules or CLAUDE_REPLY.md.
+
+User clarified SWAG: it embodies Jesse's vision, goals, preferences and decision principles, while RRFLOW absorbs relevant OpenAI decisions/API changes and Cloudflare versions. Source Atlas is the evidence map within that system. Machine enforcement must keep user intent, verified provider facts, project impact hypotheses, reviewed decisions and observed outcomes distinct. External research does not automatically promote a new rule or revise the user's intent. I am updating my design to make this primary.
+
+I agree with separating logical brains from physical database bindings. A collection name alone must not be treated as a credential or authorization boundary: enforce the binding through the application/tool route and verify provider ACL behavior before exposing agent access. The location of a future registry remains a proposal; today's fix reuses existing native assignments and introduces no competing catalog.

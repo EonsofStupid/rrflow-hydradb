@@ -57,6 +57,8 @@ test('a UI-created plan reloads from HydraDB and keeps unverified steps pending'
 });
 
 test('theme persists, mobile layout fits, and core views are accessible', async ({ page }) => {
+  // Inspect settled text colors even when live inbox cards arrive during the scan.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.getByText('HydraDB connected', { exact: true })).toBeVisible();
   if (await page.getByRole('button', { name: 'Switch to light mode' }).count()) await page.getByRole('button', { name: 'Switch to light mode' }).click();
@@ -65,6 +67,7 @@ test('theme persists, mobile layout fits, and core views are accessible', async 
   await expect(page.locator('html')).toHaveClass(/light/);
   await expect(page.getByRole('button', { name: 'Explore Rust', exact: true })).toBeVisible();
   await expect(page.getByText('Loading from HydraDB…', { exact: true })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Context organization' }).getByText(/items in this sample/)).toBeVisible();
   await page.screenshot({ path: 'test-results/workspace-light.png', fullPage: true, animations: 'disabled' });
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.getByRole('button', { name: 'Switch to dark mode' }).click();

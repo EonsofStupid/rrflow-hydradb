@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { meshBrainIdSchema, type MeshBrainId, type ServiceReceipt } from './mesh-contracts';
+import type { ServiceReceipt } from './mesh-contracts';
+import { createDatabaseSchema, type DatabaseWorkspace } from './databases-contracts';
 
 const id = z.string().min(1).max(200).regex(/^[a-zA-Z0-9_.:-]+$/);
 const shortText = z.string().trim().min(1).max(200);
@@ -13,7 +14,7 @@ export const publicWebhookUrl = z.string().trim().max(2000).url().refine(value =
 }, 'Use a public HTTPS endpoint on port 443, without credentials, query parameters, or a fragment.');
 
 export const connectionsActionSchema = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('create'), provider: id, name: shortText, database: meshBrainIdSchema,
+  z.object({ action: z.literal('create'), provider: id, name: shortText, database: createDatabaseSchema.shape.name,
     account: z.string().trim().max(200), credentials: z.record(z.string().min(1).max(100), z.json()).refine(value =>
       Object.keys(value).length <= 40 && JSON.stringify(value).length <= 24_000, 'Credentials are too large.'),
     instructions: z.string().trim().max(4000).default('') }).strict(),
@@ -37,7 +38,7 @@ export type ProviderItem = { id: string; category: string; webhook: boolean; bet
 export type CredentialField = { name: string; description: string; type: string; required: boolean };
 export type ProviderDetail = { id: string; objectTypes: string[]; fields: CredentialField[]; complexCredentials: boolean; setup: string | null; scopes: string[] };
 export type ConnectorItem = {
-  id: string; name: string; provider: string; database: MeshBrainId; collection: string;
+  id: string; name: string; provider: string; database: string; workspace: DatabaseWorkspace; collection: string;
   lifecycle: string; syncStatus: string; lastAttempt: string | null; lastSuccess: string | null;
   nextSync: string | null; dispatched: number | null; resources: number | null; needsAttention: boolean;
 };
@@ -45,7 +46,9 @@ export type ResourceItem = { id: string; name: string; type: string };
 export type ConnectorDetail = { connector: ConnectorItem; health: string; resources: { id: string; name: string; status: string; rows: number | null }[] };
 export type WebhookState = { registered: boolean; url: string | null; signing: boolean; events: string[] };
 export type DeliveryItem = { id: string; status: string; indexingStatus: string; at: string | null; attempts: number | null; source: string | null; url: string | null };
-export type ConnectionsOverview = { providers: ProviderItem[]; connectors: ConnectorItem[]; webhook: WebhookState | null; deliveries: DeliveryItem[]; warnings: string[]; checkedAt: string };
+export type ConnectionDestination = { name: string; workspace: DatabaseWorkspace; label: string };
+export type UnassignedConnection = { id: string; provider: string; database: string; reason: string };
+export type ConnectionsOverview = { providers: ProviderItem[]; destinations: ConnectionDestination[]; connectors: ConnectorItem[]; unassigned: UnassignedConnection[]; connectorListAvailable: boolean; webhook: WebhookState | null; deliveries: DeliveryItem[]; warnings: string[]; checkedAt: string };
 export type ConnectionsResponse = {
   receipts: ServiceReceipt[]; error?: string; message?: string; overview?: ConnectionsOverview;
   provider?: ProviderDetail; connector?: ConnectorItem; detail?: ConnectorDetail;

@@ -1,6 +1,6 @@
 import 'server-only';
 import { z } from 'zod';
-import { builtInDatabaseWorkspace, type CreateDatabaseInput, type CreateDatabaseResult, type DatabaseItem, type DatabasesSnapshot, type DatabaseWorkspace } from './databases-contracts';
+import { builtInDatabaseWorkspace, resolveDatabaseAssignments, type DatabaseAssignments, type CreateDatabaseInput, type CreateDatabaseResult, type DatabaseItem, type DatabasesSnapshot, type DatabaseWorkspace } from './databases-contracts';
 import type { ServiceReceipt } from './mesh-contracts';
 
 const registryDatabase = 'rrflow_specialist';
@@ -66,23 +66,24 @@ const checkReadiness = async (name: string, workspace: DatabaseWorkspace | null,
   }
 };
 
-export const listDatabases = async (receipts: ServiceReceipt[]): Promise<DatabasesSnapshot> => {
+export const readDatabaseAssignments = async (receipts: ServiceReceipt[]): Promise<DatabaseAssignments> => {
   const [catalog, memberships] = await Promise.allSettled([readCatalog(receipts), readMemberships(receipts)]);
   if (catalog.status === 'rejected') throw catalog.reason;
-  const warnings: string[] = [];
-  if (memberships.status === 'rejected') warnings.push('Saved workspace assignments could not load. Built-in scopes remain visible; other databases are unassigned until a successful refresh.');
-  const saved = new Map(memberships.status === 'fulfilled' ? memberships.value.map(item => [item.name, item.workspace]) : []);
-  const failed = new Set(catalog.value.failed_databases?.map(item => item.database) ?? []);
-  const names = [...new Set([...catalog.value.databases, ...failed])];
+  // A full bounded result may be truncated; do not authorize custom destinations from it.
+  return resolveDatabaseAssignments(catalog.value.databases, catalog.value.failed_databases?.map(item => item.database) ?? [],
+    memberships.status === 'fulfilled' && memberships.value.length < 1000 ? memberships.value : null);
+};
+
+export const listDatabases = async (receipts: ServiceReceipt[]): Promise<DatabasesSnapshot> => {
+  const assignments = await readDatabaseAssignments(receipts);
   const databases: DatabaseItem[] = [];
   // Bound parallel requests so a large account does not flood HydraDB status calls.
-  for (let index = 0; index < names.length; index += 6) {
-    databases.push(...await Promise.all(names.slice(index, index + 6).map(name => {
-      const workspace = builtInDatabaseWorkspace(name) ?? saved.get(name) ?? null;
-      return failed.has(name) ? Promise.resolve({ name, workspace, ready: false, status: 'Provisioning failed — review in HydraDB' }) : checkReadiness(name, workspace, receipts);
+  for (let index = 0; index < assignments.databases.length; index += 6) {
+    databases.push(...await Promise.all(assignments.databases.slice(index, index + 6).map(({ name, workspace, provisioningFailed }) => {
+      return provisioningFailed ? { name, workspace, ready: false, status: 'Database creation failed' } : checkReadiness(name, workspace, receipts);
     })));
   }
-  return { databases, checkedAt: new Date().toISOString(), receipts, warnings };
+  return { databases, checkedAt: new Date().toISOString(), receipts, warnings: [...assignments.warnings, ...assignments.databases.filter(item => item.issue).map(item => `${item.name}: ${item.issue}`)] };
 };
 
 export const createDatabase = async (input: CreateDatabaseInput, receipts: ServiceReceipt[]): Promise<CreateDatabaseResult> => {

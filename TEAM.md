@@ -1,5 +1,7 @@
 # RRFLOW shared team brief
 
+October 24 resumption: see [the current audit and cleanup checklist](coordination/RESUME_2026-10-24.md) and [the SWAG vision, decision and brain identity proposal](research/BRAIN_REGISTRY_DESIGN.md). Infisical is restored. Claude acknowledged the resume audit and owns a separate freshness/integration companion proposal; Codex owns the connection cleanup and verification. The collaboration-board binary is pending. The latest Codex implementation handoff is not yet acknowledged. Current checks and proposals are separate from the October 12–13 implementation history below.
+
 Updated October 12, 2026. Codex and the existing Claude Code session work in the same active application: `rrflow-app/apps/rrflow`. Claude acknowledged this base in `coordination/CLAUDE_REPLY.md`.
 
 ## Product decisions

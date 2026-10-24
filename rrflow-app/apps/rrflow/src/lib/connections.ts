@@ -1,7 +1,9 @@
 import 'server-only';
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
-import { meshBrainIdSchema, type ServiceReceipt } from './mesh-contracts';
+import type { ServiceReceipt } from './mesh-contracts';
+import { readDatabaseAssignments } from './databases';
+import { databaseWorkspaceNames, type DatabaseAssignments } from './databases-contracts';
 import type { ConnectionsAction, ConnectionsQuery, ConnectionsResponse, ConnectorItem, ProviderDetail, WebhookState } from './connections-contracts';
 
 type Row = Record<string, unknown>;
@@ -50,39 +52,55 @@ const native = async (path: string, method: 'GET' | 'POST', action: string, rece
   }
 };
 
-const connectorFrom = (value: Row): ConnectorItem | null => {
-  const database = meshBrainIdSchema.safeParse(value.database ?? value.tenant_id);
-  if (!database.success || !string(value.connector_id)) return null;
-  return { id: string(value.connector_id), name: string(value.name) || string(value.provider), provider: string(value.provider), database: database.data,
+export class ConnectionScopeError extends Error { readonly httpStatus = 403; }
+const destination = (name: string, assignments: DatabaseAssignments) => assignments.databases.find(item => item.name === name && item.available && item.workspace);
+// Native APIs use both aliases. Conflicting or malformed values must never inherit a destination.
+const databaseFrom = (value: Row, fallback = ''): string => {
+  const values = [value.database, value.tenant_id].filter(item => item !== undefined && item !== null);
+  if (values.some(item => typeof item !== 'string' || !item) || new Set(values).size > 1) return '';
+  return values.length ? values[0] as string : fallback;
+};
+const connectorFrom = (value: Row, assignments: DatabaseAssignments): ConnectorItem | null => {
+  const database = databaseFrom(value);
+  const target = destination(database, assignments);
+  if (!target?.workspace || !string(value.connector_id)) return null;
+  return { id: string(value.connector_id), name: string(value.name) || string(value.provider), provider: string(value.provider), database, workspace: target.workspace,
     collection: string(value.collection ?? value.sub_tenant_id), lifecycle: string(value.lifecycle) || 'unknown', syncStatus: string(value.sync_status) || 'unknown',
     lastAttempt: nullable(value.last_attempted_sync_at), lastSuccess: nullable(value.last_successful_sync_at), nextSync: nullable(value.next_sync_at),
     dispatched: number(value.documents_dispatched), resources: number(value.active_resource_count), needsAttention: value.needs_reauth === true || value.sync_blocked === true || !!value.last_error };
 };
 const ownedConnector = async (id: string, receipts: ServiceReceipt[]) => {
-  const value = await native(`/connectors/${encodeURIComponent(id)}`, 'GET', 'Check the connector belongs to an RRFLOW brain', receipts);
-  const connector = connectorFrom(value);
-  if (!connector) throw new Error('This connector is outside the five managed RRFLOW brains.');
-  return connector;
+  const [value, assignments] = await Promise.all([
+    native(`/connectors/${encodeURIComponent(id)}`, 'GET', 'Read the connector destination', receipts), readDatabaseAssignments(receipts),
+  ]);
+  const connector = connectorFrom(value, assignments);
+  if (!connector || connector.id !== id) throw new ConnectionScopeError('This connector has no verified workspace destination. Review its database assignment before changing it.');
+  return { connector, assignments };
 };
 const webhookFrom = (value: Row): WebhookState => ({ registered: value.registered === true, url: safeUrl(value.url), signing: value.signing_secret_configured === true, events: strings(value.event_types) });
 
 export const readConnections = async (query: ConnectionsQuery, receipts: ServiceReceipt[]): Promise<ConnectionsResponse> => {
   if (query.view === 'overview') {
-    const calls = await Promise.allSettled([
+    const [calls, assignments] = await Promise.all([Promise.allSettled([
       native('/connectors/providers', 'GET', 'Find available knowledge sources', receipts),
       native('/connectors', 'GET', 'Read RRFLOW connectors', receipts),
       native('/webhooks/indexing', 'GET', 'Read organization indexing notifications', receipts),
       native('/webhooks/indexing/deliveries?limit=20', 'GET', 'Read the last 20 indexing notification deliveries', receipts),
-    ]);
+    ]), readDatabaseAssignments(receipts).catch((): DatabaseAssignments => ({ databases: [], warnings: ['Database assignments could not load. Connection changes are unavailable until a successful refresh.'] }))]);
     const result = (index: number) => calls[index].status === 'fulfilled' ? calls[index].value : null;
     const catalog = result(0); const connectors = result(1); const webhook = result(2); const deliveries = result(3);
+    const connectorListAvailable = Array.isArray(connectors?.connectors);
+    const managed = list(connectors?.connectors).map(item => ({ raw: item, connector: connectorFrom(item, assignments) }));
     return { receipts, overview: {
       providers: list(catalog?.providers).filter(item => item.supported === true).map(item => ({ id: string(item.provider), category: string(item.category), webhook: item.webhook_support === true, beta: item.is_beta === true || item.is_alpha === true })),
-      connectors: list(connectors?.connectors).map(connectorFrom).filter((item): item is ConnectorItem => item !== null),
+      destinations: assignments.databases.flatMap(item => item.available && item.workspace ? [{ name: item.name, workspace: item.workspace, label: `${databaseWorkspaceNames[item.workspace]} · ${item.name}` }] : []),
+      connectors: managed.flatMap(item => item.connector ? [item.connector] : []),
+      unassigned: managed.filter(item => !item.connector).map(({ raw }) => ({ id: string(raw.connector_id) || 'Unknown connector', provider: string(raw.provider) || 'Unknown provider', database: string(raw.database ?? raw.tenant_id) || 'Unknown destination', reason: assignments.databases.find(item => item.name === (raw.database ?? raw.tenant_id))?.issue ?? 'The destination could not be verified against the native database catalog and workspace registry.' })),
+      connectorListAvailable,
       webhook: webhook ? webhookFrom(webhook) : null,
       deliveries: list(deliveries?.deliveries).slice(0, 20).map(item => ({ id: string(item.delivery_id), status: string(item.status), indexingStatus: string(item.indexing_status),
         at: nullable(item.updated_at ?? item.created_at), attempts: number(item.attempts), source: nullable(item.doc_id), url: safeUrl(item.webhook_url) })),
-      warnings: calls.flatMap((call, index) => call.status === 'rejected' ? [`${['Provider catalog', 'Connector list', 'Webhook configuration', 'Delivery history'][index]} could not load. Refresh to retry.`] : []), checkedAt: new Date().toISOString(),
+      warnings: [...assignments.warnings, ...calls.flatMap((call, index) => call.status === 'rejected' ? [`${['Provider catalog', 'Connector list', 'Webhook configuration', 'Delivery history'][index]} could not load. Refresh to retry.`] : []), ...(!connectorListAvailable && calls[1].status === 'fulfilled' ? ['The connector list returned an unexpected response. Its contents are unknown.'] : [])], checkedAt: new Date().toISOString(),
     } };
   }
   if (query.view === 'provider') {
@@ -95,7 +113,7 @@ export const readConnections = async (query: ConnectionsQuery, receipts: Service
       scopes: list(value.token_scopes).map(scope => `${string(scope.id)}: ${string(scope.reason)}`) };
     return { provider, receipts };
   }
-  const connector = await ownedConnector(query.connectorId, receipts);
+  const { connector } = await ownedConnector(query.connectorId, receipts);
   if (query.view === 'discover') {
     const params = new URLSearchParams({ limit: '100', ...(query.cursor ? { cursor: query.cursor } : {}) });
     const value = await native(`/connectors/${encodeURIComponent(connector.id)}/discover?${params}`, 'GET', 'Find repositories, channels or pages this account can read', receipts, undefined, connector.database);
@@ -117,12 +135,14 @@ export const isPublicAddress = (address: string) => {
 
 export const changeConnections = async (input: ConnectionsAction, receipts: ServiceReceipt[]): Promise<ConnectionsResponse> => {
   if (input.action === 'create') {
+    const assignments = await readDatabaseAssignments(receipts);
+    if (!destination(input.database, assignments)) throw new ConnectionScopeError('Choose an existing database with a verified workspace assignment. No connector was created.');
     const value = await native('/connectors', 'POST', 'Create a native HydraDB connector', receipts, {
       provider: input.provider, name: input.name, database: input.database, collection: 'connected-sources',
       provider_account_scope: input.account, credentials: input.credentials, custom_instructions: input.instructions,
     }, input.database);
-    const connector = connectorFrom(value);
-    if (!connector) throw new Error('HydraDB accepted the request but returned an unexpected connector. Refresh before creating another.');
+    const connector = connectorFrom(value, assignments);
+    if (!connector || connector.database !== input.database) throw new Error('HydraDB accepted the request but returned an unexpected connector destination. Refresh before creating another.');
     return { receipts, connector, message: 'Account connected. Choose which resources this brain should learn from next.' };
   }
   if (input.action === 'register-webhook') {
@@ -140,17 +160,24 @@ export const changeConnections = async (input: ConnectionsAction, receipts: Serv
     const value = await native('/webhooks/indexing/test', 'POST', 'Send a test indexing notification', receipts);
     return { receipts, delivered: value.delivered === true, receiverStatus: number(value.status_code), message: value.delivered === true ? 'The receiver accepted the test notification.' : 'The receiver did not accept the test. Check its URL and signature configuration.' };
   }
-  const connector = await ownedConnector(input.connectorId, receipts);
+  const { connector, assignments } = await ownedConnector(input.connectorId, receipts);
+  // Configure also starts ingestion; validate existing routes before every action that can start writes.
+  if (input.action !== 'pause') {
+    const sources = await native(`/connectors/${encodeURIComponent(connector.id)}/resources`, 'GET', 'Verify the destinations of configured sources', receipts, undefined, connector.database);
+    if (!Array.isArray(sources.resources) || sources.has_more === true || sources.next_cursor) throw new ConnectionScopeError('The complete resource destination list could not be verified. Sync was not started.');
+    if (list(sources.resources).some(source => {
+      if (!string(source.resource_id ?? source.id)) return true;
+      const inherited = databaseFrom(source, connector.database);
+      const targetName = databaseFrom({ database: source.database_override, tenant_id: source.tenant_id_override }, inherited);
+      const target = destination(targetName, assignments);
+      return !target || target.workspace !== connector.workspace;
+    })) throw new ConnectionScopeError('A source routes outside this connection’s workspace or to an unverified database. Review its destination before starting sync.');
+  }
   if (input.action === 'configure') {
     await native(`/connectors/${encodeURIComponent(connector.id)}/configure`, 'POST', 'Select knowledge sources and start the first sync', receipts, {
       lookback_days: input.lookbackDays, resources: input.resources.map(resource => ({ resource_id: resource.id, resource_type: resource.type, name: resource.name, database: connector.database, collection: connector.collection })),
     }, connector.database);
     return { receipts, message: 'Sources selected. HydraDB has started ingestion; check status for progress and failures.' };
-  }
-  // Resources can override their connector's database. Do not start or resume writes outside our scopes.
-  if (input.action !== 'pause') {
-    const sources = await native(`/connectors/${encodeURIComponent(connector.id)}/resources`, 'GET', 'Verify the destinations of configured sources', receipts, undefined, connector.database);
-    if (list(sources.resources).some(source => (source.database || source.tenant_id) && !meshBrainIdSchema.safeParse(source.database ?? source.tenant_id).success)) throw new Error('This connector has a resource outside the managed RRFLOW brains. Manage it in HydraDB directly.');
   }
   await native(`/connectors/${encodeURIComponent(connector.id)}/${input.action}`, 'POST', `${input.action === 'sync' ? 'Request a sync for' : input.action === 'pause' ? 'Pause' : 'Resume'} the connector`, receipts, undefined, connector.database);
   return { receipts, message: input.action === 'sync' ? 'Sync requested. This confirms the request, not that indexing has finished.' : input.action === 'pause' ? 'Scheduled syncs are paused. An active sync stops at its next step.' : 'Scheduled syncs resumed from their saved position.' };
