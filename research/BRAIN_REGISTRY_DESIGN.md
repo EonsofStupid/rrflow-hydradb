@@ -1,6 +1,6 @@
 # SWAG vision, evolving decisions and brain identity — proposal
 
-October 24, 2026. This design follows Jesse's correction: **SWAG embodies his vision while absorbing relevant OpenAI decisions and Cloudflare versions.** The source roadmap supports that living decision system. Naming is not yet selected or enforced in production. Existing native databases retain their identities and contents. The connection cleanup below implements a narrower assignment check against existing records; it does not implement this whole proposal.
+October 24, 2026. This design follows Jesse's correction: **SWAG embodies his vision while absorbing relevant OpenAI decisions and Cloudflare versions.** The source roadmap supports that living decision system. Explicit logical brain registration, immutable brain IDs, saved names/aliases and revision guards are now implemented; see `BRAIN_IDENTITY_DELIVERY.md`. Existing native databases retain their identities and contents. Their migration and the broader vision/decision lifecycle remain proposed.
 
 ## SWAG is the user's vision and decision context
 
@@ -69,11 +69,11 @@ Candidate readable syntax: `<workspace>/<project>/<purpose>`. For example:
 | `work/shippin-cloud/knowledge` | Shippin Cloud | Existing `shippin_cloud` |
 | `work/shippin-ai/knowledge` | Shippin AI | Existing `shippin_ai` |
 | `work/shipping-buzz/knowledge` | Shipping Buzz | Existing `shipping_buzz` |
-| `work/shared/practice` | Engineering practices | Candidate logical scope for `seniordev`; confirm intended sharing before activation |
+| `commons/shared/practice` | Reviewed public engineering practices | Approved direction reported by Claude; intake enforcement and migration from mixed `seniordev` records remain pending |
 
 `shared` here means shared within the named workspace. It never grants Personal/Work cross-access. Existing `personal`, `practice`, `shippin` and Qdrant `work` labels need an explicit compatibility map; a string normalization must not become an authorization decision. Project IDs remain separate from project slugs, folder locations and GitHub repository names. Existing project IDs are derived from workspace/kind/location, so moving a folder or repository requires a reconciliation decision rather than silently creating a new logical project.
 
-The atlas itself can be presented as `personal/shared/catalog` and `work/shared/catalog`. These are scoped views/records in existing HydraDB storage initially, not a requirement to provision two new databases. An owner can see an aggregate view; an agent receives only authorized catalog entries. Hiding document text alone is insufficient: source titles and project names also need scope protection.
+The atlas itself can be presented as `personal/shared/catalog` and `work/shared/catalog`. Claude's updated handoff records Jesse's choice of one dedicated `rrflow_registry` database with separate `personal` and `work` graph collections. The identity implementation now uses that destination after a count-only reconciliation; original content stays in its native databases. `commons` is approved for reviewed public-source practice knowledge, but this slice does not activate its intake or move Claude's session capture. An owner can see an aggregate view; agent access needs enforced native credentials or mediated queries. Collection names alone do not restrict an agent holding a broad key. Hiding document text alone is insufficient: source titles and project names also need scope protection.
 
 ## Core records and relationships
 
@@ -105,13 +105,14 @@ Playwright acceptance cases must cover: a saved rename preserving routing; dupli
 
 The connection cleanup now resolves the native database catalog against existing `DatabaseWorkspace` memberships and explicit built-in assignments. It exposes Personal, registered custom destinations and unresolved connections; each mutation rereads assignment state. Configure/sync/resume validates existing resource overrides, including native `database_override` and `tenant_id_override`, and rejects cross-workspace or unverified targets. New selections are bound to the verified connector destination. Unknown/failed provisioning is unavailable. This is single-owner workspace routing enforcement, not a multi-user authorization system or the new logical brain registry.
 
-Full logical brain naming, immutable project identity, revision checks, aliases and reviewed decision transitions remain proposed. Do not claim that a readable name grants access or has replaced a native database name.
+Logical brain registration, immutable brain IDs, registry revision checks and alias-preserving renames are implemented for explicit owner registrations. Immutable project identity, migrations, rebinding and reviewed vision/decision transitions remain proposed. A readable name does not grant access or replace a native database name.
 
 ## Implementation order
 
 - [x] Read the current native catalog, connector/resource destinations and webhook registration without exporting credentials or personal content. See the October 24 audit; account permission and hosted environment reviews remain separate work.
-- [ ] Agree on canonical namespace and purpose vocabulary. Preserve existing IDs and document aliases.
-- [ ] Implement registry read/resolution and an owner-visible reconciliation report in existing HydraDB storage; run a dry migration comparison against the native catalog.
+- [ ] Finalize namespace/purpose choices for migrating existing brains. Explicit new registrations use the documented Personal/Work schema; existing names are preserved.
+- [x] Implement scoped logical brain registration, read/name resolution, stable IDs, aliases and revision-guarded edits in the dedicated HydraDB registry, preserving native source bindings.
+- [ ] Complete the dry migration comparison and reviewed reconciliation of existing project/brain records. The Atlas already exposes unassigned native databases.
 - [x] Replace hardcoded connector destinations with existing catalog/membership resolution; keep unresolved scopes unavailable. Validation evidence is recorded in the resume checkpoint.
 - [x] Add a read-only Source Atlas inside the Connectome: native database assignments, connector defaults, source/memory drill-down, project snapshots and repository sync evidence. See `SOURCE_ATLAS_DELIVERY.md`. Canonical logical brain/source links and a complete route registry remain pending.
 - [ ] Enforce the same contract across dashboard, MCP, workers and CI; prove the cases above with Playwright.

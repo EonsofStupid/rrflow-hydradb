@@ -17,6 +17,7 @@ const sync = { version: 1, repository: 'EonsofStupid/rrflow-hydradb', database: 
 const setup = async (page: Page) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.route('**/api/workspace', route => route.fulfill({ json: { connected: true, checkedAt: now, brains: [], edges: [], runs: [] } }));
+  await page.route('**/api/brain-registry?*', route => route.fulfill({ json: { workspace: new URL(route.request().url()).searchParams.get('workspace'), revision: 0, brains: [], checkedAt: now, receipts: [] } }));
   await page.route('**/api/databases', route => route.fulfill({ json: { databases, checkedAt: now, receipts: [] } }));
   await page.route('**/api/connections', route => route.fulfill({ json: { overview: { connectors: [connector], unassigned: [], connectorListAvailable: true, warnings: [], checkedAt: now }, receipts: [] } }));
   await page.route('**/api/repository-sync', route => route.fulfill({ json: { state: sync, checkedAt: now, receipts: [] } }));

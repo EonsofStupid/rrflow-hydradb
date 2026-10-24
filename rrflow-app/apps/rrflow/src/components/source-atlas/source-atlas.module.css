@@ -1,4 +1,5 @@
 .root { display: grid; gap: 24px; min-width: 0; padding-bottom: 32px; }
+.registryHeading { display: flex; justify-content: space-between; align-items: start; gap: 18px; flex-wrap: wrap; }
 .root p { font-size: 13px; line-height: 1.8; color: var(--muted); }
 .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
 .tabs button { padding: 11px 17px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 12px; }

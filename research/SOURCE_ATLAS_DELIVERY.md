@@ -1,5 +1,7 @@
 # Source Atlas delivery — October 24, 2026
 
+Follow-on implementation: [persistent logical brain registration](BRAIN_IDENTITY_DELIVERY.md) adds explicit owner writes below the native database cards. The read-only inspection and draft-planner behavior described below remains available; the new registration section has its own verified write contract.
+
 ## What is implemented
 
 Open **Connectome → Source Atlas** in the owner workspace. The lazily loaded view composes the existing protected APIs; HydraDB remains the authoritative store. No new database, SDK layer, project assignment, provider connection or migration was introduced.

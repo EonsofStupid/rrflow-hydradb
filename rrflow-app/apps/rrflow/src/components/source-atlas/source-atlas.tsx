@@ -6,7 +6,7 @@ import { BookOpen, Database, Fingerprint, GitBranch, Map, RefreshCw, Route, Shie
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { databaseWorkspaceNames, type DatabaseWorkspace } from '@/lib/databases-contracts';
+import { BRAIN_REGISTRY_DATABASE, databaseWorkspaceNames, type DatabaseWorkspace } from '@/lib/databases-contracts';
 import { meshCatalog } from '@/lib/mesh-contracts';
 import { SYNC_DATABASE, SYNC_COLLECTION } from '@/lib/repository-sync-contracts';
 import {
@@ -14,6 +14,7 @@ import {
   atlasProjectsSchema, atlasSyncSchema, brainNamePlanSchema, plannedBrainName, type AtlasDatabase, type AtlasItem,
 } from '@/lib/source-atlas-contracts';
 import styles from './source-atlas.module.css';
+import { BrainRegistry } from './brain-registry';
 
 type Read<T> = { status: 'loading' } | { status: 'failed'; error: string } | { status: 'ready'; data: T; readAt: string };
 // A changed scope or refresh has no old data to render; an aborted response cannot cross the boundary.
@@ -53,7 +54,7 @@ export const SourceAtlas = ({ onManage, onWork }: { onManage: () => void; onWork
   const connections = useRead('/api/connections', atlasConnectionsSchema, revision);
   const sync = useRead('/api/repository-sync', atlasSyncSchema, revision);
   const current = databases.status === 'ready' ? databases.data.databases.filter(item => item.workspace === scope) : [];
-  const unresolved = databases.status === 'ready' ? databases.data.databases.filter(item => !item.workspace) : [];
+  const unresolved = databases.status === 'ready' ? databases.data.databases.filter(item => !item.workspace && item.name !== BRAIN_REGISTRY_DATABASE) : [];
   const chosen = current.find(item => item.name === selected);
   const busy = [databases, connections, sync].some(read => read.status === 'loading');
   const overview = connections.status === 'ready' ? connections.data.overview : null;
@@ -87,6 +88,7 @@ export const SourceAtlas = ({ onManage, onWork }: { onManage: () => void; onWork
       })}
     </div>
     {databases.status === 'ready' && !current.length && <p>No databases with a verified assignment were returned for this workspace.</p>}
+    {scope !== 'practice' && <BrainRegistry key={`${scope}:${revision}`} workspace={scope} databases={current} onInspect={name => { trigger.current = document.activeElement instanceof HTMLButtonElement ? document.activeElement : null; setSelected(name); }} />}
     <div className={styles.columns}>
       <Projects key={scope} scope={scope} revision={revision} onWork={onWork} />
       <section className={styles.panel} aria-label="Development lifecycle evidence"><span className={styles.eyebrow}><Route size={15} /> THE PRODUCT LEARNS FROM ITS OWN WORK</span><h3>Repository → checks → knowledge</h3><p>The recorded sync below belongs to the RRFLOW Work repository. It does not establish a link for other projects.</p>
@@ -99,7 +101,7 @@ export const SourceAtlas = ({ onManage, onWork }: { onManage: () => void; onWork
       <Button variant="outline" onClick={onManage}>Review database assignments</Button>
     </section>
     <NamePlanner />
-    <details className={styles.panel}><summary>Read evidence and current boundaries</summary><p>This Atlas reads existing HydraDB records. Brain cards are native databases; logical brain IDs, aliases and project-to-brain assignments have not been migrated. Connector arrows show configured defaults; individual resource overrides may differ. Stored source timestamps do not prove freshness.</p><p>Qdrant source imports remain available under Memories & context → Qdrant source records.</p>{receipts.map((receipt, index) => <p className={styles.fine} key={index}>{receipt.action} · {receipt.outcome} · {receipt.requestId || 'No request ID returned'}</p>)}</details>
+    <details className={styles.panel}><summary>Read evidence and current boundaries</summary><p>Database cards show native storage; registered brains add saved logical identities and explicit bindings below them. Existing databases are not automatically migrated. Connector arrows show configured defaults; individual resource overrides may differ. Stored source timestamps do not prove freshness.</p><p>Qdrant source imports remain available under Memories & context → Qdrant source records.</p>{receipts.map((receipt, index) => <p className={styles.fine} key={index}>{receipt.action} · {receipt.outcome} · {receipt.requestId || 'No request ID returned'}</p>)}</details>
     <Dialog open={!!chosen} onOpenChange={open => { if (!open) setSelected(null); }}><DialogContent className={styles.dialog} onCloseAutoFocus={event => { event.preventDefault(); trigger.current?.focus(); }}><DialogHeader><DialogTitle>{chosen ? label(chosen.name) : 'Brain sources'}</DialogTitle><DialogDescription>Actual records and connector defaults for this database. No source is moved by inspecting it.</DialogDescription></DialogHeader>{chosen && <div className={styles.inspector}>
       <code>{chosen.name}</code><h3>How sources arrive</h3><p className={styles.fine}>Connector defaults only. Resource overrides and other ingestion paths are not enumerated here.</p>
       {overview?.connectorListAvailable ? <>{overview.connectors.filter(item => item.database === chosen.name && item.workspace === chosen.workspace).map(item => <div className={styles.route} key={item.id}><strong>{item.provider} → {item.collection || 'default collection'}</strong><span>{item.lifecycle} · sync {item.syncStatus}{item.needsAttention ? ' · needs attention' : ''}</span><dl className={styles.facts}><div><dt>Last sync attempt</dt><dd>{time(item.lastAttempt)}</dd></div><div><dt>Last successful sync</dt><dd>{time(item.lastSuccess)}</dd></div><div><dt>Active resources</dt><dd>{item.resources ?? 'Unknown'}</dd></div></dl></div>)}{!overview.connectors.some(item => item.database === chosen.name && item.workspace === chosen.workspace) && <p>No connector defaults point here.</p>}</> : <p>Connector routes are unverified.</p>}

@@ -8,6 +8,8 @@ export const createDatabaseSchema = z.object({
   workspace: databaseWorkspaceSchema,
 }).strict();
 export type CreateDatabaseInput = z.infer<typeof createDatabaseSchema>;
+// System metadata is never a generic Personal/Work connector destination.
+export const BRAIN_REGISTRY_DATABASE = 'rrflow_registry';
 export const builtInDatabaseWorkspaces: Readonly<Record<string, DatabaseWorkspace>> = {
   'default-tenant': 'personal', rrflow_specialist: 'shippin', shippin_cloud: 'shippin', shippin_ai: 'shippin', shipping_buzz: 'shippin', seniordev: 'practice',
 };
@@ -29,6 +31,7 @@ export const resolveDatabaseAssignments = (
   const failed = new Set(failedNames);
   const warnings = memberships === null ? ['Saved workspace assignments could not be verified. Only built-in assignments can be used until a successful refresh.'] : [];
   const databases = [...new Set([...names, ...failedNames])].map(name => {
+    if (name === BRAIN_REGISTRY_DATABASE) return { name, workspace: null, available: false, provisioningFailed: failed.has(name), issue: 'Reserved for scoped brain identity metadata; not a source-ingestion destination.' };
     const builtIn = builtInDatabaseWorkspace(name);
     const saved = memberships?.filter(item => item.name === name) ?? [];
     const scopes = new Set(saved.map(item => item.workspace));

@@ -1,6 +1,6 @@
 import 'server-only';
 import { z } from 'zod';
-import { builtInDatabaseWorkspace, resolveDatabaseAssignments, type DatabaseAssignments, type CreateDatabaseInput, type CreateDatabaseResult, type DatabaseItem, type DatabasesSnapshot, type DatabaseWorkspace } from './databases-contracts';
+import { BRAIN_REGISTRY_DATABASE, builtInDatabaseWorkspace, resolveDatabaseAssignments, type DatabaseAssignments, type CreateDatabaseInput, type CreateDatabaseResult, type DatabaseItem, type DatabasesSnapshot, type DatabaseWorkspace } from './databases-contracts';
 import type { ServiceReceipt } from './mesh-contracts';
 
 const registryDatabase = 'rrflow_specialist';
@@ -49,6 +49,8 @@ const native = async <T>(method: 'GET' | 'POST', endpoint: string, action: strin
 };
 
 const readCatalog = (receipts: ServiceReceipt[]) => native('GET', '/databases', 'List HydraDB databases', catalogSchema, receipts);
+// Registry operations reuse this existing native transport and its receipt/redaction contract.
+export { native as databaseRequest };
 const readMemberships = (receipts: ServiceReceipt[]) => native('POST', '/byog/query', 'Read Personal and Shippin database assignments', membershipSchema, receipts, {
   database: registryDatabase, collection: registryCollection,
   query: 'MATCH (d:DatabaseWorkspace) RETURN d.ext_id AS name, d.workspace AS workspace LIMIT 1000', params: {},
@@ -87,6 +89,7 @@ export const listDatabases = async (receipts: ServiceReceipt[]): Promise<Databas
 };
 
 export const createDatabase = async (input: CreateDatabaseInput, receipts: ServiceReceipt[]): Promise<CreateDatabaseResult> => {
+  if (input.name === BRAIN_REGISTRY_DATABASE) throw new DatabaseActionError('This name is reserved for brain identity metadata. Choose a source database name.', 409);
   const catalog = await readCatalog(receipts);
   if (catalog.databases.includes(input.name) || catalog.failed_databases?.some(item => item.database === input.name) || builtInDatabaseWorkspace(input.name)) {
     throw new DatabaseActionError('That database already exists. Its workspace assignment and contents were not changed. Choose a new name.', 409);
