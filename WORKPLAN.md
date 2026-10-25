@@ -1,6 +1,45 @@
 # RRFLOW objectives and working checklist
 
-Updated October 12, 2026. Owner: Codex. Claude acknowledged the clean Digo base and owns the live specialist/Raindrop module. This checklist tracks the full product; checked items have evidence, while unchecked items may have partial implementation. See research/IMPLEMENTATION_EVIDENCE.md.
+Active plan updated October 25, 2026. Owner: Codex. The ordered milestones below are the current execution plan. The October 12 checklist that follows remains the broader backlog; its original counts and release priorities are historical, not the current delivery status.
+
+## Current checkpoint
+
+- [x] Source Atlas, machine-validated brain identities, stable project bindings and Personal/Work scope checks are delivered.
+- [x] A registered real RRFLOW project retrieves native HydraDB passages with provenance, saves the run and reads it back. Dashboard, CLI, MCP adapter and trusted CI use the same knowledge-path service.
+- [x] The reviewed-correction path was verified against real HydraDB in an isolated test collection: revision conflicts and cross-scope requests are rejected, and the next run excludes reviewed passage fingerprints and carries the accepted guidance. Production owner guidance remains revision 0; verification reviews were not promoted as Jesse's decisions.
+- [x] Raindrop received real retrieval events. GitHub checks, native repository sync and automatic CI evidence passed for `30eea2a`. The last complete local verification passed both production builds and 71 Playwright cases, with one optional Qdrant import skipped. See [delivery evidence](research/KNOWLEDGE_PATH_DELIVERY.md).
+- [x] The existing local workspace returned HTTP 200 on October 25 at `http://127.0.0.1:3100/workspace`. This is an availability check, not a repeat of the complete browser suite.
+- [ ] Activate and verify the shared knowledge path in the actual ongoing agent sessions. A tested MCP adapter does not prove those sessions use it.
+- [ ] Demonstrate the complete SWAG/provider-change decision loop and a measured engineering improvement. Retrieval, telemetry and CI capture alone do not establish autonomous learning.
+
+## Ordered delivery plan
+
+Work through one complete owner journey at a time. Keep visible status, errors, dates and evidence part of each milestone rather than postponing UI work until the end.
+
+| Order | Deliverable | Completion evidence | Ownership |
+| --- | --- | --- | --- |
+| 1 - Next | Reliable agent adoption and project source routing | An actual agent session resolves `work/rrflow/knowledge`, retrieves and reloads the same saved run visible in Connectome, and produces a linked trace. Reconcile binding/readiness discrepancies; show unknown, stale and failed states honestly. Confirm the SDK/freshness interface before changing shared imports. | Codex: registry, knowledge path, UI and integration tests. Claude: native transport/freshness, mesh, Raindrop and his client capture configuration. |
+| 2 | SWAG and one project roadmap with explicit knowledge provenance | Jesse's vision remains a distinct, revisioned authority. For one actual project, show source bindings, why each source matters, project baseline and an explicitly dated OpenAI or Cloudflare fact. A changed fact creates an impact proposal; it cannot overwrite the vision or active decision. Owner approval/rejection, supersession and the next run are reconstructable from HydraDB. | Codex: machine contracts, owner review, API and UI. Coordinate native freshness inputs with Claude. |
+| 3 | One measurable development learning loop | A real failed check links to its committed schema/rule and source evidence. A proposed correction is reviewed, the following run applies it, and fixed cases plus separate regression cases show whether the outcome improved. Raindrop traces/replay and candidate comparison link to the HydraDB decision; failed candidates remain unpromoted and rollback is demonstrated. | Codex: CI producer, policy/history and UI. Claude: execution mesh and Raindrop evaluation integration. |
+| 4 | Unified Personal and Shippin workspace journey | Jesse can start from a project, inspect its brain/source roadmap, drill into actual memories and relationships, see last sync versus original source dates, review a placement/correction, and understand the next action without terminal logs. Personal/Work isolation, project boundaries, keyboard/mobile behavior, motion and loading states are verified with Playwright. Shared commons requires reviewed intake and access enforcement before enabling it. | Codex: dashboard/Connectome and browser verification; Claude: live specialist surfaces under existing ownership. |
+| 5 | Protected release and demonstration | The preceding journey passes against the release build, secrets remain server-side, trusted CI is green, and the deployed protected owner journey passes a smoke check. Publish a demonstration using real evidence with any staged events labeled. Preserve the expired public access cutoff; enabling another public window requires Jesse's instruction. | Codex: release integration and evidence; both sessions review their owned integrations when available. |
+
+The next concrete acceptance is **one real agent session using the same registered RRFLOW knowledge path that Jesse can inspect in the dashboard**. Then the same project carries one external change through SWAG review and into a subsequent run. Deployment follows this useful, verifiable experience; it is not the next milestone by itself.
+
+## Boundaries and coordination
+
+- HydraDB remains authoritative for identities, source bindings, reviewed intent, decisions and run history. Qdrant contributes referenced retrieval sources; Raindrop contributes telemetry and evaluation evidence. Neither becomes a second editable policy store.
+- Existing machine-enforced canonical addresses remain `<personal|work>/<project-slug>/<knowledge|practice|catalog|intake>`, with stable IDs and expected revisions. Use `catalog` for a project source roadmap. Reviewed `commons` access is pending; it is not an implicit cross-scope search permission.
+- External OpenAI/Cloudflare versions are evidence for proposals. SWAG represents Jesse's intent. A provider release, captured session memory or successful CI run cannot silently become an approved practice.
+- Codex owns this plan, `coordination/CODEX_REPLY.md`, registry/knowledge-path contracts, owner APIs, Connectome integration, tests and release wiring. Claude owns `mesh.ts`, `mesh-contracts.ts`, `raindrop.ts`, live specialist surfaces, dogfood/plugin capture and his proposed native SDK/freshness modules. Confirm interfaces before crossing those boundaries.
+- Claude has acknowledged the identity milestone at `b3648c1`. No acknowledgment of the newer knowledge-path delivery is recorded yet. The handoff is written, not proof of a live coordination channel. A collaboration-board binary has not been verified in this workspace.
+- Claude's current `.hydradb-plugin.json`, `coordination/CLAUDE_REPLY.md` and `research/BRAIN_FRESHNESS_AND_INTEGRATION.md` changes remain his. Do not stage or overwrite them during Codex publication.
+- Broad Shippin/private-document ingestion waits for source-by-source review; the existing research found credentials missed by a pattern scan. Continue with the already-public RRFLOW repository for the first complete loop.
+- Tailnet/Cisco/Proxmox discovery, broad Gmail automatic classification, all three Shippin service rollouts and richer demonstration production stay on the backlog until this shared loop is dependable. They are not claimed complete.
+
+## Historical product checklist
+
+The following checklist began October 12. Keep its broader acceptance criteria, but use the checkpoint and ordered plan above for current status and sequencing. See also [implementation evidence](research/IMPLEMENTATION_EVIDENCE.md).
 
 ## Target outcome
 

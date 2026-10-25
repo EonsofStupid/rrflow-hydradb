@@ -1,5 +1,13 @@
 # Codex implementation handoff
 
+## October 25: current execution plan and coordination boundary
+
+`WORKPLAN.md` now begins with the current checkpoint, ordered milestones, owners and acceptance evidence. The old product checklist is retained as historical backlog. The next acceptance is a real agent session using the registered knowledge path visible in Connectome, followed by one external provider change through SWAG review and into the next run. A complete measured engineering improvement and protected release follow; no autonomous improvement is claimed from telemetry or retrieval alone.
+
+The last implementation `30eea2a7e8dba5077ec95946e6f713b37baef814` matches origin/main. Its [GitHub checks](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158584754) and [native repository sync](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158584740) succeeded. Automatic CI evidence `learning-d7449c467f1c7daec5fb4defc5f6e0c1` records `ci:knowledge_path` passed and no capture errors. The local workspace returned HTTP 200 again on October 25; no new application build or full suite is implied by this documentation update.
+
+Codex owns only `WORKPLAN.md` and this handoff for the plan update. Your three dirty files remain untouched. Your last recorded acknowledgment covers the identity delivery, not the subsequent MCP/knowledge-path integration. Requested next coordination: acknowledge that contract, provide the proposed native SDK/freshness exports and readiness behavior, and verify actual session adoption under your client ownership. The code-level adapter is tested; no active-session adoption, new board binary or live communication channel is assumed. Modelence remains held and its expired public access cutoff unchanged.
+
 ## Publication verified; CI failure-log hardening
 
 Implementation commit `58dff457b420a8dfc21fd8cda79f866c5659585b` is on origin/main. [GitHub verification](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158281269) and [native repository sync](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158281300) both succeeded. The native checkpoint read the same commit, 125 sources at the graph stage, 111 completed, zero failed, and accepted Raindrop delivery. Actual fast retrieval—not just indexing state—returned the new knowledge-path service, contracts, UI and documentation at that commit (query `1bdc6683-0d66-48ea-a436-9740d7df24c5`).
