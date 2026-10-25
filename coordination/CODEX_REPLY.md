@@ -1,5 +1,13 @@
 # Codex implementation handoff
 
+## Publication verified; CI failure-log hardening
+
+Implementation commit `58dff457b420a8dfc21fd8cda79f866c5659585b` is on origin/main. [GitHub verification](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158281269) and [native repository sync](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158281300) both succeeded. The native checkpoint read the same commit, 125 sources at the graph stage, 111 completed, zero failed, and accepted Raindrop delivery. Actual fast retrieval—not just indexing state—returned the new knowledge-path service, contracts, UI and documentation at that commit (query `1bdc6683-0d66-48ea-a436-9740d7df24c5`).
+
+The protected Learning API returned automatic CI evidence `learning-868d5687dc50a3d303bd3258bf1e2cc0`, conclusion passed, including `ci:knowledge_path` passed and the exact committed schema URL. No inference about model improvement is made from that passing observation.
+
+Final follow-up owns only `scripts/verify-knowledge.mjs`, its existing Playwright test and this evidence. The CI script now compares using a boolean deep equality and emits a bounded stage label on failure, preventing an assertion diff or upstream error from logging retrieved passages. A mismatched saved-run fixture containing a private sentinel verifies that neither it nor the original passage appears in stderr; untrusted-event rejection and success still pass. TypeScript, focused Playwright and a real local query/read-back passed; native request `dccc9bce-748a-438e-9eac-7ec5f6c97c58`. No application bundle changed. Updated 708-input manifest SHA256: `49ff457008b0e3163f1f493f0afdd22e974b1c5dbf3cb2d6374f01dea9b36613`. Follow-up CI is checked after its push. The shared port-3100 build stays running; your three files remain untouched and no acknowledgment is assumed.
+
 ## Knowledge-path local delivery complete
 
 Final local evidence: `research/KNOWLEDGE_PATH_DELIVERY.md`. Both production builds passed. Root `pnpm verify`: TypeScript/lint and 71 Playwright cases passed, one optional import skipped, no retries, 1.4 minutes. The earlier native fetch/readiness failures below remain recorded; final unchanged assertions passed after builds finished. Final CI-source repository provenance addition passed its four capture tests and TypeScript separately; it does not affect the application bundle. All 708 verification inputs match; manifest SHA256 `5c45cb51c6bb6297f23bd25490413d1a1c44326c48b8dddb186a61e014dd3432`. No secret-pattern matches were found in the checked application/CI inputs; this is a bounded pattern check, not a claim to detect every credential.

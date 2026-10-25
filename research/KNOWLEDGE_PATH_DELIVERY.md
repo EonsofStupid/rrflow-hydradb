@@ -115,3 +115,17 @@ page query completed in about 1.4 seconds. The same build replaces port 3100.
 
 Usage and client contract: [KNOWLEDGE_PATH.md](../rrflow-app/docs/rrflow/KNOWLEDGE_PATH.md).
 Publication checks follow this commit; do not infer GitHub success from local results.
+
+Publication update: implementation commit `58dff45` passed
+[GitHub verification](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158281269)
+and [repository sync](https://github.com/EonsofStupid/rrflow-hydradb/actions/runs/40158281300).
+The dashboard read back automatic CI evidence
+`learning-868d5687dc50a3d303bd3258bf1e2cc0`, including the passing live
+knowledge-path check and its exact schema source. Fast query
+`1bdc6683-0d66-48ea-a436-9740d7df24c5` returned newly pushed source revisions.
+
+A follow-up hardens CI failure logging: mismatched saved content and provider
+errors cannot dump retrieved passages into public logs. The focused sentinel
+test, TypeScript and real local read-back passed. It changes no application
+bundle. Updated 708-input manifest:
+`49ff457008b0e3163f1f493f0afdd22e974b1c5dbf3cb2d6374f01dea9b36613`.

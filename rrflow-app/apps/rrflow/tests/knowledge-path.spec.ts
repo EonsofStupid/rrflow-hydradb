@@ -165,11 +165,12 @@ test('knowledge path API rejects source overrides, unconfirmed reviews and forei
 });
 
 test('knowledge path CI verifies saved retrieval without publishing source content and rejects untrusted events', async () => {
+  let mismatch = false;
   const server = createServer(async (request, response) => {
     response.setHeader('Content-Type', 'application/json');
     if (request.method === 'POST') { for await (const chunk of request) void chunk; response.end(JSON.stringify({ run: runFixture(), observation: { status: 'accepted' } })); }
     else if (request.url?.startsWith('/api/brain-registry')) response.end(JSON.stringify({ brains: [brain] }));
-    else response.end(JSON.stringify({ run: runFixture() }));
+    else { const run = runFixture(); if (mismatch) run.evidence[0].excerpt = 'PRIVATE_FAILURE_PASSAGE'; response.end(JSON.stringify({ run })); }
   });
   await new Promise<void>(done => server.listen(0, '127.0.0.1', done)); const address = server.address(); if (!address || typeof address === 'string') throw new Error('Fixture could not bind');
   const env: NodeJS.ProcessEnv = { NODE_ENV: 'test', PATH: process.env.PATH, RRFLOW_BASE_URL: `http://127.0.0.1:${address.port}` };
@@ -178,6 +179,9 @@ test('knowledge path CI verifies saved retrieval without publishing source conte
     const result = await promisify(execFile)(process.execPath, [script], { env });
     expect(JSON.parse(result.stdout)).toMatchObject({ savedReadVerified: true, sourcePassages: 1, raindrop: 'accepted' });
     expect(result.stdout).not.toContain(evidence.excerpt); expect(result.stdout).not.toContain(evidence.sourceId);
+    mismatch = true;
+    const failed = await promisify(execFile)(process.execPath, [script], { env }).catch((error: Error & { stderr: string }) => error);
+    expect(failed.stderr).toContain('saved comparison'); expect(failed.stderr).not.toContain('PRIVATE_FAILURE_PASSAGE'); expect(failed.stderr).not.toContain(evidence.excerpt);
     await expect(promisify(execFile)(process.execPath, [script], { env: { ...env, GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'pull_request' } })).rejects.toThrow(/main-branch push/);
   } finally { await new Promise<void>((done, reject) => server.close(error => error ? reject(error) : done())); }
 });
