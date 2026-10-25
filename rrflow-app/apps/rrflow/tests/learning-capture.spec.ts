@@ -90,6 +90,7 @@ test('learning capture writes canonical evidence, excludes raw telemetry and pre
     assert.deepEqual(JSON.parse(graph.params.state), evidence);
     const ingested = JSON.parse(calls[1].init.body.get('app_knowledge'))[0];
     assert.equal(ingested.additional_metadata.review_status, 'unreviewed');
+    assert.equal(ingested.additional_metadata.repository, evidence.repository);
     const telemetry = JSON.parse(calls[2].init.body)[0];
     assert.equal(telemetry.properties.checks, 1); assert.equal(telemetry.properties.passed, 1);
     assert.ok(!JSON.stringify(telemetry).includes('workspace.spec.ts'));
@@ -110,15 +111,21 @@ test('learning capture writes canonical evidence, excludes raw telemetry and pre
   expect(result.verified).toBe(true);
 });
 
-test('learning capture CI keeps fixture coverage and isolates credentials to trusted main capture', () => {
+test('learning capture CI keeps fixture coverage and isolates credentials to trusted main knowledge and capture', () => {
   const result = run(`
     const workflow = readFileSync(${JSON.stringify(resolve('../../../.github/workflows/ci.yml'))}, 'utf8');
     assert.ok(workflow.includes('tests/organization.spec.ts')); assert.ok(workflow.includes('tests/learning-capture.spec.ts'));
     assert.ok(workflow.includes('--reporter=list,json')); assert.ok(workflow.includes('PLAYWRIGHT_JSON_OUTPUT_FILE:'));
     assert.ok(workflow.includes("always() && github.event_name == 'push' && github.ref == 'refs/heads/main'"));
-    const split = workflow.split('name: Capture actual verification outcomes into HydraDB');
+    const split = workflow.split('name: Verify the registered project knowledge path against HydraDB');
     assert.equal(split.length, 2); assert.ok(!split[0].includes('secrets.HYDRA_DB_API_KEY'));
-    assert.ok(split[1].includes('continue-on-error: true')); assert.ok(split[1].includes('toJSON(steps)'));
+    const live = split[1].split('name: Capture actual verification outcomes into HydraDB');
+    assert.equal(live.length, 2);
+    assert.ok(live[0].includes("success() && github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'EonsofStupid/rrflow-hydradb'"));
+    assert.ok(live[0].includes('node scripts/verify-knowledge.mjs')); assert.ok(live[0].includes('--hostname 127.0.0.1'));
+    assert.ok(live[1].includes('continue-on-error: true')); assert.ok(live[1].includes('toJSON(steps)'));
+    const failed = createLearningEvidence({ ...base, steps: { knowledge_path: { outcome: 'failure', conclusion: 'success' } } });
+    assert.equal(failed.checks.find(check => check.rule.id === 'ci:knowledge_path').status, 'failed');
     console.log(JSON.stringify({ verified: true }));
   `);
   expect(result.verified).toBe(true);

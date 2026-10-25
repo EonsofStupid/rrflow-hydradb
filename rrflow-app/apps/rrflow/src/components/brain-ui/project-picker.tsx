@@ -8,11 +8,11 @@ import { brainCatalog } from '@/lib/contracts';
 import { projectContextSchema, type ProjectContext, type ProjectSummary } from '@/lib/project-context-contracts';
 import styles from './project-picker.module.css';
 
-export const ProjectPicker = ({ project, onSelect, disabled, onBusy }: { project: ProjectContext | null; onSelect: (project: ProjectContext | null) => void; disabled: boolean; onBusy: (busy: boolean) => void }) => {
+export const ProjectPicker = ({ project, onSelect, disabled, onBusy, initialWorkspace = 'shippin' }: { project: ProjectContext | null; onSelect: (project: ProjectContext | null) => void; disabled: boolean; onBusy: (busy: boolean) => void; initialWorkspace?: 'personal' | 'shippin' }) => {
   const [kind, setKind] = useState<'folder' | 'github'>('folder');
   // This scopes saved project metadata; Personal source connectors use their own database destination.
   // Existing Project/ProjectContext records stay in the configured graph until an explicit migration.
-  const [workspace, setWorkspace] = useState<'personal' | 'shippin'>('shippin');
+  const [workspace, setWorkspace] = useState<'personal' | 'shippin'>(initialWorkspace);
   const [location, setLocation] = useState('');
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [busy, setBusy] = useState(false);

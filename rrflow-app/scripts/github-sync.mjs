@@ -151,7 +151,7 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
       }
       state.searchable = searchable; state.completed = completed; await save();
       if (searchable === ids.length) break;
-      if (Date.now() > deadline) throw new Error('Indexing did not become searchable within ten minutes. Rerun the workflow to retry.');
+      if (Date.now() > deadline) throw new Error('Native processing did not reach graph_creation or completed within ten minutes. Rerun the workflow to retry.');
       await wait(5000);
     }
     // Only retire exact source IDs previously owned by this sync; never clear a database.
@@ -192,11 +192,11 @@ export async function syncRepository({ fetch: request = globalThis.fetch, env = 
     state.raindrop.status = response.ok ? 'accepted' : 'failed'; state.raindrop.httpStatus = response.status;
   } catch { state.raindrop.status = 'failed'; }
   await save();
-  const summary = `### RRFLOW → HydraDB\n\n- Repository: ${repository}\n- Commit: ${commit}\n- State: ${state.phase}\n- Sources: ${state.total}; changed: ${state.changed}; searchable: ${state.searchable}; retired: ${state.deleted}\n- Raindrop: ${state.raindrop.status}\n- Checkpoint: ${database}/${checkpointCollection}\n${state.error ? `- Error: ${state.error}\n` : ''}`;
+  const summary = `### RRFLOW → HydraDB\n\n- Repository: ${repository}\n- Commit: ${commit}\n- State: ${state.phase}\n- Sources: ${state.total}; changed: ${state.changed}; graph stage reached: ${state.searchable}; retired: ${state.deleted}\n- Raindrop: ${state.raindrop.status}\n- Checkpoint: ${database}/${checkpointCollection}\n${state.error ? `- Error: ${state.error}\n` : ''}`;
   if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, summary);
   report(summary);
   if (syncError) throw syncError;
-  if (state.raindrop.status !== 'accepted') throw new Error('Knowledge is searchable, but Raindrop delivery failed. Rerun to retry.');
+  if (state.raindrop.status !== 'accepted') throw new Error('Native graph processing reached its checkpoint, but Raindrop delivery failed. Rerun to retry.');
   return state;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -14,7 +14,8 @@
     "type-check": "pnpm --filter @rrflow/app type-check",
     "lint": "pnpm --filter @rrflow/app lint",
     "test": "pnpm --filter @rrflow/app test",
-    "verify": "pnpm type-check && pnpm lint && pnpm test"
+    "verify": "pnpm type-check && pnpm lint && pnpm test",
+    "knowledge": "node scripts/knowledge-cli.mjs"
   },
   "pnpm": {
     "overrides": {

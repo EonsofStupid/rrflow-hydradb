@@ -10,7 +10,7 @@ export const collection = 'rrflow_learning';
 export const schemaPath = 'rrflow-app/scripts/learning-evidence.schema.json';
 const schemaFile = new URL('./learning-evidence.schema.json', import.meta.url);
 const scriptFolder = path.dirname(fileURLToPath(import.meta.url));
-const stepNames = { corepack: 'Enable package manager', install: 'Install locked dependencies', typecheck: 'TypeScript check', lint: 'Lint', build: 'Production build', playwright_setup: 'Install Playwright browser', playwright: 'Playwright checks' };
+const stepNames = { corepack: 'Enable package manager', install: 'Install locked dependencies', typecheck: 'TypeScript check', lint: 'Lint', build: 'Production build', playwright_setup: 'Install Playwright browser', playwright: 'Playwright checks', knowledge_path: 'Registered project knowledge retrieval and saved provenance' };
 const digest = value => createHash('sha256').update(value).digest('hex');
 const commitPattern = /^[a-f0-9]{40}$/;
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -149,7 +149,7 @@ export async function publishLearningEvidence(evidence, { fetch: request = globa
   if (env.RRFLOW_INGEST_LEARNING === '1') {
     try {
       const form = new FormData(); form.set('database', database); form.set('type', 'knowledge'); form.set('upsert', 'true');
-      form.set('app_knowledge', JSON.stringify([{ id: evidence.id, title: `Unreviewed ${evidence.capture.mode} observation: ${evidence.conclusion}`, type: 'verification_observation', url: evidence.runUrl || evidence.schema.sourceUrl, timestamp: evidence.at, content: { text: JSON.stringify(evidence) }, additional_metadata: { review_status: 'unreviewed', source_system: 'verification', evidence_id: evidence.id, commit: evidence.commit, schema_sha256: evidence.schema.sha256, capture_mode: evidence.capture.mode } }]));
+      form.set('app_knowledge', JSON.stringify([{ id: evidence.id, title: `Unreviewed ${evidence.capture.mode} observation: ${evidence.conclusion}`, type: 'verification_observation', url: evidence.runUrl || evidence.schema.sourceUrl, timestamp: evidence.at, content: { text: JSON.stringify(evidence) }, additional_metadata: { repository: evidence.repository, review_status: 'unreviewed', source_system: 'verification', evidence_id: evidence.id, commit: evidence.commit, schema_sha256: evidence.schema.sha256, capture_mode: evidence.capture.mode } }]));
       const ingestion = await request('https://api.hydradb.com/context/ingest', { method: 'POST', signal: AbortSignal.timeout(25_000), headers: { Authorization: headers.Authorization, 'API-Version': '2' }, body: form });
       const data = await ingestion.json().catch(() => null);
       const item = data?.data?.results?.find(item => item.id === evidence.id);

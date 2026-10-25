@@ -160,7 +160,7 @@ test('live Atlas reads existing Personal sources without configuring or moving t
   await dialog.getByLabel('Atlas source collection').selectOption('gmail');
   await expect(dialog.getByRole('button', { name: 'Stored sources', exact: true })).toBeVisible();
   await expect(dialog.getByText(/first page, at most 12/)).toBeVisible({ timeout: 30_000 });
-  await expect(dialog.getByRole('button', { name: /Source timestamp:/ }).first()).toBeVisible();
+  await expect(dialog.getByRole('button', { name: /Synced to HydraDB:/ }).first()).toBeVisible();
   await page.keyboard.press('Escape');
   await atlas.getByRole('button', { name: /Shippin work Products/ }).click();
   await expect(atlas.getByRole('region', { name: 'Development lifecycle evidence' })).toContainText('EonsofStupid/rrflow-hydradb');

@@ -20,12 +20,12 @@ test('GitHub sync shows native progress, refreshes into readiness and preserves 
   await page.goto('/');
   await page.getByRole('button', { name: 'Connections', exact: true }).click();
   const panel = page.getByRole('region', { name: 'GitHub knowledge sync' });
-  await expect(panel).toContainText('Making knowledge searchable');
+  await expect(panel).toContainText('Processing in HydraDB');
   await expect(panel.getByText('Still processing', { exact: true }).locator('..')).toContainText('2');
   await expect(panel).toContainText('Waiting for the workflow to report');
   state.phase = 'searchable'; state.searchable = 3; state.completed = 3; state.deleted = 1; state.lastSuccessfulAt = at; state.raindrop = { status: 'accepted', eventId: 'fixture-event', httpStatus: 200 };
   await panel.getByRole('button', { name: 'Check sync now' }).click();
-  await expect(panel.getByRole('status')).toContainText('Ready to use');
+  await expect(panel.getByRole('status')).toContainText('Graph processing reached');
   await expect(panel).toContainText('Event accepted · HTTP 200');
   await panel.getByText('Sync evidence and native request IDs', { exact: true }).click();
   await expect(panel).toContainText('fixture-native-sync');
